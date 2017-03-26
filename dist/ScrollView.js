@@ -514,8 +514,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	        value: function mouseUp(e) {
 	            if (!this.state.scrollOp_bar) return;
 	            this.setState({ scrollOp_bar: null });
-	            /*var {onScrollFinished} = this.props;
-	            this.setState({scroll_bar: null}, ()=>onScrollFinished && onScrollFinished({x: this.state.scrollH_pos, y: this.state.scrollV_pos}));*/
+	            var onScrollEnd = this.props.onScrollEnd;
+
+	            if (onScrollEnd) {
+	                var content = FindDOM(this.refs.content);
+	                var scrollPos = { x: content.scrollLeft, y: content.scrollTop };
+	                onScrollEnd(scrollPos);
+	            }
 	        }
 	    }, {
 	        key: "PropsJustChanged",

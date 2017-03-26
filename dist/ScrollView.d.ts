@@ -1,5 +1,9 @@
 /// <reference types="react" />
 import { Component } from "react";
+export interface Vector2i {
+    x: number;
+    y: number;
+}
 export default class ScrollView extends Component<{
     backgroundDrag?;
     backgroundDragMatchFunc?;
@@ -13,6 +17,7 @@ export default class ScrollView extends Component<{
     scrollVBarStyles?;
     onMouseDown?;
     onClick?;
+    onScrollEnd?: (pos: Vector2i) => void;
 }, Partial<{
     containerWidth;
     contentWidth;
@@ -42,8 +47,8 @@ export default class ScrollView extends Component<{
     UpdateScrolls(): void;
     contentMouseDown(e: any): void;
     scrollbarMouseDown(e: any): void;
-    scroll_startMousePos: any;
-    scroll_startScrollPos: any;
+    scroll_startMousePos: Vector2i;
+    scroll_startScrollPos: Vector2i;
     startScrolling(e: any): void;
     mouseMove(e: any): void;
     mouseUp(e: any): void;

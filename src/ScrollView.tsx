@@ -18,7 +18,7 @@ function Assert(condition, message?: string) {
 	throw new Error("Assert failed) " + message);
 }
 
-function FindDOM(comp) {
+function FindDOM(comp): HTMLElement {
 	if (comp == null || comp._reactInternalInstance == null)
 		return null;
 	return ReactDOM.findDOMNode(comp);
@@ -127,6 +127,8 @@ class Div extends Component<{shouldUpdate} & React.HTMLProps<HTMLDivElement>, {}
 	};*/
 })($);
 
+export interface Vector2i { x: number; y: number; }
+
 // main
 // ==========
 
@@ -153,7 +155,7 @@ export default class ScrollView extends Component
 		<{
 			backgroundDrag?,  backgroundDragMatchFunc?, bufferScrollEventsBy?, scrollH_pos?, scrollV_pos?,
 			className?, style?, contentStyle?, scrollHBarStyles?, scrollVBarStyles?,
-			onMouseDown?, onClick?,
+			onMouseDown?, onClick?, onScrollEnd?: (pos: Vector2i)=>void,
 		},
 		Partial<{
 			containerWidth, contentWidth, containerHeight, contentHeight,
@@ -353,8 +355,8 @@ export default class ScrollView extends Component
         e.preventDefault();
         this.startScrolling(e);
     }
-	scroll_startMousePos;
-	scroll_startScrollPos;
+	scroll_startMousePos: Vector2i;
+	scroll_startScrollPos: Vector2i;
 	startScrolling(e) {
 	    //this.updateChildren = false;
 
@@ -373,12 +375,10 @@ export default class ScrollView extends Component
 	    if (scrollBar.is(".horizontal")) {
 			let scrollPixelsPerScrollbarPixels = this.state.contentWidth / this.state.containerWidth;
 	        content.scrollLeft = this.scroll_startScrollPos.x + (scroll_mousePosDif.x * scrollPixelsPerScrollbarPixels);
-	    }
-	    else if (scrollBar.is(".vertical")) {
+	    } else if (scrollBar.is(".vertical")) {
 	        let scrollPixelsPerScrollbarPixels = this.state.contentHeight / this.state.containerHeight;
 	        content.scrollTop = this.scroll_startScrollPos.y + (scroll_mousePosDif.y * scrollPixelsPerScrollbarPixels);
-	    }
-	    else { // if left-click dragging on background
+	    } else { // if left-click dragging on background
 	        let scrollPixelsPerScrollbarPixels = 1;
 			content.scrollLeft = this.scroll_startScrollPos.x - (scroll_mousePosDif.x * scrollPixelsPerScrollbarPixels);
 	        content.scrollTop = this.scroll_startScrollPos.y - (scroll_mousePosDif.y * scrollPixelsPerScrollbarPixels);
@@ -387,7 +387,12 @@ export default class ScrollView extends Component
     mouseUp(e) {
         if (!this.state.scrollOp_bar) return;
 		this.setState({scrollOp_bar: null});
-        /*var {onScrollFinished} = this.props;
-        this.setState({scroll_bar: null}, ()=>onScrollFinished && onScrollFinished({x: this.state.scrollH_pos, y: this.state.scrollV_pos}));*/
+		
+		let {onScrollEnd} = this.props;
+		if (onScrollEnd) {
+			let content = FindDOM(this.refs.content);
+			let scrollPos = {x: content.scrollLeft, y: content.scrollTop}
+			onScrollEnd(scrollPos);
+		}
     }
 }
