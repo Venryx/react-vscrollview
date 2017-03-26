@@ -5,16 +5,16 @@ export interface Vector2i {
     y: number;
 }
 export default class ScrollView extends Component<{
-    backgroundDrag?;
-    backgroundDragMatchFunc?;
-    bufferScrollEventsBy?;
-    scrollH_pos?;
-    scrollV_pos?;
-    className?;
+    backgroundDrag?: boolean;
+    backgroundDragMatchFunc?: (element: HTMLElement) => boolean;
+    bufferScrollEventsBy?: number;
+    scrollH_pos?: number;
+    scrollV_pos?: number;
+    className?: string;
     style?;
     contentStyle?;
-    scrollHBarStyles?;
-    scrollVBarStyles?;
+    scrollHBarStyle?;
+    scrollVBarStyle?;
     onMouseDown?;
     onClick?;
     onScrollEnd?: (pos: Vector2i) => void;
@@ -23,12 +23,12 @@ export default class ScrollView extends Component<{
     contentWidth;
     containerHeight;
     contentHeight;
-    scrollH_active;
-    scrollH_pos;
+    scrollH_active: boolean;
+    scrollH_pos: number;
     scrollV_active;
-    scrollV_pos;
-    scrollHBar_hovered;
-    scrollVBar_hovered;
+    scrollV_pos: number;
+    scrollHBar_hovered: boolean;
+    scrollVBar_hovered: boolean;
     scrollOp_bar;
 }>> {
     constructor(props: any);
@@ -52,4 +52,10 @@ export default class ScrollView extends Component<{
     startScrolling(e: any): void;
     mouseMove(e: any): void;
     mouseUp(e: any): void;
+    GetScroll(): {
+        x: number;
+        y: number;
+    };
+    SetScroll(scrollPos: Vector2i): void;
+    ScrollBy(scrollPosOffset: Vector2i): void;
 }

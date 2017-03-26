@@ -153,13 +153,13 @@ var styles = {
 
 export default class ScrollView extends Component
 		<{
-			backgroundDrag?,  backgroundDragMatchFunc?, bufferScrollEventsBy?, scrollH_pos?, scrollV_pos?,
-			className?, style?, contentStyle?, scrollHBarStyles?, scrollVBarStyles?,
+			backgroundDrag?: boolean,  backgroundDragMatchFunc?: (element: HTMLElement)=>boolean, bufferScrollEventsBy?: number, scrollH_pos?: number, scrollV_pos?: number,
+			className?: string, style?, contentStyle?, scrollHBarStyle?, scrollVBarStyle?,
 			onMouseDown?, onClick?, onScrollEnd?: (pos: Vector2i)=>void,
 		},
 		Partial<{
 			containerWidth, contentWidth, containerHeight, contentHeight,
-			scrollH_active, scrollH_pos, scrollV_active, scrollV_pos, scrollHBar_hovered, scrollVBar_hovered, scrollOp_bar,
+			scrollH_active: boolean, scrollH_pos: number, scrollV_active, scrollV_pos: number, scrollHBar_hovered: boolean, scrollVBar_hovered: boolean, scrollOp_bar,
 		}>> {
 	constructor(props) {
 	    super(props);
@@ -180,7 +180,7 @@ export default class ScrollView extends Component
 	refs: any; // needed in projects using this package, fsr
     render() {
 		var {backgroundDrag,  backgroundDragMatchFunc, bufferScrollEventsBy, scrollH_pos, scrollV_pos,
-			className, style, contentStyle, scrollHBarStyles, scrollVBarStyles,
+			className, style, contentStyle, scrollHBarStyle, scrollVBarStyle,
 			onMouseDown, onClick, children} = this.props;
         children = children instanceof Array ? children : [children];
 		var {containerWidth, contentWidth, containerHeight, contentHeight,
@@ -196,7 +196,7 @@ export default class ScrollView extends Component
 							styles.scrollBar, styles.scrollBar_h,
 							(this.state.scrollHBar_hovered || (scrollOp_bar && scrollOp_bar == this.refs.scrollHBar)) && styles.scrollBar_active,
 							{width: `${containerWidth/contentWidth * 100}%`, left: ((scrollH_pos / contentWidth) * 100) + "%", pointerEvents: "all"},
-							scrollHBarStyles
+							scrollHBarStyle
 						)}/>
 				</div>}
 				{scrollV_active
@@ -207,7 +207,7 @@ export default class ScrollView extends Component
 							styles.scrollBar, styles.scrollBar_v,
 							(this.state.scrollVBar_hovered || (scrollOp_bar && scrollOp_bar == this.refs.scrollVBar)) && styles.scrollBar_active,
 							{height: `${containerHeight/contentHeight * 100}%`, top: ((scrollV_pos / contentHeight) * 100) + "%", pointerEvents: "all"},
-							scrollVBarStyles
+							scrollVBarStyle
 						)}/>
 				</div>}
 				<style>{`
@@ -395,4 +395,23 @@ export default class ScrollView extends Component
 			onScrollEnd(scrollPos);
 		}
     }
+
+	// for external use
+	GetScroll() {
+		return {x: this.state.scrollH_pos, y: this.state.scrollV_pos};
+	}
+	// alternative to using "scrollH_pos" and "scrollV_pos" props
+	SetScroll(scrollPos: Vector2i) {
+		//this.setState({scrollH_pos: scrollPos.x, scrollV_pos: scrollPos.y}, ()=>this.LoadScroll());
+		var content = FindDOM(this.refs.content);
+		content.scrollLeft = scrollPos.x;
+		content.scrollTop = scrollPos.y;
+	}
+	ScrollBy(scrollPosOffset: Vector2i) {
+		//this.setState({scrollH_pos: this.GetScroll().x + scrollPosOffset.x, scrollV_pos: this.GetScroll().y + scrollPosOffset.y}, ()=>this.LoadScroll());
+		var content = FindDOM(this.refs.content);
+		content.scrollLeft = scrollPosOffset.x;
+		content.scrollTop += scrollPosOffset.y;
+		//this.setState({scrollH_pos: content.scrollLeft, scrollV_pos: content.scrollTop}, ()=>this.LoadScroll());
+	}
 }
