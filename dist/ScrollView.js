@@ -544,7 +544,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        value: function ScrollBy(scrollPosOffset) {
 	            //this.setState({scrollH_pos: this.GetScroll().x + scrollPosOffset.x, scrollV_pos: this.GetScroll().y + scrollPosOffset.y}, ()=>this.LoadScroll());
 	            var content = FindDOM(this.refs.content);
-	            content.scrollLeft = scrollPosOffset.x;
+	            content.scrollLeft += scrollPosOffset.x;
 	            content.scrollTop += scrollPosOffset.y;
 	            //this.setState({scrollH_pos: content.scrollLeft, scrollV_pos: content.scrollTop}, ()=>this.LoadScroll());
 	        }
