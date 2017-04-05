@@ -43,15 +43,17 @@ export default class ScrollView extends Component<{
     propsJustChanged: any;
     componentWillReceiveProps(nextProps: any): void;
     UpdateSize(): void;
-    handleScroll(e: any): void;
+    private HandleScroll(e);
     UpdateScrolls(): void;
-    contentMouseDown(e: any): void;
-    scrollbarMouseDown(e: any): void;
+    private OnContentMouseDown(e);
+    private OnScrollbarMouseDown(e);
     scroll_startMousePos: Vector2i;
     scroll_startScrollPos: Vector2i;
-    startScrolling(e: any): void;
-    mouseMove(e: any): void;
-    mouseUp(e: any): void;
+    private StartScrolling(e);
+    private OnMouseMove(e);
+    private OnMouseUp(e);
+    private OnTouchEnd();
+    private OnScrollEnd();
     GetScroll(): {
         x: number;
         y: number;

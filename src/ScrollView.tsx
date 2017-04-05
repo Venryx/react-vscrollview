@@ -190,7 +190,7 @@ export default class ScrollView extends Component
 			<div className={"ScrollView " + (className || "")} style={E(styles.root, style)}>
 				{scrollH_active
 				&& <div className="scrollTrack horizontal" style={E(styles.scrollTrack, styles.scrollTrack_h)}>
-					<div ref="scrollHBar" className="scrollBar horizontal" onMouseDown={this.scrollbarMouseDown}
+					<div ref="scrollHBar" className="scrollBar horizontal" onMouseDown={this.OnScrollbarMouseDown}
 						onMouseOver={()=>this.setState({scrollHBar_hovered: true})} onMouseOut={()=>this.setState({scrollHBar_hovered: false})}
 						style={E(
 							styles.scrollBar, styles.scrollBar_h,
@@ -201,7 +201,7 @@ export default class ScrollView extends Component
 				</div>}
 				{scrollV_active
 				&& <div className="scrollTrack vertical" style={E(styles.scrollTrack, styles.scrollTrack_v)}>
-					<div ref="scrollVBar" className="scrollBar vertical" onMouseDown={this.scrollbarMouseDown}
+					<div ref="scrollVBar" className="scrollBar vertical" onMouseDown={this.OnScrollbarMouseDown}
 						onMouseOver={()=>this.setState({scrollVBar_hovered: true})} onMouseOut={()=>this.setState({scrollVBar_hovered: false})}
 						style={E(
 							styles.scrollBar, styles.scrollBar_v,
@@ -214,8 +214,8 @@ export default class ScrollView extends Component
 				.hideScrollbar::-webkit-scrollbar { width: 0px; height: 0px; background: transparent; }
 				${scrollOp_bar ? ".ScrollView > .content { cursor: -webkit-grabbing !important; }" : ""}
 				`}</style>
-                <Div ref="content" className="content hideScrollbar" onScroll={this.handleScroll}
-						onMouseDown={this.contentMouseDown}
+                <Div ref="content" className="content hideScrollbar" onScroll={this.HandleScroll}
+						onMouseDown={this.OnContentMouseDown} onTouchEndCapture={this.OnTouchEnd}
 						onClick={onClick} style={E(styles.content, backgroundDrag && styles.content_draggable, /*scrollOp_bar && styles.content_dragging,*/ contentStyle)}
 						shouldUpdate={()=>this.PropsJustChanged}>
 					{children}
@@ -226,8 +226,8 @@ export default class ScrollView extends Component
 
 	componentDidMount() {
         window.addEventListener("resize", this.UpdateSize);
-        document.addEventListener("mousemove", this.mouseMove);
-        document.addEventListener("mouseup", this.mouseUp);
+        document.addEventListener("mousemove", this.OnMouseMove);
+        document.addEventListener("mouseup", this.OnMouseUp);
         //this.UpdateSize();
 	    this.LoadScroll();
 		setTimeout(()=>window.requestAnimationFrame(()=>this.PostRender(false)), 0);
@@ -248,17 +248,20 @@ export default class ScrollView extends Component
 		//FindDOM_(this).OnVisible(this.UpdateSize, true, true);
 		/*if (firstRender)
 			FindDOM_(this).OnVisible(this.LoadScroll, true, true);*/
-		if (firstRender)
+		//FindDOM(this.refs.content).ontouchend = ()=>this.touchEnd();
+
+		if (firstRender) {
 			this.setState({
 				"scrollH_pos": this.props.scrollH_pos,
 				"scrollV_pos": this.props.scrollV_pos
 			});
+		}
 	}
 	// for some reason, this gets called even if not really unmounting (or... I don't see why it'd be unmounting, anyway)
 	componentWillUnmount() {
         window.removeEventListener("resize", this.UpdateSize);
-        document.removeEventListener("mousemove", this.mouseMove);
-        document.removeEventListener("mouseup", this.mouseUp);
+        document.removeEventListener("mousemove", this.OnMouseMove);
+        document.removeEventListener("mouseup", this.OnMouseUp);
     }
 
 	get PropsJustChanged() {
@@ -305,7 +308,7 @@ export default class ScrollView extends Component
 		}
     }
 	
-    handleScroll(e) {
+    private HandleScroll(e) {
         // if not user-initiated event, ignore
         //if (e.type != "DOMMouseScroll" && e.type != "keyup" && e.type != "mousewheel" && e.type != "mousemove") return;
         e.stopPropagation();
@@ -334,7 +337,7 @@ export default class ScrollView extends Component
 	    this.EndSetStateCluster();
 	}*/
 	
-	contentMouseDown(e) {
+	private OnContentMouseDown(e) {
 		let {backgroundDrag, backgroundDragMatchFunc} = this.props;
 	    if (!backgroundDrag) return;
 		backgroundDragMatchFunc = backgroundDragMatchFunc || ((a: Element)=> {
@@ -348,16 +351,16 @@ export default class ScrollView extends Component
 		if (!backgroundDragMatchFunc(e.target)) return;
 	    if (e.button != 0) return;
 
-	    this.startScrolling(e);
+	    this.StartScrolling(e);
 	    this.props.onMouseDown && this.props.onMouseDown(e);
 	}
-    scrollbarMouseDown(e) {
+    private OnScrollbarMouseDown(e) {
         e.preventDefault();
-        this.startScrolling(e);
+        this.StartScrolling(e);
     }
 	scroll_startMousePos: Vector2i;
 	scroll_startScrollPos: Vector2i;
-	startScrolling(e) {
+	private StartScrolling(e) {
 	    //this.updateChildren = false;
 
 		this.setState({scrollOp_bar: e.target});
@@ -365,7 +368,7 @@ export default class ScrollView extends Component
         this.scroll_startMousePos = {x: e.pageX, y: e.pageY};
 		this.scroll_startScrollPos = {x: content.scrollLeft, y: content.scrollTop};
 	}
-	mouseMove(e) {
+	private OnMouseMove(e) {
 		if (!this.state.scrollOp_bar) return;
 
 	    var scrollBar = $(this.state.scrollOp_bar);
@@ -384,17 +387,22 @@ export default class ScrollView extends Component
 	        content.scrollTop = this.scroll_startScrollPos.y - (scroll_mousePosDif.y * scrollPixelsPerScrollbarPixels);
 	    }
 	}
-    mouseUp(e) {
+    private OnMouseUp(e) {
         if (!this.state.scrollOp_bar) return;
 		this.setState({scrollOp_bar: null});
-		
+		this.OnScrollEnd();
+    }
+	private OnTouchEnd() {
+		this.OnScrollEnd();
+	}
+	private OnScrollEnd() {
 		let {onScrollEnd} = this.props;
 		if (onScrollEnd) {
 			let content = FindDOM(this.refs.content);
 			let scrollPos = {x: content.scrollLeft, y: content.scrollTop}
 			onScrollEnd(scrollPos);
 		}
-    }
+	}
 
 	// for external use
 	GetScroll() {
