@@ -217,7 +217,7 @@ export default class ScrollView extends Component
 				.ScrollView.scrollActive > .content { cursor: grabbing !important; cursor: -webkit-grabbing !important; cursor: -moz-grabbing !important; }
 				`}</style>
                 <Div ref="content" className="content hideScrollbar" onScroll={this.HandleScroll}
-						onMouseDown={this.OnContentMouseDown} //onTouchEndCapture={this.OnTouchEnd}
+						onMouseDown={this.OnContentMouseDown} onTouchEnd={this.OnTouchEnd}
 						onClick={onClick} style={E(styles.content, /*backgroundDrag && styles.content_draggable,*/ /*scrollOp_bar && styles.content_dragging,*/ contentStyle)}
 						shouldUpdate={()=>this.PropsJustChanged}>
 					{children}
@@ -251,7 +251,10 @@ export default class ScrollView extends Component
 		/*if (firstRender)
 			FindDOM_(this).OnVisible(this.LoadScroll, true, true);*/
 		// onTouchEndCapture doesn't work consistently, so use native event
-		FindDOM(this.refs.content).ontouchend = ()=>this.OnTouchEnd();
+		/*FindDOM(this.refs.content).ontouchend = ()=>(console.log("end"), this.OnTouchEnd());
+		FindDOM(this.refs.content).ontouchcancel = ()=>(console.log("cancel"), this.OnTouchEnd());
+		FindDOM(this.refs.content).ontouchmove = ()=>{console.log("move")};
+		FindDOM(this.refs.content).ontouchstart = ()=>{console.log("start")};*/
 
 		if (firstRender) {
 			this.setState({

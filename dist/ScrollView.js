@@ -333,7 +333,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    return _this3.setState({ scrollVBar_hovered: true });
 	                }, onMouseOut: function onMouseOut() {
 	                    return _this3.setState({ scrollVBar_hovered: false });
-	                }, style: E(styles.scrollBar, styles.scrollBar_v, (this.state.scrollVBar_hovered || scrollOp_bar && scrollOp_bar == this.refs.scrollVBar) && styles.scrollBar_active, { height: containerHeight / contentHeight * 100 + "%", top: scrollV_pos / contentHeight * 100 + "%", pointerEvents: "all" }, scrollVBarStyle) })), React.createElement("style", null, "\n\t\t\t\t.hideScrollbar::-webkit-scrollbar { width: 0px; height: 0px; background: transparent; }\n\t\t\t\t.ScrollView > .content { cursor: grab; cursor: -webkit-grab; cursor: -moz-grab; }\n\t\t\t\t.ScrollView.scrollActive > .content { cursor: grabbing !important; cursor: -webkit-grabbing !important; cursor: -moz-grabbing !important; }\n\t\t\t\t"), React.createElement(Div, { ref: "content", className: "content hideScrollbar", onScroll: this.HandleScroll, onMouseDown: this.OnContentMouseDown, onClick: onClick, style: E(styles.content, /*backgroundDrag && styles.content_draggable,*/ /*scrollOp_bar && styles.content_dragging,*/contentStyle), shouldUpdate: function shouldUpdate() {
+	                }, style: E(styles.scrollBar, styles.scrollBar_v, (this.state.scrollVBar_hovered || scrollOp_bar && scrollOp_bar == this.refs.scrollVBar) && styles.scrollBar_active, { height: containerHeight / contentHeight * 100 + "%", top: scrollV_pos / contentHeight * 100 + "%", pointerEvents: "all" }, scrollVBarStyle) })), React.createElement("style", null, "\n\t\t\t\t.hideScrollbar::-webkit-scrollbar { width: 0px; height: 0px; background: transparent; }\n\t\t\t\t.ScrollView > .content { cursor: grab; cursor: -webkit-grab; cursor: -moz-grab; }\n\t\t\t\t.ScrollView.scrollActive > .content { cursor: grabbing !important; cursor: -webkit-grabbing !important; cursor: -moz-grabbing !important; }\n\t\t\t\t"), React.createElement(Div, { ref: "content", className: "content hideScrollbar", onScroll: this.HandleScroll, onMouseDown: this.OnContentMouseDown, onTouchEnd: this.OnTouchEnd, onClick: onClick, style: E(styles.content, /*backgroundDrag && styles.content_draggable,*/ /*scrollOp_bar && styles.content_dragging,*/contentStyle), shouldUpdate: function shouldUpdate() {
 	                    return _this3.PropsJustChanged;
 	                } }, children));
 	        }
@@ -377,16 +377,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }, {
 	        key: "PostRender",
 	        value: function PostRender(firstRender) {
-	            var _this6 = this;
-
 	            FindDOM_(this).OnVisible(this.UpdateSize, true);
 	            //FindDOM_(this).OnVisible(this.UpdateSize, true, true);
 	            /*if (firstRender)
 	                FindDOM_(this).OnVisible(this.LoadScroll, true, true);*/
 	            // onTouchEndCapture doesn't work consistently, so use native event
-	            FindDOM(this.refs.content).ontouchend = function () {
-	                return _this6.OnTouchEnd();
-	            };
+	            /*FindDOM(this.refs.content).ontouchend = ()=>(console.log("end"), this.OnTouchEnd());
+	            FindDOM(this.refs.content).ontouchcancel = ()=>(console.log("cancel"), this.OnTouchEnd());
+	            FindDOM(this.refs.content).ontouchmove = ()=>{console.log("move")};
+	            FindDOM(this.refs.content).ontouchstart = ()=>{console.log("start")};*/
 	            if (firstRender) {
 	                this.setState({
 	                    "scrollH_pos": this.props.scrollH_pos,
@@ -464,7 +463,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }, {
 	        key: "OnContentMouseDown",
 	        value: function OnContentMouseDown(e) {
-	            var _this7 = this;
+	            var _this6 = this;
 
 	            var _props2 = this.props,
 	                backgroundDrag = _props2.backgroundDrag,
@@ -478,8 +477,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	                }var firstScrollViewParent = nodePlusParents.find(function (b) {
 	                    return b.className.split(" ").indexOf("ScrollView") != -1;
 	                });
-	                if (firstScrollViewParent == null || firstScrollViewParent[0] != FindDOM(_this7.refs.root)) return false;
-	                return a.className.split(" ").indexOf("content") != -1 || a == _this7.refs.content; // || a == this.state.svgRoot;
+	                if (firstScrollViewParent == null || firstScrollViewParent[0] != FindDOM(_this6.refs.root)) return false;
+	                return a.className.split(" ").indexOf("content") != -1 || a == _this6.refs.content; // || a == this.state.svgRoot;
 	            };
 	            if (!backgroundDragMatchFunc(e.target)) return;
 	            if (e.button != 0) return;
