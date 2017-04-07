@@ -186,7 +186,7 @@ export default class ScrollView extends Component
 		var {containerWidth, contentWidth, containerHeight, contentHeight,
 			 scrollH_active, scrollH_pos, scrollV_active, scrollV_pos, scrollOp_bar} = this.state;
 
-		let classes = ["ScrollView", scrollOp_bar && "scrollActive", className && className];
+		let classes = ["ScrollView", backgroundDrag && "draggable", scrollOp_bar && "scrollActive", className && className];
         return (
 			<div className={classes.filter(a=>a).join(" ")} style={E(styles.root, style)}>
 				{scrollH_active
@@ -213,8 +213,8 @@ export default class ScrollView extends Component
 				</div>}
 				<style>{`
 				.hideScrollbar::-webkit-scrollbar { width: 0px; height: 0px; background: transparent; }
-				.ScrollView > .content { cursor: grab; cursor: -webkit-grab; cursor: -moz-grab; }
-				.ScrollView.scrollActive > .content { cursor: grabbing !important; cursor: -webkit-grabbing !important; cursor: -moz-grabbing !important; }
+				.ScrollView.draggable > .content { cursor: grab; cursor: -webkit-grab; cursor: -moz-grab; }
+				.ScrollView.draggable.scrollActive > .content { cursor: grabbing !important; cursor: -webkit-grabbing !important; cursor: -moz-grabbing !important; }
 				`}</style>
                 <Div ref="content" className="content hideScrollbar" onScroll={this.HandleScroll}
 						onMouseDown={this.OnContentMouseDown} onTouchEnd={this.OnTouchEnd}
