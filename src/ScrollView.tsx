@@ -135,7 +135,7 @@ export interface Vector2i { x: number; y: number; }
 var styles = {
 	root: {overflow: "hidden", height: "100%", position: "relative"},
 	content: {height: "100%", overflow: "auto"},
-	content_draggable: {cursor: "-webkit-grab"},
+	//content_draggable: {cursor: "grab -webkit-grab -moz-grab"},
 	//content_dragging: {cursor: "-webkit-grabbing"}, // implemented in <style> tag instead, due to <Div> not being re-rendered (intentionally)
 	scrollBar: {
 	    backgroundColor: "rgba(255,255,255,.3)",
@@ -186,8 +186,9 @@ export default class ScrollView extends Component
 		var {containerWidth, contentWidth, containerHeight, contentHeight,
 			 scrollH_active, scrollH_pos, scrollV_active, scrollV_pos, scrollOp_bar} = this.state;
 
+		let classes = ["ScrollView", scrollOp_bar && "scrollActive", className && className];
         return (
-			<div className={"ScrollView " + (className || "")} style={E(styles.root, style)}>
+			<div className={classes.filter(a=>a).join(" ")} style={E(styles.root, style)}>
 				{scrollH_active
 				&& <div className="scrollTrack horizontal" style={E(styles.scrollTrack, styles.scrollTrack_h)}>
 					<div ref="scrollHBar" className="scrollBar horizontal" onMouseDown={this.OnScrollbarMouseDown}
@@ -212,11 +213,12 @@ export default class ScrollView extends Component
 				</div>}
 				<style>{`
 				.hideScrollbar::-webkit-scrollbar { width: 0px; height: 0px; background: transparent; }
-				${scrollOp_bar ? ".ScrollView > .content { cursor: -webkit-grabbing !important; }" : ""}
+				.ScrollView > .content { cursor: grab; cursor: -webkit-grab; cursor: -moz-grab; }
+				.ScrollView.scrollActive > .content { cursor: grabbing !important; cursor: -webkit-grabbing !important; cursor: -moz-grabbing !important; }
 				`}</style>
                 <Div ref="content" className="content hideScrollbar" onScroll={this.HandleScroll}
-						onMouseDown={this.OnContentMouseDown} onTouchEndCapture={this.OnTouchEnd}
-						onClick={onClick} style={E(styles.content, backgroundDrag && styles.content_draggable, /*scrollOp_bar && styles.content_dragging,*/ contentStyle)}
+						onMouseDown={this.OnContentMouseDown} //onTouchEndCapture={this.OnTouchEnd}
+						onClick={onClick} style={E(styles.content, /*backgroundDrag && styles.content_draggable,*/ /*scrollOp_bar && styles.content_dragging,*/ contentStyle)}
 						shouldUpdate={()=>this.PropsJustChanged}>
 					{children}
                 </Div>
@@ -248,7 +250,8 @@ export default class ScrollView extends Component
 		//FindDOM_(this).OnVisible(this.UpdateSize, true, true);
 		/*if (firstRender)
 			FindDOM_(this).OnVisible(this.LoadScroll, true, true);*/
-		//FindDOM(this.refs.content).ontouchend = ()=>this.touchEnd();
+		// onTouchEndCapture doesn't work consistently, so use native event
+		FindDOM(this.refs.content).ontouchend = ()=>this.OnTouchEnd();
 
 		if (firstRender) {
 			this.setState({
