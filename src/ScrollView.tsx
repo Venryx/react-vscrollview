@@ -300,15 +300,12 @@ export default class ScrollView extends Component
         var contentWidth = FindDOM(this.refs.content).scrollWidth;
         var contentHeight = FindDOM(this.refs.content).scrollHeight;
 		
-		if (containerWidth != this.state.containerWidth || contentWidth != this.state.contentWidth
-				|| containerHeight != this.state.containerHeight || contentHeight != this.state.contentHeight) {
+		if (containerWidth != this.state.containerWidth || containerHeight != this.state.containerHeight
+				|| contentWidth != this.state.contentWidth || contentHeight != this.state.contentHeight) {
 			this.setState({
-				containerWidth: containerWidth,
-				contentWidth: contentWidth,
+				containerWidth, containerHeight,
+				contentWidth, contentHeight,
 				scrollH_active: contentWidth > containerWidth,
-
-				containerHeight: containerHeight,
-				contentHeight: contentHeight,
 				scrollV_active: contentHeight > containerHeight
 			});
 		}
@@ -332,6 +329,8 @@ export default class ScrollView extends Component
 		if (scrollH_pos != this.state.scrollH_pos || scrollV_pos != this.state.scrollV_pos) {
 		    this.setState({scrollH_pos: scrollH_pos, scrollV_pos: scrollV_pos});
 			//this.props.onScroll && this.props.onScroll({x: scrollH_pos, y: scrollV_pos});
+
+			this.UpdateSize(); // update size info (if changed)
 		}
 	}
 
@@ -375,17 +374,18 @@ export default class ScrollView extends Component
 		this.scroll_startScrollPos = {x: content.scrollLeft, y: content.scrollTop};
 	}
 	private OnMouseMove(e) {
-		if (!this.state.scrollOp_bar) return;
+		let {scrollOp_bar, containerWidth, containerHeight, contentWidth, contentHeight} = this.state;
+		if (!scrollOp_bar) return;
 
-	    var scrollBar = $(this.state.scrollOp_bar);
+	    var scrollBar = $(scrollOp_bar);
         var content = FindDOM(this.refs.content);
         var scroll_mousePosDif = {x: e.pageX - this.scroll_startMousePos.x, y: e.pageY - this.scroll_startMousePos.y};
 		
 	    if (scrollBar.is(".horizontal")) {
-			let scrollPixelsPerScrollbarPixels = this.state.contentWidth / this.state.containerWidth;
+			let scrollPixelsPerScrollbarPixels = contentWidth / containerWidth;
 	        content.scrollLeft = this.scroll_startScrollPos.x + (scroll_mousePosDif.x * scrollPixelsPerScrollbarPixels);
 	    } else if (scrollBar.is(".vertical")) {
-	        let scrollPixelsPerScrollbarPixels = this.state.contentHeight / this.state.containerHeight;
+	        let scrollPixelsPerScrollbarPixels = contentHeight / containerHeight;
 	        content.scrollTop = this.scroll_startScrollPos.y + (scroll_mousePosDif.y * scrollPixelsPerScrollbarPixels);
 	    } else { // if left-click dragging on background
 	        let scrollPixelsPerScrollbarPixels = 1;

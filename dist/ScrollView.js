@@ -421,13 +421,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	            var containerHeight = FindDOM(this).offsetHeight;
 	            var contentWidth = FindDOM(this.refs.content).scrollWidth;
 	            var contentHeight = FindDOM(this.refs.content).scrollHeight;
-	            if (containerWidth != this.state.containerWidth || contentWidth != this.state.contentWidth || containerHeight != this.state.containerHeight || contentHeight != this.state.contentHeight) {
+	            if (containerWidth != this.state.containerWidth || containerHeight != this.state.containerHeight || contentWidth != this.state.contentWidth || contentHeight != this.state.contentHeight) {
 	                this.setState({
-	                    containerWidth: containerWidth,
-	                    contentWidth: contentWidth,
+	                    containerWidth: containerWidth, containerHeight: containerHeight,
+	                    contentWidth: contentWidth, contentHeight: contentHeight,
 	                    scrollH_active: contentWidth > containerWidth,
-	                    containerHeight: containerHeight,
-	                    contentHeight: contentHeight,
 	                    scrollV_active: contentHeight > containerHeight
 	                });
 	            }
@@ -450,6 +448,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            if (scrollH_pos != this.state.scrollH_pos || scrollV_pos != this.state.scrollV_pos) {
 	                this.setState({ scrollH_pos: scrollH_pos, scrollV_pos: scrollV_pos });
 	                //this.props.onScroll && this.props.onScroll({x: scrollH_pos, y: scrollV_pos});
+	                this.UpdateSize(); // update size info (if changed)
 	            }
 	        }
 	        // #maybe temp; for performance, when used in LogEntriesUI
@@ -503,15 +502,22 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }, {
 	        key: "OnMouseMove",
 	        value: function OnMouseMove(e) {
-	            if (!this.state.scrollOp_bar) return;
-	            var scrollBar = $(this.state.scrollOp_bar);
+	            var _state2 = this.state,
+	                scrollOp_bar = _state2.scrollOp_bar,
+	                containerWidth = _state2.containerWidth,
+	                containerHeight = _state2.containerHeight,
+	                contentWidth = _state2.contentWidth,
+	                contentHeight = _state2.contentHeight;
+
+	            if (!scrollOp_bar) return;
+	            var scrollBar = $(scrollOp_bar);
 	            var content = FindDOM(this.refs.content);
 	            var scroll_mousePosDif = { x: e.pageX - this.scroll_startMousePos.x, y: e.pageY - this.scroll_startMousePos.y };
 	            if (scrollBar.is(".horizontal")) {
-	                var scrollPixelsPerScrollbarPixels = this.state.contentWidth / this.state.containerWidth;
+	                var scrollPixelsPerScrollbarPixels = contentWidth / containerWidth;
 	                content.scrollLeft = this.scroll_startScrollPos.x + scroll_mousePosDif.x * scrollPixelsPerScrollbarPixels;
 	            } else if (scrollBar.is(".vertical")) {
-	                var _scrollPixelsPerScrollbarPixels = this.state.contentHeight / this.state.containerHeight;
+	                var _scrollPixelsPerScrollbarPixels = contentHeight / containerHeight;
 	                content.scrollTop = this.scroll_startScrollPos.y + scroll_mousePosDif.y * _scrollPixelsPerScrollbarPixels;
 	            } else {
 	                var _scrollPixelsPerScrollbarPixels2 = 1;
