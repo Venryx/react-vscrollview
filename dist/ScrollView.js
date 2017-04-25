@@ -435,7 +435,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        value: function HandleScroll(e) {
 	            // if not user-initiated event, ignore
 	            //if (e.type != "DOMMouseScroll" && e.type != "keyup" && e.type != "mousewheel" && e.type != "mousemove") return;
-	            e.stopPropagation();
+	            //e.stopPropagation();
 	            // maybe temp; for performance, when used in LogEntriesUI
 	            if (this.props.bufferScrollEventsBy) BufferAction("ScrollView_HandleScroll", this.props.bufferScrollEventsBy, this.UpdateScrolls);else this.UpdateScrolls();
 	        }

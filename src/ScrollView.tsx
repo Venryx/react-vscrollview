@@ -26,9 +26,9 @@ function FindDOM(comp): HTMLElement {
 declare var $;
 function FindDOM_(comp) { return $(FindDOM(comp)); }
 function E(...objExtends: any[]) {
-    var result = {};
-    for (let extend of objExtends) {
-        for (var key in extend)
+	var result = {};
+	for (let extend of objExtends) {
+		for (var key in extend)
 			result[key] = extend[key];
 	}
 	return result;
@@ -46,13 +46,13 @@ function BufferAction(...args) {
 	if (args.length == 2) var [minInterval, func] = args, key = null;
 	else if (args.length == 3) var [key, minInterval, func] = args;
 
-    var lastScheduledRunTime = funcLastScheduledRunTimes[key] || 0;
-    var now = new Date().getTime();
-    var timeSinceLast = now - lastScheduledRunTime;
-    if (timeSinceLast >= minInterval) { // if we've waited enough since last run, run right now
-        func();
-        funcLastScheduledRunTimes[key] = now;
-    } else {
+	var lastScheduledRunTime = funcLastScheduledRunTimes[key] || 0;
+	var now = new Date().getTime();
+	var timeSinceLast = now - lastScheduledRunTime;
+	if (timeSinceLast >= minInterval) { // if we've waited enough since last run, run right now
+		func();
+		funcLastScheduledRunTimes[key] = now;
+	} else {
 		let waitingForNextRunAlready = lastScheduledRunTime > now;
 		if (!waitingForNextRunAlready) { // else, if we're not already waiting for next-run, schedule next-run
 			var nextRunTime = lastScheduledRunTime + minInterval;
@@ -68,12 +68,12 @@ class Div extends Component<{shouldUpdate} & React.HTMLProps<HTMLDivElement>, {}
 	shouldComponentUpdate(nextProps, nextState) {
 		if (this.props.shouldUpdate)
 			return this.props.shouldUpdate(nextProps, nextState);
-	    return true;
+		return true;
 	}
-    render() {
+	render() {
 		var {shouldUpdate, ...rest} = this.props;
-        return <div {...rest}/>;
-    }
+		return <div {...rest}/>;
+	}
 }
 
 (function($) {
@@ -138,11 +138,11 @@ var styles = {
 	//content_draggable: {cursor: "grab -webkit-grab -moz-grab"},
 	//content_dragging: {cursor: "-webkit-grabbing"}, // implemented in <style> tag instead, due to <Div> not being re-rendered (intentionally)
 	scrollBar: {
-	    backgroundColor: "rgba(255,255,255,.3)",
+		backgroundColor: "rgba(255,255,255,.3)",
 		borderRadius: 5,
 		//":hover": {backgroundColor: "rgba(255,255,255,.7)"},
 		//":focus": {}
-    },
+	},
 	scrollBar_h: {position: "absolute", boxSizing: "border-box", zIndex: 10, height: 8, bottom: 0},
 	scrollBar_v: {position: "absolute", boxSizing: "border-box", zIndex: 10, width: 8, right: 0},
 	scrollBar_active: {backgroundColor: "rgba(255,255,255,.7)"},
@@ -162,32 +162,32 @@ export default class ScrollView extends Component
 			scrollH_active: boolean, scrollH_pos: number, scrollV_active, scrollV_pos: number, scrollHBar_hovered: boolean, scrollVBar_hovered: boolean, scrollOp_bar,
 		}>> {
 	constructor(props) {
-	    super(props);
+		super(props);
 		autoBind(this);
 		this.state = {
 			containerWidth: 0,
-            contentWidth: 0,
+			contentWidth: 0,
 			scrollH_active: false,
 			//scrollH_pos: this.props.scrollH_pos,
 
 			containerHeight: 0,
-            contentHeight: 0,
-            scrollV_active: false,
+			contentHeight: 0,
+			scrollV_active: false,
 			//scrollV_pos: this.props.scrollV_pos
-        };
+		};
 	}
 
 	refs: any; // needed in projects using this package, fsr
-    render() {
+	render() {
 		var {backgroundDrag,  backgroundDragMatchFunc, bufferScrollEventsBy, scrollH_pos, scrollV_pos,
 			className, style, contentStyle, scrollHBarStyle, scrollVBarStyle,
 			onMouseDown, onClick, children} = this.props;
-        children = children instanceof Array ? children : [children];
+		children = children instanceof Array ? children : [children];
 		var {containerWidth, contentWidth, containerHeight, contentHeight,
 			 scrollH_active, scrollH_pos, scrollV_active, scrollV_pos, scrollOp_bar} = this.state;
 
 		let classes = ["ScrollView", backgroundDrag && "draggable", scrollOp_bar && "scrollActive", className && className];
-        return (
+		return (
 			<div className={classes.filter(a=>a).join(" ")} style={E(styles.root, style)}>
 				{scrollH_active
 				&& <div className="scrollTrack horizontal" style={E(styles.scrollTrack, styles.scrollTrack_h)}>
@@ -216,37 +216,37 @@ export default class ScrollView extends Component
 				.ScrollView.draggable > .content { cursor: grab; cursor: -webkit-grab; cursor: -moz-grab; }
 				.ScrollView.draggable.scrollActive > .content { cursor: grabbing !important; cursor: -webkit-grabbing !important; cursor: -moz-grabbing !important; }
 				`}</style>
-                <Div ref="content" className="content hideScrollbar" onScroll={this.HandleScroll}
+				<Div ref="content" className="content hideScrollbar" onScroll={this.HandleScroll}
 						onMouseDown={this.OnContentMouseDown} onTouchEnd={this.OnTouchEnd}
 						onClick={onClick} style={E(styles.content, /*backgroundDrag && styles.content_draggable,*/ /*scrollOp_bar && styles.content_dragging,*/ contentStyle)}
 						shouldUpdate={()=>this.PropsJustChanged}>
 					{children}
-                </Div>
-            </div>
-        );
-    }
+				</Div>
+			</div>
+		);
+	}
 
 	componentDidMount() {
-        window.addEventListener("resize", this.UpdateSize);
-        document.addEventListener("mousemove", this.OnMouseMove);
-        document.addEventListener("mouseup", this.OnMouseUp);
-        //this.UpdateSize();
-	    this.LoadScroll();
+		window.addEventListener("resize", this.UpdateSize);
+		document.addEventListener("mousemove", this.OnMouseMove);
+		document.addEventListener("mouseup", this.OnMouseUp);
+		//this.UpdateSize();
+		this.LoadScroll();
 		setTimeout(()=>window.requestAnimationFrame(()=>this.PostRender(false)), 0);
-    }
+	}
 	componentDidUpdate() {
 		if (!this.propsJustChanged) return; // if was just a scroll-update, ignore
-	    this.LoadScroll();
+		this.LoadScroll();
 		setTimeout(()=>window.requestAnimationFrame(()=>this.PostRender(false)), 0);
 	}
 	LoadScroll() {
-	    if (!this.state.scrollH_pos && !this.state.scrollV_pos) return;
+		if (!this.state.scrollH_pos && !this.state.scrollV_pos) return;
 		var content = FindDOM(this.refs.content);
-	    content.scrollLeft = this.state.scrollH_pos;
-	    content.scrollTop = this.state.scrollV_pos;
+		content.scrollLeft = this.state.scrollH_pos;
+		content.scrollTop = this.state.scrollV_pos;
 	}
 	PostRender(firstRender) {
-	    FindDOM_(this).OnVisible(this.UpdateSize, true);
+		FindDOM_(this).OnVisible(this.UpdateSize, true);
 		//FindDOM_(this).OnVisible(this.UpdateSize, true, true);
 		/*if (firstRender)
 			FindDOM_(this).OnVisible(this.LoadScroll, true, true);*/
@@ -265,31 +265,31 @@ export default class ScrollView extends Component
 	}
 	// for some reason, this gets called even if not really unmounting (or... I don't see why it'd be unmounting, anyway)
 	componentWillUnmount() {
-        window.removeEventListener("resize", this.UpdateSize);
-        document.removeEventListener("mousemove", this.OnMouseMove);
-        document.removeEventListener("mouseup", this.OnMouseUp);
-    }
+		window.removeEventListener("resize", this.UpdateSize);
+		document.removeEventListener("mousemove", this.OnMouseMove);
+		document.removeEventListener("mouseup", this.OnMouseUp);
+	}
 
 	get PropsJustChanged() {
-	    if (this.propsJustChanged) {
-	        this.propsJustChanged = false;
+		if (this.propsJustChanged) {
+			this.propsJustChanged = false;
 			return true;
-	    }
-	    return false;
+		}
+		return false;
 	}
 
 	propsJustChanged;
-    componentWillReceiveProps(nextProps) {
+	componentWillReceiveProps(nextProps) {
 		this.setState({
 			[nextProps.scrollH_pos != null ? "scrollH_pos" : "na"]: nextProps.scrollH_pos,
 			[nextProps.scrollV_pos != null ? "scrollV_pos" : "na"]: nextProps.scrollV_pos
-        });
+		});
 
-        // when updating children, we should remeasure the heights to decide whether to toggle scroll enabledness
-        this.UpdateSize();
+		// when updating children, we should remeasure the heights to decide whether to toggle scroll enabledness
+		this.UpdateSize();
 
 		this.propsJustChanged = true;
-    }
+	}
 
 	UpdateSize() {
 		if (FindDOM(this) == null || FindDOM(this.refs.content) == null) return;
@@ -297,8 +297,8 @@ export default class ScrollView extends Component
 		//var containerWidth = ReactDOM.findDOMNode(this.refs.content).clientWidth;
 		var containerWidth = FindDOM(this).offsetWidth;
 		var containerHeight = FindDOM(this).offsetHeight;
-        var contentWidth = FindDOM(this.refs.content).scrollWidth;
-        var contentHeight = FindDOM(this.refs.content).scrollHeight;
+		var contentWidth = FindDOM(this.refs.content).scrollWidth;
+		var contentHeight = FindDOM(this.refs.content).scrollHeight;
 		
 		if (containerWidth != this.state.containerWidth || containerHeight != this.state.containerHeight
 				|| contentWidth != this.state.contentWidth || contentHeight != this.state.contentHeight) {
@@ -309,25 +309,25 @@ export default class ScrollView extends Component
 				scrollV_active: contentHeight > containerHeight
 			});
 		}
-    }
+	}
 	
-    private HandleScroll(e) {
-        // if not user-initiated event, ignore
-        //if (e.type != "DOMMouseScroll" && e.type != "keyup" && e.type != "mousewheel" && e.type != "mousemove") return;
-        e.stopPropagation();
+	private HandleScroll(e) {
+		// if not user-initiated event, ignore
+		//if (e.type != "DOMMouseScroll" && e.type != "keyup" && e.type != "mousewheel" && e.type != "mousemove") return;
+		//e.stopPropagation();
 
 		// maybe temp; for performance, when used in LogEntriesUI
-        if (this.props.bufferScrollEventsBy)
-            BufferAction("ScrollView_HandleScroll", this.props.bufferScrollEventsBy, this.UpdateScrolls);
+		if (this.props.bufferScrollEventsBy)
+			BufferAction("ScrollView_HandleScroll", this.props.bufferScrollEventsBy, this.UpdateScrolls);
 		else
 			this.UpdateScrolls();
-    }
+	}
 	UpdateScrolls() {
 		var contentUI = FindDOM(this.refs.content);
-        var scrollH_pos = contentUI.scrollLeft;
-        var scrollV_pos = contentUI.scrollTop;
+		var scrollH_pos = contentUI.scrollLeft;
+		var scrollV_pos = contentUI.scrollTop;
 		if (scrollH_pos != this.state.scrollH_pos || scrollV_pos != this.state.scrollV_pos) {
-		    this.setState({scrollH_pos: scrollH_pos, scrollV_pos: scrollV_pos});
+			this.setState({scrollH_pos: scrollH_pos, scrollV_pos: scrollV_pos});
 			//this.props.onScroll && this.props.onScroll({x: scrollH_pos, y: scrollV_pos});
 
 			this.UpdateSize(); // update size info (if changed)
@@ -336,15 +336,15 @@ export default class ScrollView extends Component
 
 	// #maybe temp; for performance, when used in LogEntriesUI
 	/*UpdateSizeAndScrolls() {
-	    this.StartSetStateCluster();
-	    this.UpdateSize();
-	    this.UpdateScrolls();
-	    this.EndSetStateCluster();
+		this.StartSetStateCluster();
+		this.UpdateSize();
+		this.UpdateScrolls();
+		this.EndSetStateCluster();
 	}*/
 	
 	private OnContentMouseDown(e) {
 		let {backgroundDrag, backgroundDragMatchFunc} = this.props;
-	    if (!backgroundDrag) return;
+		if (!backgroundDrag) return;
 		backgroundDragMatchFunc = backgroundDragMatchFunc || ((a: Element)=> {
 			let nodePlusParents = [a];
 			while (nodePlusParents[nodePlusParents.length - 1].parentNode instanceof Element)
@@ -354,50 +354,50 @@ export default class ScrollView extends Component
 			return a.className.split(" ").indexOf("content") != -1 || a == this.refs.content; // || a == this.state.svgRoot;
 		});
 		if (!backgroundDragMatchFunc(e.target)) return;
-	    if (e.button != 0) return;
+		if (e.button != 0) return;
 
-	    this.StartScrolling(e);
-	    this.props.onMouseDown && this.props.onMouseDown(e);
+		this.StartScrolling(e);
+		this.props.onMouseDown && this.props.onMouseDown(e);
 	}
-    private OnScrollbarMouseDown(e) {
-        e.preventDefault();
-        this.StartScrolling(e);
-    }
+	private OnScrollbarMouseDown(e) {
+		e.preventDefault();
+		this.StartScrolling(e);
+	}
 	scroll_startMousePos: Vector2i;
 	scroll_startScrollPos: Vector2i;
 	private StartScrolling(e) {
-	    //this.updateChildren = false;
+		//this.updateChildren = false;
 
 		this.setState({scrollOp_bar: e.target});
-	    var content = FindDOM(this.refs.content);
-        this.scroll_startMousePos = {x: e.pageX, y: e.pageY};
+		var content = FindDOM(this.refs.content);
+		this.scroll_startMousePos = {x: e.pageX, y: e.pageY};
 		this.scroll_startScrollPos = {x: content.scrollLeft, y: content.scrollTop};
 	}
 	private OnMouseMove(e) {
 		let {scrollOp_bar, containerWidth, containerHeight, contentWidth, contentHeight} = this.state;
 		if (!scrollOp_bar) return;
 
-	    var scrollBar = $(scrollOp_bar);
-        var content = FindDOM(this.refs.content);
-        var scroll_mousePosDif = {x: e.pageX - this.scroll_startMousePos.x, y: e.pageY - this.scroll_startMousePos.y};
+		var scrollBar = $(scrollOp_bar);
+		var content = FindDOM(this.refs.content);
+		var scroll_mousePosDif = {x: e.pageX - this.scroll_startMousePos.x, y: e.pageY - this.scroll_startMousePos.y};
 		
-	    if (scrollBar.is(".horizontal")) {
+		if (scrollBar.is(".horizontal")) {
 			let scrollPixelsPerScrollbarPixels = contentWidth / containerWidth;
-	        content.scrollLeft = this.scroll_startScrollPos.x + (scroll_mousePosDif.x * scrollPixelsPerScrollbarPixels);
-	    } else if (scrollBar.is(".vertical")) {
-	        let scrollPixelsPerScrollbarPixels = contentHeight / containerHeight;
-	        content.scrollTop = this.scroll_startScrollPos.y + (scroll_mousePosDif.y * scrollPixelsPerScrollbarPixels);
-	    } else { // if left-click dragging on background
-	        let scrollPixelsPerScrollbarPixels = 1;
+			content.scrollLeft = this.scroll_startScrollPos.x + (scroll_mousePosDif.x * scrollPixelsPerScrollbarPixels);
+		} else if (scrollBar.is(".vertical")) {
+			let scrollPixelsPerScrollbarPixels = contentHeight / containerHeight;
+			content.scrollTop = this.scroll_startScrollPos.y + (scroll_mousePosDif.y * scrollPixelsPerScrollbarPixels);
+		} else { // if left-click dragging on background
+			let scrollPixelsPerScrollbarPixels = 1;
 			content.scrollLeft = this.scroll_startScrollPos.x - (scroll_mousePosDif.x * scrollPixelsPerScrollbarPixels);
-	        content.scrollTop = this.scroll_startScrollPos.y - (scroll_mousePosDif.y * scrollPixelsPerScrollbarPixels);
-	    }
+			content.scrollTop = this.scroll_startScrollPos.y - (scroll_mousePosDif.y * scrollPixelsPerScrollbarPixels);
+		}
 	}
-    private OnMouseUp(e) {
-        if (!this.state.scrollOp_bar) return;
+	private OnMouseUp(e) {
+		if (!this.state.scrollOp_bar) return;
 		this.setState({scrollOp_bar: null});
 		this.OnScrollEnd();
-    }
+	}
 	private OnTouchEnd() {
 		this.OnScrollEnd();
 	}
