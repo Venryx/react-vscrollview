@@ -181,7 +181,7 @@ export default class ScrollView extends Component
 	render() {
 		var {backgroundDrag,  backgroundDragMatchFunc, bufferScrollEventsBy, scrollH_pos, scrollV_pos,
 			className, style, contentStyle, scrollHBarStyle, scrollVBarStyle,
-			onMouseDown, onClick, children, ...rest} = this.props;
+			onMouseDown, onClick, onScrollEnd, children, ...rest} = this.props;
 		children = children instanceof Array ? children : [children];
 		var {containerWidth, contentWidth, containerHeight, contentHeight,
 			 scrollH_active, scrollH_pos, scrollV_active, scrollV_pos, scrollOp_bar} = this.state;

@@ -308,8 +308,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	                scrollVBarStyle = _a.scrollVBarStyle,
 	                onMouseDown = _a.onMouseDown,
 	                onClick = _a.onClick,
+	                onScrollEnd = _a.onScrollEnd,
 	                children = _a.children,
-	                rest = __rest(_a, ["backgroundDrag", "backgroundDragMatchFunc", "bufferScrollEventsBy", "scrollH_pos", "scrollV_pos", "className", "style", "contentStyle", "scrollHBarStyle", "scrollVBarStyle", "onMouseDown", "onClick", "children"]);
+	                rest = __rest(_a, ["backgroundDrag", "backgroundDragMatchFunc", "bufferScrollEventsBy", "scrollH_pos", "scrollV_pos", "className", "style", "contentStyle", "scrollHBarStyle", "scrollVBarStyle", "onMouseDown", "onClick", "onScrollEnd", "children"]);
 	            children = children instanceof Array ? children : [children];
 	            var _state = this.state,
 	                containerWidth = _state.containerWidth,
