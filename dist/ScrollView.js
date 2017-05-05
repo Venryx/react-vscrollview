@@ -295,21 +295,21 @@ return /******/ (function(modules) { // webpackBootstrap
 	        value: function render() {
 	            var _this3 = this;
 
-	            var _props = this.props,
-	                backgroundDrag = _props.backgroundDrag,
-	                backgroundDragMatchFunc = _props.backgroundDragMatchFunc,
-	                bufferScrollEventsBy = _props.bufferScrollEventsBy,
-	                scrollH_pos = _props.scrollH_pos,
-	                scrollV_pos = _props.scrollV_pos,
-	                className = _props.className,
-	                style = _props.style,
-	                contentStyle = _props.contentStyle,
-	                scrollHBarStyle = _props.scrollHBarStyle,
-	                scrollVBarStyle = _props.scrollVBarStyle,
-	                onMouseDown = _props.onMouseDown,
-	                onClick = _props.onClick,
-	                children = _props.children;
-
+	            var _a = this.props,
+	                backgroundDrag = _a.backgroundDrag,
+	                backgroundDragMatchFunc = _a.backgroundDragMatchFunc,
+	                bufferScrollEventsBy = _a.bufferScrollEventsBy,
+	                scrollH_pos = _a.scrollH_pos,
+	                scrollV_pos = _a.scrollV_pos,
+	                className = _a.className,
+	                style = _a.style,
+	                contentStyle = _a.contentStyle,
+	                scrollHBarStyle = _a.scrollHBarStyle,
+	                scrollVBarStyle = _a.scrollVBarStyle,
+	                onMouseDown = _a.onMouseDown,
+	                onClick = _a.onClick,
+	                children = _a.children,
+	                rest = __rest(_a, ["backgroundDrag", "backgroundDragMatchFunc", "bufferScrollEventsBy", "scrollH_pos", "scrollV_pos", "className", "style", "contentStyle", "scrollHBarStyle", "scrollVBarStyle", "onMouseDown", "onClick", "children"]);
 	            children = children instanceof Array ? children : [children];
 	            var _state = this.state,
 	                containerWidth = _state.containerWidth,
@@ -323,9 +323,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	                scrollOp_bar = _state.scrollOp_bar;
 
 	            var classes = ["ScrollView", backgroundDrag && "draggable", scrollOp_bar && "scrollActive", className && className];
-	            return React.createElement("div", { className: classes.filter(function (a) {
+	            return React.createElement("div", Object.assign({}, rest, { className: classes.filter(function (a) {
 	                    return a;
-	                }).join(" "), style: E(styles.root, style) }, scrollH_active && React.createElement("div", { className: "scrollTrack horizontal", style: E(styles.scrollTrack, styles.scrollTrack_h) }, React.createElement("div", { ref: "scrollHBar", className: "scrollBar horizontal", onMouseDown: this.OnScrollbarMouseDown, onMouseOver: function onMouseOver() {
+	                }).join(" "), style: E(styles.root, style) }), scrollH_active && React.createElement("div", { className: "scrollTrack horizontal", style: E(styles.scrollTrack, styles.scrollTrack_h) }, React.createElement("div", { ref: "scrollHBar", className: "scrollBar horizontal", onMouseDown: this.OnScrollbarMouseDown, onMouseOver: function onMouseOver() {
 	                    return _this3.setState({ scrollHBar_hovered: true });
 	                }, onMouseOut: function onMouseOut() {
 	                    return _this3.setState({ scrollHBar_hovered: false });
@@ -352,6 +352,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    return _this4.PostRender(false);
 	                });
 	            }, 0);
+	            this.hScrollableDOM = this.hScrollableDOM || FindDOM(this.refs.content);
+	            this.vScrollableDOM = this.vScrollableDOM || FindDOM(this.refs.content);
 	        }
 	    }, {
 	        key: "componentDidUpdate",
@@ -370,9 +372,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        key: "LoadScroll",
 	        value: function LoadScroll() {
 	            if (!this.state.scrollH_pos && !this.state.scrollV_pos) return;
-	            var content = FindDOM(this.refs.content);
-	            content.scrollLeft = this.state.scrollH_pos;
-	            content.scrollTop = this.state.scrollV_pos;
+	            this.hScrollableDOM.scrollLeft = this.state.scrollH_pos;
+	            this.vScrollableDOM.scrollTop = this.state.scrollV_pos;
 	        }
 	    }, {
 	        key: "PostRender",
@@ -419,6 +420,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	            //var containerWidth = ReactDOM.findDOMNode(this.refs.content).clientWidth;
 	            var containerWidth = FindDOM(this).offsetWidth;
 	            var containerHeight = FindDOM(this).offsetHeight;
+	            /*var contentWidth = this.hScrollableDOM.scrollWidth;
+	            var contentHeight = this.vScrollableDOM.scrollHeight;*/
 	            var contentWidth = FindDOM(this.refs.content).scrollWidth;
 	            var contentHeight = FindDOM(this.refs.content).scrollHeight;
 	            if (containerWidth != this.state.containerWidth || containerHeight != this.state.containerHeight || contentWidth != this.state.contentWidth || contentHeight != this.state.contentHeight) {
@@ -442,9 +445,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }, {
 	        key: "UpdateScrolls",
 	        value: function UpdateScrolls() {
-	            var contentUI = FindDOM(this.refs.content);
-	            var scrollH_pos = contentUI.scrollLeft;
-	            var scrollV_pos = contentUI.scrollTop;
+	            //var contentUI = FindDOM(this.refs.content);
+	            var scrollH_pos = this.hScrollableDOM.scrollLeft;
+	            var scrollV_pos = this.vScrollableDOM.scrollTop;
 	            if (scrollH_pos != this.state.scrollH_pos || scrollV_pos != this.state.scrollV_pos) {
 	                this.setState({ scrollH_pos: scrollH_pos, scrollV_pos: scrollV_pos });
 	                //this.props.onScroll && this.props.onScroll({x: scrollH_pos, y: scrollV_pos});
@@ -464,9 +467,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	        value: function OnContentMouseDown(e) {
 	            var _this6 = this;
 
-	            var _props2 = this.props,
-	                backgroundDrag = _props2.backgroundDrag,
-	                backgroundDragMatchFunc = _props2.backgroundDragMatchFunc;
+	            var _props = this.props,
+	                backgroundDrag = _props.backgroundDrag,
+	                backgroundDragMatchFunc = _props.backgroundDragMatchFunc;
 
 	            if (!backgroundDrag) return;
 	            backgroundDragMatchFunc = backgroundDragMatchFunc || function (a) {
@@ -495,9 +498,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        value: function StartScrolling(e) {
 	            //this.updateChildren = false;
 	            this.setState({ scrollOp_bar: e.target });
-	            var content = FindDOM(this.refs.content);
 	            this.scroll_startMousePos = { x: e.pageX, y: e.pageY };
-	            this.scroll_startScrollPos = { x: content.scrollLeft, y: content.scrollTop };
+	            this.scroll_startScrollPos = { x: this.hScrollableDOM.scrollLeft, y: this.vScrollableDOM.scrollTop };
 	        }
 	    }, {
 	        key: "OnMouseMove",
@@ -511,18 +513,17 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	            if (!scrollOp_bar) return;
 	            var scrollBar = $(scrollOp_bar);
-	            var content = FindDOM(this.refs.content);
 	            var scroll_mousePosDif = { x: e.pageX - this.scroll_startMousePos.x, y: e.pageY - this.scroll_startMousePos.y };
 	            if (scrollBar.is(".horizontal")) {
 	                var scrollPixelsPerScrollbarPixels = contentWidth / containerWidth;
-	                content.scrollLeft = this.scroll_startScrollPos.x + scroll_mousePosDif.x * scrollPixelsPerScrollbarPixels;
+	                this.hScrollableDOM.scrollLeft = this.scroll_startScrollPos.x + scroll_mousePosDif.x * scrollPixelsPerScrollbarPixels;
 	            } else if (scrollBar.is(".vertical")) {
 	                var _scrollPixelsPerScrollbarPixels = contentHeight / containerHeight;
-	                content.scrollTop = this.scroll_startScrollPos.y + scroll_mousePosDif.y * _scrollPixelsPerScrollbarPixels;
+	                this.vScrollableDOM.scrollTop = this.scroll_startScrollPos.y + scroll_mousePosDif.y * _scrollPixelsPerScrollbarPixels;
 	            } else {
 	                var _scrollPixelsPerScrollbarPixels2 = 1;
-	                content.scrollLeft = this.scroll_startScrollPos.x - scroll_mousePosDif.x * _scrollPixelsPerScrollbarPixels2;
-	                content.scrollTop = this.scroll_startScrollPos.y - scroll_mousePosDif.y * _scrollPixelsPerScrollbarPixels2;
+	                this.hScrollableDOM.scrollLeft = this.scroll_startScrollPos.x - scroll_mousePosDif.x * _scrollPixelsPerScrollbarPixels2;
+	                this.vScrollableDOM.scrollTop = this.scroll_startScrollPos.y - scroll_mousePosDif.y * _scrollPixelsPerScrollbarPixels2;
 	            }
 	        }
 	    }, {
@@ -543,8 +544,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	            var onScrollEnd = this.props.onScrollEnd;
 
 	            if (onScrollEnd) {
-	                var content = FindDOM(this.refs.content);
-	                var scrollPos = { x: content.scrollLeft, y: content.scrollTop };
+	                //let content = FindDOM(this.refs.content);
+	                var scrollPos = { x: this.hScrollableDOM.scrollLeft, y: this.vScrollableDOM.scrollTop };
 	                onScrollEnd(scrollPos);
 	            }
 	        }
@@ -561,17 +562,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	        key: "SetScroll",
 	        value: function SetScroll(scrollPos) {
 	            //this.setState({scrollH_pos: scrollPos.x, scrollV_pos: scrollPos.y}, ()=>this.LoadScroll());
-	            var content = FindDOM(this.refs.content);
-	            content.scrollLeft = scrollPos.x;
-	            content.scrollTop = scrollPos.y;
+	            //var content = FindDOM(this.refs.content);
+	            this.hScrollableDOM.scrollLeft = scrollPos.x;
+	            this.vScrollableDOM.scrollTop = scrollPos.y;
 	        }
 	    }, {
 	        key: "ScrollBy",
 	        value: function ScrollBy(scrollPosOffset) {
 	            //this.setState({scrollH_pos: this.GetScroll().x + scrollPosOffset.x, scrollV_pos: this.GetScroll().y + scrollPosOffset.y}, ()=>this.LoadScroll());
-	            var content = FindDOM(this.refs.content);
-	            content.scrollLeft += scrollPosOffset.x;
-	            content.scrollTop += scrollPosOffset.y;
+	            //var content = FindDOM(this.refs.content);
+	            this.hScrollableDOM.scrollLeft += scrollPosOffset.x;
+	            this.vScrollableDOM.scrollTop += scrollPosOffset.y;
 	            //this.setState({scrollH_pos: content.scrollLeft, scrollV_pos: content.scrollTop}, ()=>this.LoadScroll());
 	        }
 	    }, {

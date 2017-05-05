@@ -156,7 +156,7 @@ export default class ScrollView extends Component
 			backgroundDrag?: boolean,  backgroundDragMatchFunc?: (element: HTMLElement)=>boolean, bufferScrollEventsBy?: number, scrollH_pos?: number, scrollV_pos?: number,
 			className?: string, style?, contentStyle?, scrollHBarStyle?, scrollVBarStyle?,
 			onMouseDown?, onClick?, onScrollEnd?: (pos: Vector2i)=>void,
-		},
+		} & React.HTMLProps<HTMLDivElement>,
 		Partial<{
 			containerWidth, contentWidth, containerHeight, contentHeight,
 			scrollH_active: boolean, scrollH_pos: number, scrollV_active, scrollV_pos: number, scrollHBar_hovered: boolean, scrollVBar_hovered: boolean, scrollOp_bar,
@@ -181,14 +181,14 @@ export default class ScrollView extends Component
 	render() {
 		var {backgroundDrag,  backgroundDragMatchFunc, bufferScrollEventsBy, scrollH_pos, scrollV_pos,
 			className, style, contentStyle, scrollHBarStyle, scrollVBarStyle,
-			onMouseDown, onClick, children} = this.props;
+			onMouseDown, onClick, children, ...rest} = this.props;
 		children = children instanceof Array ? children : [children];
 		var {containerWidth, contentWidth, containerHeight, contentHeight,
 			 scrollH_active, scrollH_pos, scrollV_active, scrollV_pos, scrollOp_bar} = this.state;
 
 		let classes = ["ScrollView", backgroundDrag && "draggable", scrollOp_bar && "scrollActive", className && className];
 		return (
-			<div className={classes.filter(a=>a).join(" ")} style={E(styles.root, style)}>
+			<div {...rest} className={classes.filter(a=>a).join(" ")} style={E(styles.root, style)}>
 				{scrollH_active
 				&& <div className="scrollTrack horizontal" style={E(styles.scrollTrack, styles.scrollTrack_h)}>
 					<div ref="scrollHBar" className="scrollBar horizontal" onMouseDown={this.OnScrollbarMouseDown}
@@ -233,6 +233,9 @@ export default class ScrollView extends Component
 		//this.UpdateSize();
 		this.LoadScroll();
 		setTimeout(()=>window.requestAnimationFrame(()=>this.PostRender(false)), 0);
+
+		this.hScrollableDOM = this.hScrollableDOM || FindDOM(this.refs.content);
+		this.vScrollableDOM = this.vScrollableDOM || FindDOM(this.refs.content);
 	}
 	componentDidUpdate() {
 		if (!this.propsJustChanged) return; // if was just a scroll-update, ignore
@@ -241,9 +244,8 @@ export default class ScrollView extends Component
 	}
 	LoadScroll() {
 		if (!this.state.scrollH_pos && !this.state.scrollV_pos) return;
-		var content = FindDOM(this.refs.content);
-		content.scrollLeft = this.state.scrollH_pos;
-		content.scrollTop = this.state.scrollV_pos;
+		this.hScrollableDOM.scrollLeft = this.state.scrollH_pos;
+		this.vScrollableDOM.scrollTop = this.state.scrollV_pos;
 	}
 	PostRender(firstRender) {
 		FindDOM_(this).OnVisible(this.UpdateSize, true);
@@ -297,6 +299,8 @@ export default class ScrollView extends Component
 		//var containerWidth = ReactDOM.findDOMNode(this.refs.content).clientWidth;
 		var containerWidth = FindDOM(this).offsetWidth;
 		var containerHeight = FindDOM(this).offsetHeight;
+		/*var contentWidth = this.hScrollableDOM.scrollWidth;
+		var contentHeight = this.vScrollableDOM.scrollHeight;*/
 		var contentWidth = FindDOM(this.refs.content).scrollWidth;
 		var contentHeight = FindDOM(this.refs.content).scrollHeight;
 		
@@ -323,9 +327,9 @@ export default class ScrollView extends Component
 			this.UpdateScrolls();
 	}
 	UpdateScrolls() {
-		var contentUI = FindDOM(this.refs.content);
-		var scrollH_pos = contentUI.scrollLeft;
-		var scrollV_pos = contentUI.scrollTop;
+		//var contentUI = FindDOM(this.refs.content);
+		var scrollH_pos = this.hScrollableDOM.scrollLeft;
+		var scrollV_pos = this.vScrollableDOM.scrollTop;
 		if (scrollH_pos != this.state.scrollH_pos || scrollV_pos != this.state.scrollV_pos) {
 			this.setState({scrollH_pos: scrollH_pos, scrollV_pos: scrollV_pos});
 			//this.props.onScroll && this.props.onScroll({x: scrollH_pos, y: scrollV_pos});
@@ -369,28 +373,28 @@ export default class ScrollView extends Component
 		//this.updateChildren = false;
 
 		this.setState({scrollOp_bar: e.target});
-		var content = FindDOM(this.refs.content);
 		this.scroll_startMousePos = {x: e.pageX, y: e.pageY};
-		this.scroll_startScrollPos = {x: content.scrollLeft, y: content.scrollTop};
+		this.scroll_startScrollPos = {x: this.hScrollableDOM.scrollLeft, y: this.vScrollableDOM.scrollTop};
 	}
+	hScrollableDOM: Element;
+	vScrollableDOM: Element;
 	private OnMouseMove(e) {
 		let {scrollOp_bar, containerWidth, containerHeight, contentWidth, contentHeight} = this.state;
 		if (!scrollOp_bar) return;
 
 		var scrollBar = $(scrollOp_bar);
-		var content = FindDOM(this.refs.content);
 		var scroll_mousePosDif = {x: e.pageX - this.scroll_startMousePos.x, y: e.pageY - this.scroll_startMousePos.y};
 		
 		if (scrollBar.is(".horizontal")) {
 			let scrollPixelsPerScrollbarPixels = contentWidth / containerWidth;
-			content.scrollLeft = this.scroll_startScrollPos.x + (scroll_mousePosDif.x * scrollPixelsPerScrollbarPixels);
+			this.hScrollableDOM.scrollLeft = this.scroll_startScrollPos.x + (scroll_mousePosDif.x * scrollPixelsPerScrollbarPixels);
 		} else if (scrollBar.is(".vertical")) {
 			let scrollPixelsPerScrollbarPixels = contentHeight / containerHeight;
-			content.scrollTop = this.scroll_startScrollPos.y + (scroll_mousePosDif.y * scrollPixelsPerScrollbarPixels);
+			this.vScrollableDOM.scrollTop = this.scroll_startScrollPos.y + (scroll_mousePosDif.y * scrollPixelsPerScrollbarPixels);
 		} else { // if left-click dragging on background
 			let scrollPixelsPerScrollbarPixels = 1;
-			content.scrollLeft = this.scroll_startScrollPos.x - (scroll_mousePosDif.x * scrollPixelsPerScrollbarPixels);
-			content.scrollTop = this.scroll_startScrollPos.y - (scroll_mousePosDif.y * scrollPixelsPerScrollbarPixels);
+			this.hScrollableDOM.scrollLeft = this.scroll_startScrollPos.x - (scroll_mousePosDif.x * scrollPixelsPerScrollbarPixels);
+			this.vScrollableDOM.scrollTop = this.scroll_startScrollPos.y - (scroll_mousePosDif.y * scrollPixelsPerScrollbarPixels);
 		}
 	}
 	private OnMouseUp(e) {
@@ -404,8 +408,8 @@ export default class ScrollView extends Component
 	private OnScrollEnd() {
 		let {onScrollEnd} = this.props;
 		if (onScrollEnd) {
-			let content = FindDOM(this.refs.content);
-			let scrollPos = {x: content.scrollLeft, y: content.scrollTop}
+			//let content = FindDOM(this.refs.content);
+			let scrollPos = {x: this.hScrollableDOM.scrollLeft, y: this.vScrollableDOM.scrollTop}
 			onScrollEnd(scrollPos);
 		}
 	}
@@ -417,15 +421,15 @@ export default class ScrollView extends Component
 	// alternative to using "scrollH_pos" and "scrollV_pos" props
 	SetScroll(scrollPos: Vector2i) {
 		//this.setState({scrollH_pos: scrollPos.x, scrollV_pos: scrollPos.y}, ()=>this.LoadScroll());
-		var content = FindDOM(this.refs.content);
-		content.scrollLeft = scrollPos.x;
-		content.scrollTop = scrollPos.y;
+		//var content = FindDOM(this.refs.content);
+		this.hScrollableDOM.scrollLeft = scrollPos.x;
+		this.vScrollableDOM.scrollTop = scrollPos.y;
 	}
 	ScrollBy(scrollPosOffset: Vector2i) {
 		//this.setState({scrollH_pos: this.GetScroll().x + scrollPosOffset.x, scrollV_pos: this.GetScroll().y + scrollPosOffset.y}, ()=>this.LoadScroll());
-		var content = FindDOM(this.refs.content);
-		content.scrollLeft += scrollPosOffset.x;
-		content.scrollTop += scrollPosOffset.y;
+		//var content = FindDOM(this.refs.content);
+		this.hScrollableDOM.scrollLeft += scrollPosOffset.x;
+		this.vScrollableDOM.scrollTop += scrollPosOffset.y;
 		//this.setState({scrollH_pos: content.scrollLeft, scrollV_pos: content.scrollTop}, ()=>this.LoadScroll());
 	}
 }

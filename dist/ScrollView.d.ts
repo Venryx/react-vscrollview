@@ -1,4 +1,5 @@
 /// <reference types="react" />
+import * as React from "react";
 import { Component } from "react";
 export interface Vector2i {
     x: number;
@@ -18,7 +19,7 @@ export default class ScrollView extends Component<{
     onMouseDown?;
     onClick?;
     onScrollEnd?: (pos: Vector2i) => void;
-}, Partial<{
+} & React.HTMLProps<HTMLDivElement>, Partial<{
     containerWidth;
     contentWidth;
     containerHeight;
@@ -50,6 +51,8 @@ export default class ScrollView extends Component<{
     scroll_startMousePos: Vector2i;
     scroll_startScrollPos: Vector2i;
     private StartScrolling(e);
+    hScrollableDOM: Element;
+    vScrollableDOM: Element;
     private OnMouseMove(e);
     private OnMouseUp(e);
     private OnTouchEnd();
