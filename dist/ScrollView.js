@@ -108,6 +108,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	// from other packages
 	// ==========
 
+	function Log(message) {
+	    var _console;
+
+	    for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+	        args[_key - 1] = arguments[_key];
+	    }
+
+	    (_console = console).log.apply(_console, [message].concat(args));
+	}
 	function Assert(condition, message) {
 	    if (condition) return;
 	    //console.log(`Assert failed) ${message}\n\nStackTrace) ${new Error().stack}`);
@@ -124,8 +133,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	function E() {
 	    var result = {};
 
-	    for (var _len = arguments.length, objExtends = Array(_len), _key = 0; _key < _len; _key++) {
-	        objExtends[_key] = arguments[_key];
+	    for (var _len2 = arguments.length, objExtends = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+	        objExtends[_key2] = arguments[_key2];
 	    }
 
 	    var _iteratorNormalCompletion = true;
@@ -160,8 +169,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 	var funcLastScheduledRunTimes = {};
 	function BufferAction() {
-	    for (var _len2 = arguments.length, args = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
-	        args[_key2] = arguments[_key2];
+	    for (var _len3 = arguments.length, args = Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
+	        args[_key3] = arguments[_key3];
 	    }
 
 	    if (args.length == 2) var minInterval = args[0],
@@ -411,7 +420,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	            this.setState((_setState = {}, _defineProperty(_setState, nextProps.scrollH_pos != null ? "scrollH_pos" : "na", nextProps.scrollH_pos), _defineProperty(_setState, nextProps.scrollV_pos != null ? "scrollV_pos" : "na", nextProps.scrollV_pos), _setState));
 	            // when updating children, we should remeasure the heights to decide whether to toggle scroll enabledness
-	            this.UpdateSize();
+	            // todo: in the future, have this run in PostRender() or something, as I think setTimeout is not guaranteed to run after the UI is updated 
+	            setTimeout(this.UpdateSize);
 	            this.propsJustChanged = true;
 	        }
 	    }, {
@@ -425,6 +435,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            var contentHeight = this.vScrollableDOM.scrollHeight;*/
 	            var contentWidth = FindDOM(this.refs.content).scrollWidth;
 	            var contentHeight = FindDOM(this.refs.content).scrollHeight;
+	            //Log(`Width: ${contentWidth}/${containerWidth}, Height: ${contentHeight}/${containerHeight}`);
 	            if (containerWidth != this.state.containerWidth || containerHeight != this.state.containerHeight || contentWidth != this.state.contentWidth || contentHeight != this.state.contentHeight) {
 	                this.setState({
 	                    containerWidth: containerWidth, containerHeight: containerHeight,

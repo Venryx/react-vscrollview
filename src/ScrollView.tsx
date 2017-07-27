@@ -10,6 +10,9 @@ import autoBind from "react-autobind";
 
 import * as ReactDOM from "react-dom";
 
+function Log(message, ...args) {
+	console.log(message, ...args);
+}
 function Assert(condition, message?: string) {
 	if (condition) return;
 
@@ -288,7 +291,8 @@ export default class ScrollView extends Component
 		});
 
 		// when updating children, we should remeasure the heights to decide whether to toggle scroll enabledness
-		this.UpdateSize();
+		// todo: in the future, have this run in PostRender() or something, as I think setTimeout is not guaranteed to run after the UI is updated 
+		setTimeout(this.UpdateSize);
 
 		this.propsJustChanged = true;
 	}
@@ -303,6 +307,8 @@ export default class ScrollView extends Component
 		var contentHeight = this.vScrollableDOM.scrollHeight;*/
 		var contentWidth = FindDOM(this.refs.content).scrollWidth;
 		var contentHeight = FindDOM(this.refs.content).scrollHeight;
+
+		//Log(`Width: ${contentWidth}/${containerWidth}, Height: ${contentHeight}/${containerHeight}`);
 		
 		if (containerWidth != this.state.containerWidth || containerHeight != this.state.containerHeight
 				|| contentWidth != this.state.contentWidth || contentHeight != this.state.contentHeight) {
