@@ -262,8 +262,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	// main
 	// ==========
 	var styles = {
-	    root: { overflow: "hidden", height: "100%", position: "relative" },
-	    content: { height: "100%", overflow: "auto" },
+	    root: { position: "relative", height: "100%", flex: 1, overflow: "hidden" },
+	    content: {
+	        //height: "100%", flex: 1,
+	        position: "absolute", left: 0, right: 0, top: 0, bottom: 0,
+	        overflow: "auto", overflowScrolling: "touch", "-webkit-overflow-scrolling": "touch"
+	    },
 	    //content_draggable: {cursor: "grab -webkit-grab -moz-grab"},
 	    //content_dragging: {cursor: "-webkit-grabbing"}, // implemented in <style> tag instead, due to <Div> not being re-rendered (intentionally)
 	    scrollBar: {
