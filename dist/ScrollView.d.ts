@@ -1,9 +1,12 @@
 /// <reference types="react" />
 import * as React from "react";
 import { Component } from "react";
-export interface Vector2i {
-    x: number;
-    y: number;
+import { Vector2i } from "./Utils";
+export declare class Div extends Component<{
+    shouldUpdate;
+} & React.HTMLProps<HTMLDivElement>, {}> {
+    shouldComponentUpdate(nextProps: any, nextState: any): any;
+    render(): JSX.Element;
 }
 export default class ScrollView extends Component<{
     backgroundDrag?: boolean;
@@ -33,16 +36,20 @@ export default class ScrollView extends Component<{
     scrollOp_bar;
 }>> {
     constructor(props: any);
-    refs: any;
+    content: any;
+    scrollHBar: any;
+    scrollVBar: any;
     render(): JSX.Element;
     componentDidMount(): void;
     componentDidUpdate(): void;
     LoadScroll(): void;
     PostRender(firstRender: any): void;
     componentWillUnmount(): void;
+    propsJustChanged: boolean;
     readonly PropsJustChanged: boolean;
-    propsJustChanged: any;
     componentWillReceiveProps(nextProps: any): void;
+    sizeJustChanged: boolean;
+    readonly SizeJustChanged: boolean;
     UpdateSize(): void;
     private HandleScroll(e);
     UpdateScrolls(): void;
