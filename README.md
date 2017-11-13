@@ -1,3 +1,7 @@
 # React VScrollView
 
-TODO
+### Install
+
+```
+npm install --save react-vscrollview
+```
