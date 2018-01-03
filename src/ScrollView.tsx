@@ -48,7 +48,7 @@ var styles = {
 	scrollTrack_v: {right: 0, top: 0, bottom: 0, width: 8},
 };
 
-export default class ScrollView extends Component
+export class ScrollView extends Component
 		<{
 			backgroundDrag?: boolean,  backgroundDragMatchFunc?: (element: HTMLElement)=>boolean, bufferScrollEventsBy?: number, scrollH_pos?: number, scrollV_pos?: number,
 			className?: string, style?, contentStyle?, scrollHBarStyle?, scrollVBarStyle?,

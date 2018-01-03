@@ -66,7 +66,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
 	});
-	exports.Div = undefined;
+	exports.ScrollView = exports.Div = undefined;
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -159,7 +159,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    scrollTrack_v: { right: 0, top: 0, bottom: 0, width: 8 }
 	};
 
-	var ScrollView = function (_Component2) {
+	var ScrollView = exports.ScrollView = function (_Component2) {
 	    _inherits(ScrollView, _Component2);
 
 	    function ScrollView(props) {
@@ -505,8 +505,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    return ScrollView;
 	}(_react.Component);
-
-	exports.default = ScrollView;
 
 /***/ },
 /* 2 */

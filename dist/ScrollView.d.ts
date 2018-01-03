@@ -8,7 +8,7 @@ export declare class Div extends Component<{
     shouldComponentUpdate(nextProps: any, nextState: any): any;
     render(): JSX.Element;
 }
-export default class ScrollView extends Component<{
+export declare class ScrollView extends Component<{
     backgroundDrag?: boolean;
     backgroundDragMatchFunc?: (element: HTMLElement) => boolean;
     bufferScrollEventsBy?: number;
