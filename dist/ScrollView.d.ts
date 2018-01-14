@@ -2,13 +2,14 @@
 import * as React from "react";
 import { Component } from "react";
 import { Vector2i } from "./Utils";
+import { BaseComponent } from "react-vextensions";
 export declare class Div extends Component<{
     shouldUpdate;
 } & React.HTMLProps<HTMLDivElement>, {}> {
     shouldComponentUpdate(nextProps: any, nextState: any): any;
     render(): JSX.Element;
 }
-export declare class ScrollView extends Component<{
+export declare class ScrollView extends BaseComponent<{
     backgroundDrag?: boolean;
     backgroundDragMatchFunc?: (element: HTMLElement) => boolean;
     bufferScrollEventsBy?: number;
@@ -19,6 +20,7 @@ export declare class ScrollView extends Component<{
     contentStyle?;
     scrollHBarStyle?;
     scrollVBarStyle?;
+    flex?: boolean;
     onMouseDown?;
     onClick?;
     onScrollEnd?: (pos: Vector2i) => void;
@@ -35,6 +37,9 @@ export declare class ScrollView extends Component<{
     scrollVBar_hovered: boolean;
     scrollOp_bar;
 }>> {
+    static defaultProps: {
+        flex: boolean;
+    };
     constructor(props: any);
     content: any;
     scrollHBar: any;

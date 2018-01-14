@@ -5,6 +5,7 @@ import * as React from "react";
 import {Component} from "react";
 import autoBind from "react-autobind";
 import {Vector2i, E, FindDOM, BufferAction, FindDOM_, GetHScrollBarHeight, GetVScrollBarWidth} from "./Utils";
+import {BaseComponent} from "react-vextensions";
 
 //declare var $;
 var $ = (window as any).$;
@@ -26,11 +27,14 @@ let inFirefox = navigator.userAgent.includes("Firefox");
 // ==========
 
 var styles = {
-	root: {position: "relative", height: "100%", flex: 1, overflow: "hidden"},
+	root: {position: "relative", display: "flex", flexDirection: "column", overflow: "hidden"},
+	root_nonFlex: {height: "100%"},
 	content: {
-		//height: "100%", flex: 1,
-		position: "absolute", left: 0, right: 0, top: 0, bottom: 0, // works in safari
+		flex: 1,
 		overflow: "auto", overflowScrolling: "touch", "-webkit-overflow-scrolling": "touch",
+	},
+	content_nonFlex: {
+		position: "absolute", left: 0, right: 0, top: 0, bottom: 0, // works in safari
 	},
 	//content_draggable: {cursor: "grab -webkit-grab -moz-grab"},
 	//content_dragging: {cursor: "-webkit-grabbing"}, // implemented in <style> tag instead, due to <Div> not being re-rendered (intentionally)
@@ -48,16 +52,17 @@ var styles = {
 	scrollTrack_v: {right: 0, top: 0, bottom: 0, width: 8},
 };
 
-export class ScrollView extends Component
+export class ScrollView extends BaseComponent
 		<{
 			backgroundDrag?: boolean,  backgroundDragMatchFunc?: (element: HTMLElement)=>boolean, bufferScrollEventsBy?: number, scrollH_pos?: number, scrollV_pos?: number,
-			className?: string, style?, contentStyle?, scrollHBarStyle?, scrollVBarStyle?,
+			className?: string, style?, contentStyle?, scrollHBarStyle?, scrollVBarStyle?, flex?: boolean,
 			onMouseDown?, onClick?, onScrollEnd?: (pos: Vector2i)=>void,
 		} & React.HTMLProps<HTMLDivElement>,
 		Partial<{
 			containerWidth, contentWidth, containerHeight, contentHeight,
 			scrollH_active: boolean, scrollH_pos: number, scrollV_active, scrollV_pos: number, scrollHBar_hovered: boolean, scrollVBar_hovered: boolean, scrollOp_bar,
 		}>> {
+	static defaultProps = {flex: true};
 	constructor(props) {
 		super(props);
 		autoBind(this);
@@ -80,7 +85,7 @@ export class ScrollView extends Component
 	//_lastState = {} as any; // to fix edge case, for when using "marginRight: -17" to hide scroll-bar
 	render() {
 		var {backgroundDrag,  backgroundDragMatchFunc, bufferScrollEventsBy, scrollH_pos, scrollV_pos,
-			className, style, contentStyle, scrollHBarStyle, scrollVBarStyle,
+			className, style, contentStyle, scrollHBarStyle, scrollVBarStyle, flex,
 			onMouseDown, onClick, onScrollEnd, children, ...rest} = this.props;
 		children = children instanceof Array ? children : [children];
 		var {containerWidth, containerHeight, contentWidth, contentHeight,
@@ -95,11 +100,11 @@ export class ScrollView extends Component
 		
 		let classes = ["ScrollView", backgroundDrag && "draggable", scrollOp_bar && "scrollActive", className && className];
 		return (
-			<div {...rest} className={classes.filter(a=>a).join(" ")} style={E(styles.root, style)}>
+			<div {...rest} className={classes.filter(a=>a).join(" ")} style={E(styles.root, !flex && styles.root_nonFlex, style)}>
 				{scrollH_active
 				&& <div className="scrollTrack horizontal" style={E(styles.scrollTrack, styles.scrollTrack_h)}>
 					<div ref={c=>this.scrollHBar = c} className="scrollBar horizontal" onMouseDown={this.OnScrollbarMouseDown}
-						onMouseOver={()=>this.setState({scrollHBar_hovered: true})} onMouseOut={()=>this.setState({scrollHBar_hovered: false})}
+						onMouseOver={()=>this.SetState({scrollHBar_hovered: true})} onMouseOut={()=>this.SetState({scrollHBar_hovered: false})}
 						style={E(
 							styles.scrollBar, styles.scrollBar_h,
 							(this.state.scrollHBar_hovered || (scrollOp_bar && scrollOp_bar == this.scrollHBar)) && styles.scrollBar_active,
@@ -110,7 +115,7 @@ export class ScrollView extends Component
 				{scrollV_active
 				&& <div className="scrollTrack vertical" style={E(styles.scrollTrack, styles.scrollTrack_v)}>
 					<div ref={c=>this.scrollVBar = c} className="scrollBar vertical" onMouseDown={this.OnScrollbarMouseDown}
-						onMouseOver={()=>this.setState({scrollVBar_hovered: true})} onMouseOut={()=>this.setState({scrollVBar_hovered: false})}
+						onMouseOver={()=>this.SetState({scrollVBar_hovered: true})} onMouseOut={()=>this.SetState({scrollVBar_hovered: false})}
 						style={E(
 							styles.scrollBar, styles.scrollBar_v,
 							(this.state.scrollVBar_hovered || (scrollOp_bar && scrollOp_bar == this.scrollVBar)) && styles.scrollBar_active,
@@ -127,6 +132,7 @@ export class ScrollView extends Component
 						onMouseDown={this.OnContentMouseDown} onTouchEnd={this.OnTouchEnd} onClick={onClick}
 						style={E(
 							styles.content, /*backgroundDrag && styles.content_draggable,*/ /*scrollOp_bar && styles.content_dragging,*/
+							!flex && styles.content_nonFlex, 
 							inFirefox && scrollH_active && {/*paddingBottom: GetHScrollBarHeight(),*/ marginBottom: -GetHScrollBarHeight()},
 							inFirefox && scrollV_active && {/*paddingRight: GetVScrollBarWidth(),*/ marginRight: -GetVScrollBarWidth()},
 							contentStyle,
@@ -171,7 +177,7 @@ export class ScrollView extends Component
 		FindDOM(this.content).ontouchstart = ()=>{console.log("start")};*/
 
 		if (firstRender) {
-			this.setState({
+			this.SetState({
 				"scrollH_pos": this.props.scrollH_pos,
 				"scrollV_pos": this.props.scrollV_pos
 			});
@@ -192,7 +198,7 @@ export class ScrollView extends Component
 	}
 
 	componentWillReceiveProps(nextProps) {
-		this.setState({
+		this.SetState({
 			[nextProps.scrollH_pos != null ? "scrollH_pos" : "na"]: nextProps.scrollH_pos,
 			[nextProps.scrollV_pos != null ? "scrollV_pos" : "na"]: nextProps.scrollV_pos
 		});
@@ -230,7 +236,7 @@ export class ScrollView extends Component
 		if (containerWidth != this.state.containerWidth || containerHeight != this.state.containerHeight
 				|| contentWidth != this.state.contentWidth || contentHeight != this.state.contentHeight) {
 			this.sizeJustChanged = true;
-			this.setState({
+			this.SetState({
 				containerWidth, containerHeight,
 				contentWidth, contentHeight,
 				scrollH_active: contentWidth > containerWidth,
@@ -255,7 +261,7 @@ export class ScrollView extends Component
 		var scrollH_pos = this.hScrollableDOM.scrollLeft;
 		var scrollV_pos = this.vScrollableDOM.scrollTop;
 		if (scrollH_pos != this.state.scrollH_pos || scrollV_pos != this.state.scrollV_pos) {
-			this.setState({scrollH_pos: scrollH_pos, scrollV_pos: scrollV_pos});
+			this.SetState({scrollH_pos: scrollH_pos, scrollV_pos: scrollV_pos});
 			//this.props.onScroll && this.props.onScroll({x: scrollH_pos, y: scrollV_pos});
 
 			this.UpdateSize(); // update size info (if changed)
@@ -296,7 +302,7 @@ export class ScrollView extends Component
 	private StartScrolling(e) {
 		//this.updateChildren = false;
 
-		this.setState({scrollOp_bar: e.target});
+		this.SetState({scrollOp_bar: e.target});
 		this.scroll_startMousePos = {x: e.pageX, y: e.pageY};
 		this.scroll_startScrollPos = {x: this.hScrollableDOM.scrollLeft, y: this.vScrollableDOM.scrollTop};
 	}
@@ -323,7 +329,7 @@ export class ScrollView extends Component
 	}
 	private OnMouseUp(e) {
 		if (!this.state.scrollOp_bar) return;
-		this.setState({scrollOp_bar: null});
+		this.SetState({scrollOp_bar: null});
 		this.OnScrollEnd();
 	}
 	private OnTouchEnd() {
