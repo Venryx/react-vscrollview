@@ -66,7 +66,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
 	});
-	exports.ScrollView = exports.Div = undefined;
+	exports.ScrollView = undefined;
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -107,9 +107,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	import {BufferAction} from "../../../Frame/General/Timers";*/
 
 	//declare var $;
-	var $ = window.$;
-
-	var Div = exports.Div = function (_Component) {
+	//var $ = (window as any).$;
+	var Div = function (_Component) {
 	    _inherits(Div, _Component);
 
 	    function Div() {
@@ -252,33 +251,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }, {
 	        key: "componentDidMount",
 	        value: function componentDidMount() {
-	            var _this4 = this;
-
 	            window.addEventListener("resize", this.UpdateSize);
 	            document.addEventListener("mousemove", this.OnMouseMove);
 	            document.addEventListener("mouseup", this.OnMouseUp);
 	            //this.UpdateSize();
 	            this.LoadScroll();
-	            setTimeout(function () {
-	                return window.requestAnimationFrame(function () {
-	                    return _this4.PostRender(false);
-	                });
-	            }, 0);
 	            this.hScrollableDOM = this.hScrollableDOM || (0, _Utils.FindDOM)(this.content);
 	            this.vScrollableDOM = this.vScrollableDOM || (0, _Utils.FindDOM)(this.content);
 	        }
 	    }, {
 	        key: "componentDidUpdate",
 	        value: function componentDidUpdate() {
-	            var _this5 = this;
-
 	            if (!this.propsJustChanged) return; // if was just a scroll-update, ignore
 	            this.LoadScroll();
-	            setTimeout(function () {
-	                return window.requestAnimationFrame(function () {
-	                    return _this5.PostRender(false);
-	                });
-	            }, 0);
 	        }
 	    }, {
 	        key: "LoadScroll",
@@ -289,8 +274,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	    }, {
 	        key: "PostRender",
-	        value: function PostRender(firstRender) {
-	            (0, _Utils.FindDOM_)(this).OnVisible(this.UpdateSize, true);
+	        value: function PostRender(source) {
+	            //if (FindDOM(this)) {
+	            (0, _Utils.OnVisible)((0, _Utils.FindDOM)(this), this.UpdateSize, true);
 	            //FindDOM_(this).OnVisible(this.UpdateSize, true, true);
 	            /*if (firstRender)
 	                FindDOM_(this).OnVisible(this.LoadScroll, true, true);*/
@@ -299,7 +285,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            FindDOM(this.content).ontouchcancel = ()=>(console.log("cancel"), this.OnTouchEnd());
 	            FindDOM(this.content).ontouchmove = ()=>{console.log("move")};
 	            FindDOM(this.content).ontouchstart = ()=>{console.log("start")};*/
-	            if (firstRender) {
+	            if (source == _reactVextensions.RenderSource.Mount) {
 	                this.SetState({
 	                    "scrollH_pos": this.props.scrollH_pos,
 	                    "scrollV_pos": this.props.scrollV_pos
@@ -383,7 +369,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }, {
 	        key: "OnContentMouseDown",
 	        value: function OnContentMouseDown(e) {
-	            var _this6 = this;
+	            var _this4 = this;
 
 	            var _props = this.props,
 	                backgroundDrag = _props.backgroundDrag,
@@ -397,8 +383,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	                }var firstScrollViewParent = nodePlusParents.find(function (b) {
 	                    return b.className.split(" ").indexOf("ScrollView") != -1;
 	                });
-	                if (firstScrollViewParent == null || firstScrollViewParent[0] != (0, _Utils.FindDOM)(_this6)) return false;
-	                return a.className.split(" ").indexOf("content") != -1 || a == _this6.content; // || a == this.state.svgRoot;
+	                if (firstScrollViewParent == null || firstScrollViewParent[0] != (0, _Utils.FindDOM)(_this4)) return false;
+	                return a.className.split(" ").indexOf("content") != -1 || a == _this4.content; // || a == this.state.svgRoot;
 	            };
 	            if (!backgroundDragMatchFunc(e.target)) return;
 	            if (e.button != 0) return;
@@ -430,12 +416,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	                contentHeight = _state2.contentHeight;
 
 	            if (!scrollOp_bar) return;
-	            var scrollBar = $(scrollOp_bar);
 	            var scroll_mousePosDif = { x: e.pageX - this.scroll_startMousePos.x, y: e.pageY - this.scroll_startMousePos.y };
-	            if (scrollBar.is(".horizontal")) {
+	            if (scrollOp_bar.classList && scrollOp_bar.classList.contains("horizontal")) {
 	                var scrollPixelsPerScrollbarPixels = contentWidth / containerWidth;
 	                this.hScrollableDOM.scrollLeft = this.scroll_startScrollPos.x + scroll_mousePosDif.x * scrollPixelsPerScrollbarPixels;
-	            } else if (scrollBar.is(".vertical")) {
+	            } else if (scrollOp_bar.classList && scrollOp_bar.classList.contains("vertical")) {
 	                var _scrollPixelsPerScrollbarPixels = contentHeight / containerHeight;
 	                this.vScrollableDOM.scrollTop = this.scroll_startScrollPos.y + scroll_mousePosDif.y * _scrollPixelsPerScrollbarPixels;
 	            } else {
@@ -615,9 +600,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.Log = Log;
 	exports.Assert = Assert;
 	exports.FindDOM = FindDOM;
-	exports.FindDOM_ = FindDOM_;
 	exports.E = E;
 	exports.BufferAction = BufferAction;
+	exports.OnVisible = OnVisible;
 	exports.GetScrollBarSizes = GetScrollBarSizes;
 	exports.GetHScrollBarHeight = GetHScrollBarHeight;
 	exports.GetVScrollBarWidth = GetVScrollBarWidth;
@@ -632,7 +617,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 	//declare var $;
-	var $ = window.$;
+	//var $ = (window as any).$;
 	function Log(message) {
 	    var _console;
 
@@ -652,9 +637,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    if (comp == null || comp._reactInternalInstance == null) return null;
 	    return ReactDOM.findDOMNode(comp);
 	}
-	function FindDOM_(comp) {
-	    return $(FindDOM(comp));
-	}
+	//export function FindDOM_(comp) { return $(FindDOM(comp)); }
 	function E() {
 	    var result = {};
 
@@ -720,41 +703,49 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	    }
 	}
-	(function ($) {
-	    $.fn.OnVisible = function (callback, onlyRunOnce, triggerIfAlreadyVisible) {
-	        var $this = $(this);
-	        var options = {
-	            keyframes: "\n@keyframes nodeInserted {from {clip: rect(1px, auto, auto, auto); } to {clip: rect(0px, auto, auto, auto); } }\n@-moz-keyframes nodeInserted {from {clip: rect(1px, auto, auto, auto); } to {clip: rect(0px, auto, auto, auto); } }\n@-webkit-keyframes nodeInserted {from {clip: rect(1px, auto, auto, auto); } to {clip: rect(0px, auto, auto, auto); } }\n@-ms-keyframes nodeInserted {from {clip: rect(1px, auto, auto, auto); } to {clip: rect(0px, auto, auto, auto); } }\n@-o-keyframes nodeInserted {from {clip: rect(1px, auto, auto, auto); } to {clip: rect(0px, auto, auto, auto); } }, ",
-	            selector: $this.selector
-	        };
-	        // if the keyframes aren't present, add them in a style element
-	        if (!$("style.domnodeappear-keyframes").length) $("head").append("<style class='domnodeappear-keyframes'>" + options.keyframes + "</style>");
-	        // add animation to selected element
-	        //$("head").append("<style class=\"" + options.stylesClass + "-animation\">" + options.styles + "</style>")
-	        if (triggerIfAlreadyVisible && $this.is(":visible")) {
-	            callback();
-	            if (onlyRunOnce) return;
-	        }
-	        $this.css({ animationName: "nodeInserted", "-webkit-animation-name": "nodeInserted", animationDuration: "0.001s", "-webkit-animation-duration": "0.001s" });
-	        // on animation start, execute the callback
-	        var handler = function handler(e) {
-	            var target = $(e.target);
-	            //if (e.originalEvent.animationName == "nodeInserted" && target.is(options.selector))
-	            //Log(e.target);
-	            if (e.originalEvent.animationName == "nodeInserted" && $this.get().Contains(e.target)) {
-	                callback.call(target);
-	                if (onlyRunOnce) {
-	                    $this.css({ animationName: "", "-webkit-animation-name": "", animationDuration: "", "-webkit-animation-duration": "" });
-	                    $(document).off("animationstart webkitAnimationStart oanimationstart MSAnimationStart", handler);
-	                }
-	            }
-	        };
-	        $(document).on("animationstart webkitAnimationStart oanimationstart MSAnimationStart", handler);
+	function OnVisible(elem, callback, onlyRunOnce) {
+	    var triggerIfAlreadyVisible = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
+
+	    var options = {
+	        keyframes: "\n@keyframes nodeInserted {from {clip: rect(1px, auto, auto, auto); } to {clip: rect(0px, auto, auto, auto); } }\n@-moz-keyframes nodeInserted {from {clip: rect(1px, auto, auto, auto); } to {clip: rect(0px, auto, auto, auto); } }\n@-webkit-keyframes nodeInserted {from {clip: rect(1px, auto, auto, auto); } to {clip: rect(0px, auto, auto, auto); } }\n@-ms-keyframes nodeInserted {from {clip: rect(1px, auto, auto, auto); } to {clip: rect(0px, auto, auto, auto); } }\n@-o-keyframes nodeInserted {from {clip: rect(1px, auto, auto, auto); } to {clip: rect(0px, auto, auto, auto); } }, "
 	    };
-	    /*$.fn.OnVisible_WithDelay = function(delay, callback, onlyRunOnce, triggerIfAlreadyVisible) {
-	        return this.OnVisible(function() { setTimeout(callback, delay); }, onlyRunOnce, triggerIfAlreadyVisible);
-	    };*/
-	})($);
+	    // if the keyframes aren't present, add them in a style element
+	    if (document.querySelector("style.domnodeappear-keyframes") == null) {
+	        var style = document.createElement("style");
+	        style.className = "domnodeappear-keyframes";
+	        style.innerHTML = options.keyframes;
+	        document.head.appendChild(style);
+	    }
+	    // add animation to selected element
+	    //$("head").append("<style class=\"" + options.stylesClass + "-animation\">" + options.styles + "</style>")
+	    var elIsVisible = !!(elem.offsetWidth || elem.offsetHeight || elem.getClientRects().length); // from jquery source
+	    if (triggerIfAlreadyVisible && elIsVisible) {
+	        callback();
+	        if (onlyRunOnce) return;
+	    }
+	    Object.assign(elem.style, { animationName: "nodeInserted", animationDuration: "0.001s" });
+	    // on animation start, execute the callback
+	    var handler = function handler(e) {
+	        var target = e.target;
+	        //if (e.originalEvent.animationName == "nodeInserted" && target.is(options.selector))
+	        //Log(e.target);
+	        if (e.animationName == "nodeInserted" && e.target == elem) {
+	            callback.call(target);
+	            if (onlyRunOnce) {
+	                Object.assign(elem.style, { animationName: "", animationDuration: "" });
+	                document.removeEventListener("animationstart", handler);
+	                document.removeEventListener("webkitAnimationStart", handler);
+	                document.removeEventListener("oanimationstart", handler);
+	                document.removeEventListener("MSAnimationStart", handler);
+	            }
+	        }
+	    };
+	    document.addEventListener("animationstart", handler);
+	    document.addEventListener("webkitAnimationStart", handler);
+	    document.addEventListener("oanimationstart", handler);
+	    document.addEventListener("MSAnimationStart", handler);
+	}
+	;
 	var _scrollBarSizes = void 0;
 	function GetScrollBarSizes() {
 	    if (!_scrollBarSizes) {
@@ -1097,7 +1088,7 @@ return /******/ (function(modules) { // webpackBootstrap
 						if (className) {
 							result.props.className = className;
 						}
-						result.props.style = E(BasicStyles(props), result.props.style);
+						result.props.style = E(result.props.style, BasicStyles(props));
 						RemoveBasePropKeys(result.props);
 						return result;
 					};

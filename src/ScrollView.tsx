@@ -4,12 +4,12 @@ import {BufferAction} from "../../../Frame/General/Timers";*/
 import * as React from "react";
 import {Component} from "react";
 import autoBind from "react-autobind";
-import {Vector2i, E, FindDOM, BufferAction, FindDOM_, GetHScrollBarHeight, GetVScrollBarWidth} from "./Utils";
-import {BaseComponent} from "react-vextensions";
+import {Vector2i, E, FindDOM, BufferAction, GetHScrollBarHeight, GetVScrollBarWidth, OnVisible} from "./Utils";
+import {BaseComponent, RenderSource} from "react-vextensions";
 
 //declare var $;
-var $ = (window as any).$;
-export class Div extends Component<{shouldUpdate} & React.HTMLProps<HTMLDivElement>, {}> {
+//var $ = (window as any).$;
+class Div extends Component<{shouldUpdate} & React.HTMLProps<HTMLDivElement>, {}> {
 	shouldComponentUpdate(nextProps, nextState) {
 		if (this.props.shouldUpdate)
 			return this.props.shouldUpdate(nextProps, nextState);
@@ -60,7 +60,7 @@ export class ScrollView extends BaseComponent
 		} & React.HTMLProps<HTMLDivElement>,
 		Partial<{
 			containerWidth, contentWidth, containerHeight, contentHeight,
-			scrollH_active: boolean, scrollH_pos: number, scrollV_active, scrollV_pos: number, scrollHBar_hovered: boolean, scrollVBar_hovered: boolean, scrollOp_bar,
+			scrollH_active: boolean, scrollH_pos: number, scrollV_active, scrollV_pos: number, scrollHBar_hovered: boolean, scrollVBar_hovered: boolean, scrollOp_bar: HTMLElement,
 		}>> {
 	static defaultProps = {flex: true};
 	constructor(props) {
@@ -150,7 +150,6 @@ export class ScrollView extends BaseComponent
 		document.addEventListener("mouseup", this.OnMouseUp);
 		//this.UpdateSize();
 		this.LoadScroll();
-		setTimeout(()=>window.requestAnimationFrame(()=>this.PostRender(false)), 0);
 
 		this.hScrollableDOM = this.hScrollableDOM || FindDOM(this.content);
 		this.vScrollableDOM = this.vScrollableDOM || FindDOM(this.content);
@@ -158,15 +157,15 @@ export class ScrollView extends BaseComponent
 	componentDidUpdate() {
 		if (!this.propsJustChanged) return; // if was just a scroll-update, ignore
 		this.LoadScroll();
-		setTimeout(()=>window.requestAnimationFrame(()=>this.PostRender(false)), 0);
 	}
 	LoadScroll() {
 		if (!this.state.scrollH_pos && !this.state.scrollV_pos) return;
 		this.hScrollableDOM.scrollLeft = this.state.scrollH_pos;
 		this.vScrollableDOM.scrollTop = this.state.scrollV_pos;
 	}
-	PostRender(firstRender) {
-		FindDOM_(this).OnVisible(this.UpdateSize, true);
+	PostRender(source: RenderSource) {
+		//if (FindDOM(this)) {
+		OnVisible(FindDOM(this), this.UpdateSize, true);
 		//FindDOM_(this).OnVisible(this.UpdateSize, true, true);
 		/*if (firstRender)
 			FindDOM_(this).OnVisible(this.LoadScroll, true, true);*/
@@ -176,7 +175,7 @@ export class ScrollView extends BaseComponent
 		FindDOM(this.content).ontouchmove = ()=>{console.log("move")};
 		FindDOM(this.content).ontouchstart = ()=>{console.log("start")};*/
 
-		if (firstRender) {
+		if (source == RenderSource.Mount) {
 			this.SetState({
 				"scrollH_pos": this.props.scrollH_pos,
 				"scrollV_pos": this.props.scrollV_pos
@@ -312,13 +311,12 @@ export class ScrollView extends BaseComponent
 		let {scrollOp_bar, containerWidth, containerHeight, contentWidth, contentHeight} = this.state;
 		if (!scrollOp_bar) return;
 
-		var scrollBar = $(scrollOp_bar);
 		var scroll_mousePosDif = {x: e.pageX - this.scroll_startMousePos.x, y: e.pageY - this.scroll_startMousePos.y};
 		
-		if (scrollBar.is(".horizontal")) {
+		if (scrollOp_bar.classList && scrollOp_bar.classList.contains("horizontal")) {
 			let scrollPixelsPerScrollbarPixels = contentWidth / containerWidth;
 			this.hScrollableDOM.scrollLeft = this.scroll_startScrollPos.x + (scroll_mousePosDif.x * scrollPixelsPerScrollbarPixels);
-		} else if (scrollBar.is(".vertical")) {
+		} else if (scrollOp_bar.classList && scrollOp_bar.classList.contains("vertical")) {
 			let scrollPixelsPerScrollbarPixels = contentHeight / containerHeight;
 			this.vScrollableDOM.scrollTop = this.scroll_startScrollPos.y + (scroll_mousePosDif.y * scrollPixelsPerScrollbarPixels);
 		} else { // if left-click dragging on background

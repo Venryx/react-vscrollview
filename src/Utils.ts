@@ -2,7 +2,7 @@ import * as ReactDOM from "react-dom";
 import {Component} from "react";
 
 //declare var $;
-var $ = (window as any).$;
+//var $ = (window as any).$;
 export function Log(message, ...args) {
 	console.log(message, ...args);
 }
@@ -19,7 +19,7 @@ export function FindDOM(comp): HTMLElement {
 		return null;
 	return ReactDOM.findDOMNode(comp);
 }
-export function FindDOM_(comp) { return $(FindDOM(comp)); }
+//export function FindDOM_(comp) { return $(FindDOM(comp)); }
 export function E(...objExtends: any[]) {
 	var result = {};
 	for (let extend of objExtends) {
@@ -59,56 +59,62 @@ export function BufferAction(...args) {
 	}
 }
 
-(function($) {
-	$.fn.OnVisible = function(callback, onlyRunOnce, triggerIfAlreadyVisible) {
-		var $this = $(this);
-
-		var options = {
-			keyframes: `
+export function OnVisible(elem: HTMLElement, callback, onlyRunOnce, triggerIfAlreadyVisible = false) {
+	var options = {
+		keyframes: `
 @keyframes nodeInserted {from {clip: rect(1px, auto, auto, auto); } to {clip: rect(0px, auto, auto, auto); } }
 @-moz-keyframes nodeInserted {from {clip: rect(1px, auto, auto, auto); } to {clip: rect(0px, auto, auto, auto); } }
 @-webkit-keyframes nodeInserted {from {clip: rect(1px, auto, auto, auto); } to {clip: rect(0px, auto, auto, auto); } }
 @-ms-keyframes nodeInserted {from {clip: rect(1px, auto, auto, auto); } to {clip: rect(0px, auto, auto, auto); } }
 @-o-keyframes nodeInserted {from {clip: rect(1px, auto, auto, auto); } to {clip: rect(0px, auto, auto, auto); } }, `,
-			selector: $this.selector,
-			//stylesClass: $this.selector.replace(".", ""),
-			//styles: $this.selector + " { animation-name: nodeInserted; -webkit-animation-name: nodeInserted; animation-duration: 0.001s; -webkit-animation-duration: 0.001s; }"
-		}
+		//stylesClass: $this.selector.replace(".", ""),
+		//styles: $this.selector + " { animation-name: nodeInserted; -webkit-animation-name: nodeInserted; animation-duration: 0.001s; -webkit-animation-duration: 0.001s; }"
+	}
 
-		// if the keyframes aren't present, add them in a style element
-		if (!$("style.domnodeappear-keyframes").length)
-			$("head").append("<style class='domnodeappear-keyframes'>" + options.keyframes + "</style>");
+	// if the keyframes aren't present, add them in a style element
+	if (document.querySelector("style.domnodeappear-keyframes") == null) {
+		let style = document.createElement("style");
+		style.className = "domnodeappear-keyframes";
+		style.innerHTML = options.keyframes;
+		document.head.appendChild(style);
+	}
 
-		// add animation to selected element
-		//$("head").append("<style class=\"" + options.stylesClass + "-animation\">" + options.styles + "</style>")
+	// add animation to selected element
+	//$("head").append("<style class=\"" + options.stylesClass + "-animation\">" + options.styles + "</style>")
 
-		if (triggerIfAlreadyVisible && $this.is(":visible")) {
-			callback();
-			if (onlyRunOnce) // if we were only supposed to run once anyway, we're done already
-				return;
-		}
+	let elIsVisible = !!(elem.offsetWidth || elem.offsetHeight || elem.getClientRects().length); // from jquery source
+	if (triggerIfAlreadyVisible && elIsVisible) {
+		callback();
+		if (onlyRunOnce) // if we were only supposed to run once anyway, we're done already
+			return;
+	}
 
-		$this.css({animationName: "nodeInserted", "-webkit-animation-name": "nodeInserted", animationDuration: "0.001s", "-webkit-animation-duration": "0.001s"});
+	Object.assign(elem.style, {animationName: "nodeInserted", animationDuration: "0.001s"});
 
-		// on animation start, execute the callback
-		var handler = function(e) {
-			var target = $(e.target);
-			//if (e.originalEvent.animationName == "nodeInserted" && target.is(options.selector))
-			//Log(e.target);
-			if (e.originalEvent.animationName == "nodeInserted" && $this.get().Contains(e.target)) {
-				callback.call(target);
-				if (onlyRunOnce) {
-					$this.css({animationName: "", "-webkit-animation-name": "", animationDuration: "", "-webkit-animation-duration": ""});
-					$(document).off("animationstart webkitAnimationStart oanimationstart MSAnimationStart", handler);
-				}
+	// on animation start, execute the callback
+	var handler = function(e) {
+		var target = e.target;
+		//if (e.originalEvent.animationName == "nodeInserted" && target.is(options.selector))
+		//Log(e.target);
+		if (e.animationName == "nodeInserted" && e.target == elem) {
+			callback.call(target);
+			if (onlyRunOnce) {
+				Object.assign(elem.style, {animationName: "", animationDuration: ""});
+				document.removeEventListener("animationstart", handler);
+				document.removeEventListener("webkitAnimationStart", handler);
+				document.removeEventListener("oanimationstart", handler);
+				document.removeEventListener("MSAnimationStart", handler);
 			}
-		};
-		$(document).on("animationstart webkitAnimationStart oanimationstart MSAnimationStart", handler);
+		}
 	};
-	/*$.fn.OnVisible_WithDelay = function(delay, callback, onlyRunOnce, triggerIfAlreadyVisible) {
-		return this.OnVisible(function() { setTimeout(callback, delay); }, onlyRunOnce, triggerIfAlreadyVisible);
-	};*/
-})($);
+	document.addEventListener("animationstart", handler);
+	document.addEventListener("webkitAnimationStart", handler);
+	document.addEventListener("oanimationstart", handler);
+	document.addEventListener("MSAnimationStart", handler);
+};
+/*$.fn.OnVisible_WithDelay = function(delay, callback, onlyRunOnce, triggerIfAlreadyVisible) {
+	return this.OnVisible(function() { setTimeout(callback, delay); }, onlyRunOnce, triggerIfAlreadyVisible);
+};*/
 
 export interface Vector2i { x: number; y: number; }
 
