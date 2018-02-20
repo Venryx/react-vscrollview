@@ -27,7 +27,7 @@ let inFirefox = navigator.userAgent.includes("Firefox");
 // ==========
 
 var styles = {
-	root: {position: "relative", display: "flex", flexDirection: "column", overflow: "hidden"},
+	root: {position: "relative", display: "flex", /*flexDirection: "column",*/ overflow: "hidden"},
 	root_nonFlex: {height: "100%"},
 	content: {
 		flex: 1,

@@ -140,7 +140,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	// main
 	// ==========
 	var styles = {
-	    root: { position: "relative", display: "flex", flexDirection: "column", overflow: "hidden" },
+	    root: { position: "relative", display: "flex", /*flexDirection: "column",*/overflow: "hidden" },
 	    root_nonFlex: { height: "100%" },
 	    content: {
 	        flex: 1,
@@ -1463,6 +1463,8 @@ return /******/ (function(modules) { // webpackBootstrap
 					return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === 'undefined' ? 'undefined' : _typeof2(obj);
 				};
 
+				exports.BaseComponentWithConnector = BaseComponentWithConnector;
+
 				var _react = __webpack_require__(3);
 
 				var _react2 = _interopRequireDefault(_react);
@@ -1959,9 +1961,35 @@ return /******/ (function(modules) { // webpackBootstrap
 				__decorate([_General.Sealed], BaseComponent.prototype, "componentDidUpdate", null);
 				exports.BaseComponent = BaseComponent = BaseComponent_1 = __decorate([_General.HasSealedProps], BaseComponent);
 				exports.BaseComponent = BaseComponent;
-
-				var BaseComponent_1;
 				//G({Component2: Component, BaseComponent: Component});
+				/*export function BaseComponentWithConnect<Props>(connectFunc: (state?: RootState, props?)=>Props) {
+	       return function InnerFunc<State>() {
+	           return BaseComponent as new(..._)=>BaseComponent<Props, State>;
+	       };
+	   }*/
+
+				function BaseComponentWithConnector(connector, initialState) {
+					var BaseComponentEnhanced = function (_BaseComponent) {
+						_inherits(BaseComponentEnhanced, _BaseComponent);
+
+						function BaseComponentEnhanced(props) {
+							_classCallCheck(this, BaseComponentEnhanced);
+
+							var _this11 = _possibleConstructorReturn(this, (BaseComponentEnhanced.__proto__ || Object.getPrototypeOf(BaseComponentEnhanced)).call(this, props));
+
+							_this11.state = initialState;
+							if (_this11.constructor["defaultState"]) {
+								throw new Error("Cannot specify \"" + _this11.constructor.name + ".defaultState\". (initial-state is already set using BaseComponentWithConnect function)");
+							}
+							return _this11;
+						}
+
+						return BaseComponentEnhanced;
+					}(BaseComponent);
+
+					return BaseComponentEnhanced;
+				}
+				var BaseComponent_1;
 
 				/***/
 			},
