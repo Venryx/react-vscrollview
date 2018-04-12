@@ -142,7 +142,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    root_nonFlex: { height: "100%" },
 	    content: {
 	        flex: 1,
-	        overflow: "auto", overflowScrolling: "touch", "-webkit-overflow-scrolling": "touch"
+	        overflow: "auto", overflowScrolling: "touch", WebkitOverflowScrolling: "touch"
 	    },
 	    content_nonFlex: {
 	        position: "absolute", left: 0, right: 0, top: 0, bottom: 0
