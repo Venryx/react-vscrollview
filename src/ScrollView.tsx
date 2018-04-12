@@ -1,7 +1,7 @@
 /*import {E} from "../../../Frame/General/Globals_Free";
 import {BaseComponent, Div, FindDOM, FindDOM_, Classes} from "../../../Frame/General/ReactGlobals";
 import {BufferAction} from "../../../Frame/General/Timers";*/
-import * as React from "react";
+import React from "react";
 import {Component} from "react";
 import autoBind from "react-autobind";
 import {Vector2i, E, FindDOM, BufferAction, GetHScrollBarHeight, GetVScrollBarWidth, OnVisible} from "./Utils";

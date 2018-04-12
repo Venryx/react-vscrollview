@@ -1,5 +1,5 @@
 /// <reference types="react" />
-import * as React from "react";
+import React from "react";
 import { Vector2i } from "./Utils";
 import { BaseComponent, RenderSource } from "react-vextensions";
 export declare class ScrollView extends BaseComponent<{

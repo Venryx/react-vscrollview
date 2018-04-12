@@ -72,7 +72,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _react = __webpack_require__(2);
 
-	var React = _interopRequireWildcard(_react);
+	var _react2 = _interopRequireDefault(_react);
 
 	var _reactAutobind = __webpack_require__(3);
 
@@ -83,8 +83,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	var _reactVextensions = __webpack_require__(7);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 	function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
@@ -129,7 +127,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            var _a = this.props,
 	                shouldUpdate = _a.shouldUpdate,
 	                rest = __rest(_a, ["shouldUpdate"]);
-	            return React.createElement("div", Object.assign({}, rest));
+	            return _react2.default.createElement("div", Object.assign({}, rest));
 	        }
 	    }]);
 
@@ -228,21 +226,21 @@ return /******/ (function(modules) { // webpackBootstrap
 	            //console.log(`Rendering... ${this.propsJustChanged} ${this.sizeJustChanged}`);
 
 	            var classes = ["ScrollView", backgroundDrag && "draggable", scrollOp_bar && "scrollActive", className && className];
-	            return React.createElement("div", Object.assign({}, rest, { className: classes.filter(function (a) {
+	            return _react2.default.createElement("div", Object.assign({}, rest, { className: classes.filter(function (a) {
 	                    return a;
-	                }).join(" "), style: (0, _Utils.E)(styles.root, !flex && styles.root_nonFlex, style) }), scrollH_active && React.createElement("div", { className: "scrollTrack horizontal", style: (0, _Utils.E)(styles.scrollTrack, styles.scrollTrack_h) }, React.createElement("div", { ref: function ref(c) {
+	                }).join(" "), style: (0, _Utils.E)(styles.root, !flex && styles.root_nonFlex, style) }), scrollH_active && _react2.default.createElement("div", { className: "scrollTrack horizontal", style: (0, _Utils.E)(styles.scrollTrack, styles.scrollTrack_h) }, _react2.default.createElement("div", { ref: function ref(c) {
 	                    return _this3.scrollHBar = c;
 	                }, className: "scrollBar horizontal", onMouseDown: this.OnScrollbarMouseDown, onMouseOver: function onMouseOver() {
 	                    return _this3.SetState({ scrollHBar_hovered: true });
 	                }, onMouseOut: function onMouseOut() {
 	                    return _this3.SetState({ scrollHBar_hovered: false });
-	                }, style: (0, _Utils.E)(styles.scrollBar, styles.scrollBar_h, (this.state.scrollHBar_hovered || scrollOp_bar && scrollOp_bar == this.scrollHBar) && styles.scrollBar_active, { width: containerWidth / contentWidth * 100 + "%", left: scrollH_pos / contentWidth * 100 + "%", pointerEvents: "all" }, scrollHBarStyle) })), scrollV_active && React.createElement("div", { className: "scrollTrack vertical", style: (0, _Utils.E)(styles.scrollTrack, styles.scrollTrack_v) }, React.createElement("div", { ref: function ref(c) {
+	                }, style: (0, _Utils.E)(styles.scrollBar, styles.scrollBar_h, (this.state.scrollHBar_hovered || scrollOp_bar && scrollOp_bar == this.scrollHBar) && styles.scrollBar_active, { width: containerWidth / contentWidth * 100 + "%", left: scrollH_pos / contentWidth * 100 + "%", pointerEvents: "all" }, scrollHBarStyle) })), scrollV_active && _react2.default.createElement("div", { className: "scrollTrack vertical", style: (0, _Utils.E)(styles.scrollTrack, styles.scrollTrack_v) }, _react2.default.createElement("div", { ref: function ref(c) {
 	                    return _this3.scrollVBar = c;
 	                }, className: "scrollBar vertical", onMouseDown: this.OnScrollbarMouseDown, onMouseOver: function onMouseOver() {
 	                    return _this3.SetState({ scrollVBar_hovered: true });
 	                }, onMouseOut: function onMouseOut() {
 	                    return _this3.SetState({ scrollVBar_hovered: false });
-	                }, style: (0, _Utils.E)(styles.scrollBar, styles.scrollBar_v, (this.state.scrollVBar_hovered || scrollOp_bar && scrollOp_bar == this.scrollVBar) && styles.scrollBar_active, { height: containerHeight / contentHeight * 100 + "%", top: scrollV_pos / contentHeight * 100 + "%", pointerEvents: "all" }, scrollVBarStyle) })), React.createElement("style", null, "\n\t\t\t\t.hideScrollbar::-webkit-scrollbar { width: 0px; height: 0px; background: transparent; }\n\t\t\t\t.ScrollView.draggable > .content { cursor: grab; cursor: -webkit-grab; cursor: -moz-grab; }\n\t\t\t\t.ScrollView.draggable.scrollActive > .content { cursor: grabbing !important; cursor: -webkit-grabbing !important; cursor: -moz-grabbing !important; }\n\t\t\t\t"), React.createElement(Div, { ref: function ref(c) {
+	                }, style: (0, _Utils.E)(styles.scrollBar, styles.scrollBar_v, (this.state.scrollVBar_hovered || scrollOp_bar && scrollOp_bar == this.scrollVBar) && styles.scrollBar_active, { height: containerHeight / contentHeight * 100 + "%", top: scrollV_pos / contentHeight * 100 + "%", pointerEvents: "all" }, scrollVBarStyle) })), _react2.default.createElement("style", null, "\n\t\t\t\t.hideScrollbar::-webkit-scrollbar { width: 0px; height: 0px; background: transparent; }\n\t\t\t\t.ScrollView.draggable > .content { cursor: grab; cursor: -webkit-grab; cursor: -moz-grab; }\n\t\t\t\t.ScrollView.draggable.scrollActive > .content { cursor: grabbing !important; cursor: -webkit-grabbing !important; cursor: -moz-grabbing !important; }\n\t\t\t\t"), _react2.default.createElement(Div, { ref: function ref(c) {
 	                    return _this3.content = c;
 	                }, className: "content hideScrollbar", onScroll: this.HandleScroll, onMouseDown: this.OnContentMouseDown, onTouchEnd: this.OnTouchEnd, onClick: onClick, style: (0, _Utils.E)(styles.content, /*backgroundDrag && styles.content_draggable,*/ /*scrollOp_bar && styles.content_dragging,*/!flex && styles.content_nonFlex, inFirefox && scrollH_active && { /*paddingBottom: GetHScrollBarHeight(),*/marginBottom: -(0, _Utils.GetHScrollBarHeight)() }, inFirefox && scrollV_active && { /*paddingRight: GetVScrollBarWidth(),*/marginRight: -(0, _Utils.GetVScrollBarWidth)() }, contentStyle), shouldUpdate: function shouldUpdate() {
 	                    return _this3.PropsJustChanged || inFirefox && _this3.SizeJustChanged;
@@ -612,9 +610,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _reactDom = __webpack_require__(6);
 
-	var ReactDOM = _interopRequireWildcard(_reactDom);
+	var _reactDom2 = _interopRequireDefault(_reactDom);
 
-	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	//declare var $;
 	//var $ = (window as any).$;
@@ -635,7 +633,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 	function FindDOM(comp) {
 	    if (comp == null || comp._reactInternalInstance == null) return null;
-	    return ReactDOM.findDOMNode(comp);
+	    return _reactDom2.default.findDOMNode(comp);
 	}
 	//export function FindDOM_(comp) { return $(FindDOM(comp)); }
 	function E() {
