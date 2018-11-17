@@ -1,4 +1,3 @@
-/// <reference types="react" />
 import React from "react";
 import { Vector2i } from "./Utils";
 import { BaseComponent, RenderSource } from "react-vextensions";
@@ -9,22 +8,22 @@ export declare class ScrollView extends BaseComponent<{
     scrollH_pos?: number;
     scrollV_pos?: number;
     className?: string;
-    style?;
-    contentStyle?;
-    scrollHBarStyle?;
-    scrollVBarStyle?;
+    style?: any;
+    contentStyle?: any;
+    scrollHBarStyle?: any;
+    scrollVBarStyle?: any;
     flex?: boolean;
-    onMouseDown?;
-    onClick?;
+    onMouseDown?: any;
+    onClick?: any;
     onScrollEnd?: (pos: Vector2i) => void;
 } & React.HTMLProps<HTMLDivElement>, Partial<{
-    containerWidth;
-    contentWidth;
-    containerHeight;
-    contentHeight;
+    containerWidth: any;
+    contentWidth: any;
+    containerHeight: any;
+    contentHeight: any;
     scrollH_active: boolean;
     scrollH_pos: number;
-    scrollV_active;
+    scrollV_active: any;
     scrollV_pos: number;
     scrollHBar_hovered: boolean;
     scrollVBar_hovered: boolean;
@@ -49,19 +48,19 @@ export declare class ScrollView extends BaseComponent<{
     sizeJustChanged: boolean;
     readonly SizeJustChanged: boolean;
     UpdateSize(): void;
-    private HandleScroll(e);
+    private HandleScroll;
     UpdateScrolls(): void;
-    private OnContentMouseDown(e);
-    private OnScrollbarMouseDown(e);
+    private OnContentMouseDown;
+    private OnScrollbarMouseDown;
     scroll_startMousePos: Vector2i;
     scroll_startScrollPos: Vector2i;
-    private StartScrolling(e);
+    private StartScrolling;
     hScrollableDOM: Element;
     vScrollableDOM: Element;
-    private OnMouseMove(e);
-    private OnMouseUp(e);
-    private OnTouchEnd();
-    private OnScrollEnd();
+    private OnMouseMove;
+    private OnMouseUp;
+    private OnTouchEnd;
+    private OnScrollEnd;
     GetScroll(): {
         x: number;
         y: number;

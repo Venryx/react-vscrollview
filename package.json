@@ -1,6 +1,6 @@
 {
   "name": "react-vscrollview",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "ReactJS scroll-view.",
   "main": "dist/ScrollView.js",
   "typings": "dist/ScrollView.d.ts",
@@ -45,6 +45,7 @@
     "webpack-dev-server": "^1.14.1"
   },
   "dependencies": {
+    "extract-text-webpack-plugin": "^3.0.2",
     "react-autobind": "^1.0.6",
     "react-vextensions": "0.0.2"
   }
