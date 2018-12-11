@@ -633,7 +633,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    throw new Error("Assert failed) " + message);
 	}
 	function FindDOM(comp) {
-	    if (comp == null || comp._reactInternalInstance == null) return null;
+	    if (comp == null || comp["_reactInternalInstance"] == null || comp.mounted == false) return null;
 	    return _reactDom2.default.findDOMNode(comp);
 	}
 	//export function FindDOM_(comp) { return $(FindDOM(comp)); }

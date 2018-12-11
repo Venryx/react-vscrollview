@@ -1,5 +1,6 @@
 import ReactDOM from "react-dom";
 import {Component} from "react";
+import { BaseComponent } from "react-vextensions";
 
 //declare var $;
 //var $ = (window as any).$;
@@ -14,9 +15,8 @@ export function Assert(condition, message?: string) {
 	throw new Error("Assert failed) " + message);
 }
 
-export function FindDOM(comp): HTMLElement {
-	if (comp == null || comp._reactInternalInstance == null)
-		return null;
+export function FindDOM(comp: BaseComponent<any, any>): HTMLElement {
+	if (comp == null || comp["_reactInternalInstance"] == null || comp.mounted == false) return null;
 	return ReactDOM.findDOMNode(comp);
 }
 //export function FindDOM_(comp) { return $(FindDOM(comp)); }

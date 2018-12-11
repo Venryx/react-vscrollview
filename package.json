@@ -39,7 +39,7 @@
     "babel-preset-react": "^6.3.13",
     "react": "^15.3.0",
     "react-dom": "^15.3.0",
-    "react-vextensions": "^0.0.1",
+    "react-vextensions": "0.0.4",
     "style-loader": "^0.13.0",
     "ts-loader": "^2.0.1",
     "typescript": "^2.6.2",
@@ -48,7 +48,6 @@
   },
   "dependencies": {
     "extract-text-webpack-plugin": "^3.0.2",
-    "react-autobind": "^1.0.6",
-    "react-vextensions": "0.0.2"
+    "react-autobind": "^1.0.6"
   }
 }
