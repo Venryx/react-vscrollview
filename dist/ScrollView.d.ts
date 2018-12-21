@@ -37,14 +37,14 @@ export declare class ScrollView extends BaseComponent<{
     scrollHBar: any;
     scrollVBar: any;
     render(): JSX.Element;
-    componentDidMount(): void;
-    componentDidUpdate(): void;
+    ComponentDidMount(): void;
+    ComponentDidUpdate(): void;
     LoadScroll(): void;
     PostRender(source: RenderSource): void;
-    componentWillUnmount(): void;
+    ComponentWillUnmount(): void;
     propsJustChanged: boolean;
     readonly PropsJustChanged: boolean;
-    componentWillReceiveProps(nextProps: any): void;
+    ComponentWillReceiveProps(nextProps: any): void;
     sizeJustChanged: boolean;
     readonly SizeJustChanged: boolean;
     UpdateSize(): void;

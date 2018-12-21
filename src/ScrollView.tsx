@@ -144,7 +144,7 @@ export class ScrollView extends BaseComponent
 		);
 	}
 
-	componentDidMount() {
+	ComponentDidMount() {
 		window.addEventListener("resize", this.UpdateSize);
 		document.addEventListener("mousemove", this.OnMouseMove);
 		document.addEventListener("mouseup", this.OnMouseUp);
@@ -154,7 +154,7 @@ export class ScrollView extends BaseComponent
 		this.hScrollableDOM = this.hScrollableDOM || FindDOM(this.content);
 		this.vScrollableDOM = this.vScrollableDOM || FindDOM(this.content);
 	}
-	componentDidUpdate() {
+	ComponentDidUpdate() {
 		if (!this.propsJustChanged) return; // if was just a scroll-update, ignore
 		this.LoadScroll();
 	}
@@ -183,7 +183,7 @@ export class ScrollView extends BaseComponent
 		}
 	}
 	// for some reason, this gets called even if not really unmounting (or... I don't see why it'd be unmounting, anyway)
-	componentWillUnmount() {
+	ComponentWillUnmount() {
 		window.removeEventListener("resize", this.UpdateSize);
 		document.removeEventListener("mousemove", this.OnMouseMove);
 		document.removeEventListener("mouseup", this.OnMouseUp);
@@ -196,7 +196,7 @@ export class ScrollView extends BaseComponent
 		return result;
 	}
 
-	componentWillReceiveProps(nextProps) {
+	ComponentWillReceiveProps(nextProps) {
 		this.SetState({
 			[nextProps.scrollH_pos != null ? "scrollH_pos" : "na"]: nextProps.scrollH_pos,
 			[nextProps.scrollV_pos != null ? "scrollV_pos" : "na"]: nextProps.scrollV_pos

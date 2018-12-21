@@ -247,8 +247,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	                } }, children));
 	        }
 	    }, {
-	        key: "componentDidMount",
-	        value: function componentDidMount() {
+	        key: "ComponentDidMount",
+	        value: function ComponentDidMount() {
 	            window.addEventListener("resize", this.UpdateSize);
 	            document.addEventListener("mousemove", this.OnMouseMove);
 	            document.addEventListener("mouseup", this.OnMouseUp);
@@ -258,8 +258,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	            this.vScrollableDOM = this.vScrollableDOM || (0, _Utils.FindDOM)(this.content);
 	        }
 	    }, {
-	        key: "componentDidUpdate",
-	        value: function componentDidUpdate() {
+	        key: "ComponentDidUpdate",
+	        value: function ComponentDidUpdate() {
 	            if (!this.propsJustChanged) return; // if was just a scroll-update, ignore
 	            this.LoadScroll();
 	        }
@@ -293,15 +293,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	        // for some reason, this gets called even if not really unmounting (or... I don't see why it'd be unmounting, anyway)
 
 	    }, {
-	        key: "componentWillUnmount",
-	        value: function componentWillUnmount() {
+	        key: "ComponentWillUnmount",
+	        value: function ComponentWillUnmount() {
 	            window.removeEventListener("resize", this.UpdateSize);
 	            document.removeEventListener("mousemove", this.OnMouseMove);
 	            document.removeEventListener("mouseup", this.OnMouseUp);
 	        }
 	    }, {
-	        key: "componentWillReceiveProps",
-	        value: function componentWillReceiveProps(nextProps) {
+	        key: "ComponentWillReceiveProps",
+	        value: function ComponentWillReceiveProps(nextProps) {
 	            var _SetState;
 
 	            this.SetState((_SetState = {}, _defineProperty(_SetState, nextProps.scrollH_pos != null ? "scrollH_pos" : "na", nextProps.scrollH_pos), _defineProperty(_SetState, nextProps.scrollV_pos != null ? "scrollV_pos" : "na", nextProps.scrollV_pos), _SetState));
@@ -633,7 +633,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    throw new Error("Assert failed) " + message);
 	}
 	function FindDOM(comp) {
-	    if (comp == null || comp["_reactInternalInstance"] == null || comp.mounted == false) return null;
+	    //if (comp == null || comp["_reactInternalInstance"] == null || comp.mounted == false) return null;
+	    if (comp == null || comp.mounted == false) return null;
 	    return _reactDom2.default.findDOMNode(comp);
 	}
 	//export function FindDOM_(comp) { return $(FindDOM(comp)); }
