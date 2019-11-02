@@ -242,16 +242,17 @@ export class ScrollView extends BaseComponent
 		}
 	};
 	
-	private HandleScroll = (e)=> {
+	private HandleScroll = ()=> {
 		// if not user-initiated event, ignore
 		//if (e.type != "DOMMouseScroll" && e.type != "keyup" && e.type != "mousewheel" && e.type != "mousemove") return;
 		//e.stopPropagation();
 
 		// maybe temp; for performance, when used in LogEntriesUI
-		if (this.props.bufferScrollEventsBy)
+		if (this.props.bufferScrollEventsBy) {
 			BufferAction("ScrollView_HandleScroll", this.props.bufferScrollEventsBy, this.UpdateScrolls);
-		else
+		} else {
 			this.UpdateScrolls();
+		}
 	};
 	UpdateScrolls() {
 		//var contentUI = FindDOM(this.content);
@@ -350,6 +351,7 @@ export class ScrollView extends BaseComponent
 		//var content = FindDOM(this.content);
 		this.hScrollableDOM.scrollLeft = scrollPos.x;
 		this.vScrollableDOM.scrollTop = scrollPos.y;
+		this.HandleScroll(); // update state right away (waiting for onScroll event can be too late for code depending on GetScroll() reflecting just-set values)
 	}
 	ScrollBy(scrollPosOffset: Vector2i) {
 		//this.setState({scrollH_pos: this.GetScroll().x + scrollPosOffset.x, scrollV_pos: this.GetScroll().y + scrollPosOffset.y}, ()=>this.LoadScroll());
@@ -357,5 +359,6 @@ export class ScrollView extends BaseComponent
 		this.hScrollableDOM.scrollLeft += scrollPosOffset.x;
 		this.vScrollableDOM.scrollTop += scrollPosOffset.y;
 		//this.setState({scrollH_pos: content.scrollLeft, scrollV_pos: content.scrollTop}, ()=>this.LoadScroll());
+		this.HandleScroll(); // update state right away (waiting for onScroll event can be too late for code depending on GetScroll() reflecting just-set values)
 	}
 }

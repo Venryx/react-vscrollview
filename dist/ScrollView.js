@@ -298,12 +298,16 @@ function (_BaseComponent) {
       }
     };
 
-    _this.HandleScroll = function (e) {
+    _this.HandleScroll = function () {
       // if not user-initiated event, ignore
       //if (e.type != "DOMMouseScroll" && e.type != "keyup" && e.type != "mousewheel" && e.type != "mousemove") return;
       //e.stopPropagation();
       // maybe temp; for performance, when used in LogEntriesUI
-      if (_this.props.bufferScrollEventsBy) Object(_Utils__WEBPACK_IMPORTED_MODULE_1__["BufferAction"])("ScrollView_HandleScroll", _this.props.bufferScrollEventsBy, _this.UpdateScrolls);else _this.UpdateScrolls();
+      if (_this.props.bufferScrollEventsBy) {
+        Object(_Utils__WEBPACK_IMPORTED_MODULE_1__["BufferAction"])("ScrollView_HandleScroll", _this.props.bufferScrollEventsBy, _this.UpdateScrolls);
+      } else {
+        _this.UpdateScrolls();
+      }
     }; // #maybe temp; for performance, when used in LogEntriesUI
 
     /*UpdateSizeAndScrolls() {
@@ -650,6 +654,7 @@ function (_BaseComponent) {
       //var content = FindDOM(this.content);
       this.hScrollableDOM.scrollLeft = scrollPos.x;
       this.vScrollableDOM.scrollTop = scrollPos.y;
+      this.HandleScroll(); // update state right away (waiting for onScroll event can be too late for code depending on GetScroll() reflecting just-set values)
     }
   }, {
     key: "ScrollBy",
@@ -658,6 +663,8 @@ function (_BaseComponent) {
       //var content = FindDOM(this.content);
       this.hScrollableDOM.scrollLeft += scrollPosOffset.x;
       this.vScrollableDOM.scrollTop += scrollPosOffset.y; //this.setState({scrollH_pos: content.scrollLeft, scrollV_pos: content.scrollTop}, ()=>this.LoadScroll());
+
+      this.HandleScroll(); // update state right away (waiting for onScroll event can be too late for code depending on GetScroll() reflecting just-set values)
     }
   }, {
     key: "PropsJustChanged",
