@@ -15,9 +15,9 @@ export function Assert(condition, message?: string) {
 	throw new Error("Assert failed) " + message);
 }
 
-export function FindDOM(comp: BaseComponent<any, any>): HTMLElement {
+export function GetDOM(comp: Component): HTMLElement {
 	//if (comp == null || comp["_reactInternalInstance"] == null || comp.mounted == false) return null;
-	if (comp == null || comp.mounted == false) return null;
+	if (comp == null || comp["mounted"] == false) return null;
 	return ReactDOM.findDOMNode(comp);
 }
 //export function FindDOM_(comp) { return $(FindDOM(comp)); }

@@ -3,39 +3,40 @@ var webpack = require("webpack");
 var ExtractTextPlugin = require("extract-text-webpack-plugin");
 
 module.exports = {
-    entry: [
-        "./src/ScrollView.tsx"
-    ],
-    output: {
-        path: __dirname + "/dist",
-        publicPath: "http://localhost:8080/",
-        filename: "ScrollView.js",
+	mode: "none",
+	entry: [
+		"./src/ScrollView.tsx"
+	],
+	output: {
+		path: __dirname + "/dist",
+		publicPath: "http://localhost:8080/",
+		filename: "ScrollView.js",
 		libraryTarget: "umd",
-    	//library: "react-vscrollview",
-    },
+		//library: "react-vscrollview",
+	},
 	resolve: {
 		//root: paths.client(),
-		root: "src",
-		extensions: ["", ".js", ".jsx", ".ts", ".tsx", ".json"],
+		//root: "src",
+		extensions: [".js", ".jsx", ".ts", ".tsx", ".json"],
 	},
 	externals: {
-        // use external version of React (ie, don't bundle react, since any app using this library will already have it available)
-        //"react": "React",
+		// use external version of React (ie, don't bundle react, since any app using this library will already have it available)
+		//"react": "React",
 		"react": "commonjs react",
 		"react-dom": "commonjs react-dom",
 		"react-vextensions": "commonjs react-vextensions",
     },
     /*module: {
-        noParse: ["react"]
+		noParse: ["react"]
     },*/
     module: {
-        loaders: [
+		rules: [
 			{
 				test: /\.(jsx?|tsx?)$/,
-				loader: "babel",
+				loader: "babel-loader",
 				exclude: /node_modules/,
 				query: {
-					presets: ["es2015", "react"]
+					presets: ["@babel/env"]
 				}
 			},
 			{test: /\.tsx?$/, loader: "ts-loader"},
@@ -52,9 +53,9 @@ module.exports = {
 				loader: "file"
 			}
 		]
-    },
-    plugins: [
-        new webpack.NoErrorsPlugin(),
+	},
+	plugins: [
+		//new webpack.NoErrorsPlugin(),
 		//new webpack.IgnorePlugin(/react/),
-    ]
+	]
 };

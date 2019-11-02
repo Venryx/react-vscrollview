@@ -3,8 +3,7 @@ import {BaseComponent, Div, FindDOM, FindDOM_, Classes} from "../../../Frame/Gen
 import {BufferAction} from "../../../Frame/General/Timers";*/
 import React from "react";
 import {Component} from "react";
-import autoBind from "react-autobind";
-import {Vector2i, E, FindDOM, BufferAction, GetHScrollBarHeight, GetVScrollBarWidth, OnVisible} from "./Utils";
+import {Vector2i, E, GetDOM, BufferAction, GetHScrollBarHeight, GetVScrollBarWidth, OnVisible} from "./Utils";
 import {BaseComponent, RenderSource} from "react-vextensions";
 
 //declare var $;
@@ -65,7 +64,6 @@ export class ScrollView extends BaseComponent
 	static defaultProps = {flex: true};
 	constructor(props) {
 		super(props);
-		autoBind(this);
 		this.state = {
 			containerWidth: 0,
 			contentWidth: 0,
@@ -79,9 +77,9 @@ export class ScrollView extends BaseComponent
 		};
 	}
 
-	content;
-	scrollHBar;
-	scrollVBar;
+	content: Div;
+	scrollHBar: HTMLDivElement;
+	scrollVBar: HTMLDivElement;
 	//_lastState = {} as any; // to fix edge case, for when using "marginRight: -17" to hide scroll-bar
 	render() {
 		var {backgroundDrag,  backgroundDragMatchFunc, bufferScrollEventsBy, scrollH_pos, scrollV_pos,
@@ -151,8 +149,8 @@ export class ScrollView extends BaseComponent
 		//this.UpdateSize();
 		this.LoadScroll();
 
-		this.hScrollableDOM = this.hScrollableDOM || FindDOM(this.content);
-		this.vScrollableDOM = this.vScrollableDOM || FindDOM(this.content);
+		this.hScrollableDOM = this.hScrollableDOM || GetDOM(this.content);
+		this.vScrollableDOM = this.vScrollableDOM || GetDOM(this.content);
 	}
 	ComponentDidUpdate() {
 		if (!this.propsJustChanged) return; // if was just a scroll-update, ignore
@@ -165,7 +163,7 @@ export class ScrollView extends BaseComponent
 	}
 	PostRender(source: RenderSource) {
 		//if (FindDOM(this)) {
-		OnVisible(FindDOM(this), this.UpdateSize, true);
+		OnVisible(GetDOM(this), this.UpdateSize, true);
 		//FindDOM_(this).OnVisible(this.UpdateSize, true, true);
 		/*if (firstRender)
 			FindDOM_(this).OnVisible(this.LoadScroll, true, true);*/
@@ -216,9 +214,9 @@ export class ScrollView extends BaseComponent
 		return result;
 	}
 
-	UpdateSize() {
-		let container = FindDOM(this);
-		let content = FindDOM(this.content);
+	UpdateSize = ()=> {
+		let container = GetDOM(this);
+		let content = GetDOM(this.content);
 		if (container == null || content == null) return;
 
 		/*var containerWidth = container.offsetWidth;
@@ -242,9 +240,9 @@ export class ScrollView extends BaseComponent
 				scrollV_active: contentHeight > containerHeight
 			});
 		}
-	}
+	};
 	
-	private HandleScroll(e) {
+	private HandleScroll = (e)=> {
 		// if not user-initiated event, ignore
 		//if (e.type != "DOMMouseScroll" && e.type != "keyup" && e.type != "mousewheel" && e.type != "mousemove") return;
 		//e.stopPropagation();
@@ -254,7 +252,7 @@ export class ScrollView extends BaseComponent
 			BufferAction("ScrollView_HandleScroll", this.props.bufferScrollEventsBy, this.UpdateScrolls);
 		else
 			this.UpdateScrolls();
-	}
+	};
 	UpdateScrolls() {
 		//var contentUI = FindDOM(this.content);
 		var scrollH_pos = this.hScrollableDOM.scrollLeft;
@@ -275,7 +273,7 @@ export class ScrollView extends BaseComponent
 		this.EndSetStateCluster();
 	}*/
 	
-	private OnContentMouseDown(e) {
+	private OnContentMouseDown = (e)=> {
 		let {backgroundDrag, backgroundDragMatchFunc} = this.props;
 		if (!backgroundDrag) return;
 		backgroundDragMatchFunc = backgroundDragMatchFunc || ((a: Element)=> {
@@ -283,8 +281,8 @@ export class ScrollView extends BaseComponent
 			while (nodePlusParents[nodePlusParents.length - 1].parentNode instanceof Element)
 				nodePlusParents.push(nodePlusParents[nodePlusParents.length - 1].parentNode as Element);
 			var firstScrollViewParent = nodePlusParents.find(b=>b.className.split(" ").indexOf("ScrollView") != -1);
-			if (firstScrollViewParent == null || firstScrollViewParent[0] != FindDOM(this)) return false;
-			return a.className.split(" ").indexOf("content") != -1 || a == this.content; // || a == this.state.svgRoot;
+			if (firstScrollViewParent == null || firstScrollViewParent[0] != GetDOM(this)) return false;
+			return a.className.split(" ").indexOf("content") != -1 || (GetDOM(this.content) && a == GetDOM(this.content)); // || a == this.state.svgRoot;
 		});
 		if (!backgroundDragMatchFunc(e.target)) return;
 		if (e.button != 0) return;
@@ -292,10 +290,10 @@ export class ScrollView extends BaseComponent
 		this.StartScrolling(e);
 		this.props.onMouseDown && this.props.onMouseDown(e);
 	}
-	private OnScrollbarMouseDown(e) {
+	private OnScrollbarMouseDown = (e)=> {
 		e.preventDefault();
 		this.StartScrolling(e);
-	}
+	};
 	scroll_startMousePos: Vector2i;
 	scroll_startScrollPos: Vector2i;
 	private StartScrolling(e) {
@@ -307,7 +305,7 @@ export class ScrollView extends BaseComponent
 	}
 	hScrollableDOM: Element;
 	vScrollableDOM: Element;
-	private OnMouseMove(e) {
+	private OnMouseMove = (e)=> {
 		let {scrollOp_bar, containerWidth, containerHeight, contentWidth, contentHeight} = this.state;
 		if (!scrollOp_bar) return;
 
@@ -324,23 +322,23 @@ export class ScrollView extends BaseComponent
 			this.hScrollableDOM.scrollLeft = this.scroll_startScrollPos.x - (scroll_mousePosDif.x * scrollPixelsPerScrollbarPixels);
 			this.vScrollableDOM.scrollTop = this.scroll_startScrollPos.y - (scroll_mousePosDif.y * scrollPixelsPerScrollbarPixels);
 		}
-	}
-	private OnMouseUp(e) {
+	};
+	private OnMouseUp = (e)=> {
 		if (!this.state.scrollOp_bar) return;
 		this.SetState({scrollOp_bar: null});
 		this.OnScrollEnd();
-	}
-	private OnTouchEnd() {
+	};
+	private OnTouchEnd = ()=> {
 		this.OnScrollEnd();
-	}
-	private OnScrollEnd() {
+	};
+	private OnScrollEnd = ()=> {
 		let {onScrollEnd} = this.props;
 		if (onScrollEnd) {
 			//let content = FindDOM(this.content);
 			let scrollPos = {x: this.hScrollableDOM.scrollLeft, y: this.vScrollableDOM.scrollTop}
 			onScrollEnd(scrollPos);
 		}
-	}
+	};
 
 	// for external use
 	GetScroll() {

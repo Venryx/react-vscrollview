@@ -1,7 +1,7 @@
-import { BaseComponent } from "react-vextensions";
+import { Component } from "react";
 export declare function Log(message: any, ...args: any[]): void;
 export declare function Assert(condition: any, message?: string): void;
-export declare function FindDOM(comp: BaseComponent<any, any>): HTMLElement;
+export declare function GetDOM(comp: Component): HTMLElement;
 export declare function E(...objExtends: any[]): {};
 /** If time-since-last-run is above minInterval, run func right away.
  * Else, schedule next-run to occur as soon as the minInterval is passed. */
