@@ -107,6 +107,7 @@ module.exports = __webpack_require__(1);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ScrollSource", function() { return ScrollSource; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ScrollView", function() { return ScrollView; });
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
@@ -145,16 +146,21 @@ var __rest = undefined && undefined.__rest || function (s, e) {
   }
   return t;
 };
-/*import {E} from "../../../Frame/General/Globals_Free";
-import {BaseComponent, Div, FindDOM, FindDOM_, Classes} from "../../../Frame/General/ReactGlobals";
-import {BufferAction} from "../../../Frame/General/Timers";*/
 
 
 
 
 
- //declare var $;
+var ScrollSource;
+
+(function (ScrollSource) {
+  ScrollSource[ScrollSource["User_MouseWheel"] = 0] = "User_MouseWheel";
+  ScrollSource[ScrollSource["User_MouseDrag"] = 1] = "User_MouseDrag";
+  ScrollSource[ScrollSource["User_Keyboard"] = 2] = "User_Keyboard";
+  ScrollSource[ScrollSource["Code"] = 3] = "Code";
+})(ScrollSource || (ScrollSource = {})); //declare var $;
 //var $ = (window as any).$;
+
 
 var Div =
 /*#__PURE__*/
@@ -255,15 +261,18 @@ var styles = {
 };
 var ScrollView =
 /*#__PURE__*/
-function (_BaseComponent) {
-  _inherits(ScrollView, _BaseComponent);
+function (_BaseComponentPlus) {
+  _inherits(ScrollView, _BaseComponentPlus);
 
-  function ScrollView(props) {
+  function ScrollView() {
     var _this;
 
     _classCallCheck(this, ScrollView);
 
-    _this = _possibleConstructorReturn(this, _getPrototypeOf(ScrollView).call(this, props));
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(ScrollView).apply(this, arguments)); //_lastState = {} as any; // to fix edge case, for when using "marginRight: -17" to hide scroll-bar
+
+    _this.lastMouseWheelTime = 0;
+    _this.lastKeyEventTime = 0;
     _this.propsJustChanged = false;
     _this.sizeJustChanged = false;
 
@@ -308,15 +317,7 @@ function (_BaseComponent) {
       } else {
         _this.UpdateScrolls();
       }
-    }; // #maybe temp; for performance, when used in LogEntriesUI
-
-    /*UpdateSizeAndScrolls() {
-        this.StartSetStateCluster();
-        this.UpdateSize();
-        this.UpdateScrolls();
-        this.EndSetStateCluster();
-    }*/
-
+    };
 
     _this.OnContentMouseDown = function (e) {
       var _this$props = _this.props,
@@ -407,18 +408,8 @@ function (_BaseComponent) {
       }
     };
 
-    _this.state = {
-      containerWidth: 0,
-      contentWidth: 0,
-      scrollH_active: false,
-      //scrollH_pos: this.props.scrollH_pos,
-      containerHeight: 0,
-      contentHeight: 0,
-      scrollV_active: false
-    };
     return _this;
-  } //_lastState = {} as any; // to fix edge case, for when using "marginRight: -17" to hide scroll-bar
-
+  }
 
   _createClass(ScrollView, [{
     key: "render",
@@ -439,9 +430,13 @@ function (_BaseComponent) {
           flex = _a.flex,
           onMouseDown = _a.onMouseDown,
           onClick = _a.onClick,
+          onWheel = _a.onWheel,
+          onKeyDown = _a.onKeyDown,
+          onScroll = _a.onScroll,
+          onScroll_addTabIndex = _a.onScroll_addTabIndex,
           onScrollEnd = _a.onScrollEnd,
           children = _a.children,
-          rest = __rest(_a, ["backgroundDrag", "backgroundDragMatchFunc", "bufferScrollEventsBy", "scrollH_pos", "scrollV_pos", "className", "style", "contentStyle", "scrollHBarStyle", "scrollVBarStyle", "flex", "onMouseDown", "onClick", "onScrollEnd", "children"]);
+          rest = __rest(_a, ["backgroundDrag", "backgroundDragMatchFunc", "bufferScrollEventsBy", "scrollH_pos", "scrollV_pos", "className", "style", "contentStyle", "scrollHBarStyle", "scrollVBarStyle", "flex", "onMouseDown", "onClick", "onWheel", "onKeyDown", "onScroll", "onScroll_addTabIndex", "onScrollEnd", "children"]);
 
       children = children instanceof Array ? children : [children];
       var _this$state2 = this.state,
@@ -461,11 +456,43 @@ function (_BaseComponent) {
       //console.log(`Rendering... ${this.propsJustChanged} ${this.sizeJustChanged}`);
 
       var classes = ["ScrollView", backgroundDrag && "draggable", scrollOp_bar && "scrollActive", className && className];
+      var addTabIndex = onScroll && onScroll_addTabIndex;
       return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", Object.assign({}, rest, {
         className: classes.filter(function (a) {
           return a;
         }).join(" "),
-        style: Object(_Utils__WEBPACK_IMPORTED_MODULE_1__["E"])(styles.root, !flex && styles.root_nonFlex, style)
+        style: Object(_Utils__WEBPACK_IMPORTED_MODULE_1__["E"])(styles.root, !flex && styles.root_nonFlex, style),
+        onWheel: !onKeyDown && !onScroll ? null : function (e) {
+          _this2.lastMouseWheelTime = Date.now();
+          if (onWheel) return onWheel(e);
+        },
+        // note: onKeyDown only gets called if you set tabIndex="0" on the ScrollView (and thus its root-div) -- making it focusable
+        onKeyDown: !onKeyDown && !onScroll ? null : function (e) {
+          var key = e.which; // if: page-up, page-down, spacebar, up, down, ctrl+home, or ctrl+end
+
+          if (key == 33 || key == 34 || key == 32 || key == 38 || key == 40 || e.ctrlKey && key == 36 || e.ctrlKey && key == 35) {
+            _this2.lastKeyEventTime = Date.now();
+          }
+
+          if (onKeyDown) return onKeyDown(e);
+        },
+        onScroll: !onScroll ? null : function (e) {
+          var scrollSource;
+
+          if (scrollOp_bar) {
+            scrollSource = ScrollSource.User_MouseDrag;
+          } else if (Date.now() - _this2.lastMouseWheelTime < 500) {
+            // todo: improve detection method
+            scrollSource = ScrollSource.User_MouseWheel;
+          } else if (Date.now() - _this2.lastKeyEventTime < 500) {
+            // todo: improve detection method
+            scrollSource = ScrollSource.User_Keyboard;
+          } else {
+            scrollSource = ScrollSource.Code;
+          }
+
+          if (onScroll) return onScroll(e, scrollSource, _this2.GetScroll());
+        }
       }), scrollH_active && react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "scrollTrack horizontal",
         style: Object(_Utils__WEBPACK_IMPORTED_MODULE_1__["E"])(styles.scrollTrack, styles.scrollTrack_h)
@@ -520,6 +547,7 @@ function (_BaseComponent) {
         },
         className: "content hideScrollbar",
         onScroll: this.HandleScroll,
+        tabIndex: addTabIndex ? -1 : null,
         onMouseDown: this.OnContentMouseDown,
         onTouchEnd: this.OnTouchEnd,
         onClick: onClick,
@@ -567,12 +595,7 @@ function (_BaseComponent) {
   }, {
     key: "PostRender",
     value: function PostRender(source) {
-      //if (FindDOM(this)) {
-      Object(_Utils__WEBPACK_IMPORTED_MODULE_1__["OnVisible"])(Object(_Utils__WEBPACK_IMPORTED_MODULE_1__["GetDOM"])(this), this.UpdateSize, true); //FindDOM_(this).OnVisible(this.UpdateSize, true, true);
-
-      /*if (firstRender)
-          FindDOM_(this).OnVisible(this.LoadScroll, true, true);*/
-      // onTouchEndCapture doesn't work consistently, so use native event
+      Object(_Utils__WEBPACK_IMPORTED_MODULE_1__["OnVisible"])(Object(_Utils__WEBPACK_IMPORTED_MODULE_1__["GetDOM"])(this), this.UpdateSize, true); // onTouchEndCapture doesn't work consistently, so use native event
 
       /*FindDOM(this.content).ontouchend = ()=>(console.log("end"), this.OnTouchEnd());
       FindDOM(this.content).ontouchcancel = ()=>(console.log("cancel"), this.OnTouchEnd());
@@ -683,10 +706,24 @@ function (_BaseComponent) {
   }]);
 
   return ScrollView;
-}(react_vextensions__WEBPACK_IMPORTED_MODULE_2__["BaseComponent"]);
-ScrollView.defaultProps = {
-  flex: true
-};
+}(Object(react_vextensions__WEBPACK_IMPORTED_MODULE_2__["BaseComponentPlus"])({
+  flex: true,
+  onScroll_addTabIndex: true
+}, {
+  containerWidth: 0,
+  contentWidth: 0,
+  scrollH_active: false,
+  //scrollH_pos: this.props.scrollH_pos,
+  scrollH_pos: null,
+  scrollHBar_hovered: false,
+  containerHeight: 0,
+  contentHeight: 0,
+  scrollV_active: false,
+  //scrollV_pos: this.props.scrollV_pos
+  scrollV_pos: null,
+  scrollVBar_hovered: false,
+  scrollOp_bar: null
+}));
 
 /***/ }),
 /* 2 */
