@@ -14,7 +14,7 @@ declare class Div extends Component<{
     shouldComponentUpdate(nextProps: any, nextState: any): any;
     render(): JSX.Element;
 }
-declare const ScrollView_base: new (..._: any[]) => BaseComponent<{
+declare const ScrollView_base: (new (..._: any[]) => BaseComponent<{
     backgroundDrag?: boolean;
     backgroundDragMatchFunc?: (element: HTMLElement) => boolean;
     bufferScrollEventsBy?: number;
@@ -45,7 +45,10 @@ declare const ScrollView_base: new (..._: any[]) => BaseComponent<{
     scrollV_pos: number;
     scrollVBar_hovered: boolean;
     scrollOp_bar: HTMLElement;
-}, unknown>;
+}, unknown>) & {
+    renderCount: number;
+    lastRenderTime: number;
+};
 export declare class ScrollView extends ScrollView_base {
     content: Div;
     scrollHBar: HTMLDivElement;

@@ -339,19 +339,21 @@ export class ScrollView extends BaseComponentPlus(
 		let {scrollOp_bar, containerWidth, containerHeight, contentWidth, contentHeight} = this.state;
 		if (!scrollOp_bar) return;
 
-		var scroll_mousePosDif = {x: e.pageX - this.scroll_startMousePos.x, y: e.pageY - this.scroll_startMousePos.y};
+		requestAnimationFrame(()=> {
+			var scroll_mousePosDif = {x: e.pageX - this.scroll_startMousePos.x, y: e.pageY - this.scroll_startMousePos.y};
 		
-		if (scrollOp_bar.classList && scrollOp_bar.classList.contains("horizontal")) {
-			let scrollPixelsPerScrollbarPixels = contentWidth / containerWidth;
-			this.hScrollableDOM.scrollLeft = this.scroll_startScrollPos.x + (scroll_mousePosDif.x * scrollPixelsPerScrollbarPixels);
-		} else if (scrollOp_bar.classList && scrollOp_bar.classList.contains("vertical")) {
-			let scrollPixelsPerScrollbarPixels = contentHeight / containerHeight;
-			this.vScrollableDOM.scrollTop = this.scroll_startScrollPos.y + (scroll_mousePosDif.y * scrollPixelsPerScrollbarPixels);
-		} else { // if left-click dragging on background
-			let scrollPixelsPerScrollbarPixels = 1;
-			this.hScrollableDOM.scrollLeft = this.scroll_startScrollPos.x - (scroll_mousePosDif.x * scrollPixelsPerScrollbarPixels);
-			this.vScrollableDOM.scrollTop = this.scroll_startScrollPos.y - (scroll_mousePosDif.y * scrollPixelsPerScrollbarPixels);
-		}
+			if (scrollOp_bar.classList && scrollOp_bar.classList.contains("horizontal")) {
+				let scrollPixelsPerScrollbarPixels = contentWidth / containerWidth;
+				this.hScrollableDOM.scrollLeft = this.scroll_startScrollPos.x + (scroll_mousePosDif.x * scrollPixelsPerScrollbarPixels);
+			} else if (scrollOp_bar.classList && scrollOp_bar.classList.contains("vertical")) {
+				let scrollPixelsPerScrollbarPixels = contentHeight / containerHeight;
+				this.vScrollableDOM.scrollTop = this.scroll_startScrollPos.y + (scroll_mousePosDif.y * scrollPixelsPerScrollbarPixels);
+			} else { // if left-click dragging on background
+				let scrollPixelsPerScrollbarPixels = 1;
+				this.hScrollableDOM.scrollLeft = this.scroll_startScrollPos.x - (scroll_mousePosDif.x * scrollPixelsPerScrollbarPixels);
+				this.vScrollableDOM.scrollTop = this.scroll_startScrollPos.y - (scroll_mousePosDif.y * scrollPixelsPerScrollbarPixels);
+			}
+		});
 	};
 	private OnMouseUp = (e)=> {
 		if (!this.state.scrollOp_bar) return;

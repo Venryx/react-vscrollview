@@ -361,24 +361,26 @@ function (_BaseComponentPlus) {
           contentWidth = _this$state.contentWidth,
           contentHeight = _this$state.contentHeight;
       if (!scrollOp_bar) return;
-      var scroll_mousePosDif = {
-        x: e.pageX - _this.scroll_startMousePos.x,
-        y: e.pageY - _this.scroll_startMousePos.y
-      };
+      requestAnimationFrame(function () {
+        var scroll_mousePosDif = {
+          x: e.pageX - _this.scroll_startMousePos.x,
+          y: e.pageY - _this.scroll_startMousePos.y
+        };
 
-      if (scrollOp_bar.classList && scrollOp_bar.classList.contains("horizontal")) {
-        var scrollPixelsPerScrollbarPixels = contentWidth / containerWidth;
-        _this.hScrollableDOM.scrollLeft = _this.scroll_startScrollPos.x + scroll_mousePosDif.x * scrollPixelsPerScrollbarPixels;
-      } else if (scrollOp_bar.classList && scrollOp_bar.classList.contains("vertical")) {
-        var _scrollPixelsPerScrollbarPixels = contentHeight / containerHeight;
+        if (scrollOp_bar.classList && scrollOp_bar.classList.contains("horizontal")) {
+          var scrollPixelsPerScrollbarPixels = contentWidth / containerWidth;
+          _this.hScrollableDOM.scrollLeft = _this.scroll_startScrollPos.x + scroll_mousePosDif.x * scrollPixelsPerScrollbarPixels;
+        } else if (scrollOp_bar.classList && scrollOp_bar.classList.contains("vertical")) {
+          var _scrollPixelsPerScrollbarPixels = contentHeight / containerHeight;
 
-        _this.vScrollableDOM.scrollTop = _this.scroll_startScrollPos.y + scroll_mousePosDif.y * _scrollPixelsPerScrollbarPixels;
-      } else {
-        // if left-click dragging on background
-        var _scrollPixelsPerScrollbarPixels2 = 1;
-        _this.hScrollableDOM.scrollLeft = _this.scroll_startScrollPos.x - scroll_mousePosDif.x * _scrollPixelsPerScrollbarPixels2;
-        _this.vScrollableDOM.scrollTop = _this.scroll_startScrollPos.y - scroll_mousePosDif.y * _scrollPixelsPerScrollbarPixels2;
-      }
+          _this.vScrollableDOM.scrollTop = _this.scroll_startScrollPos.y + scroll_mousePosDif.y * _scrollPixelsPerScrollbarPixels;
+        } else {
+          // if left-click dragging on background
+          var _scrollPixelsPerScrollbarPixels2 = 1;
+          _this.hScrollableDOM.scrollLeft = _this.scroll_startScrollPos.x - scroll_mousePosDif.x * _scrollPixelsPerScrollbarPixels2;
+          _this.vScrollableDOM.scrollTop = _this.scroll_startScrollPos.y - scroll_mousePosDif.y * _scrollPixelsPerScrollbarPixels2;
+        }
+      });
     };
 
     _this.OnMouseUp = function (e) {
