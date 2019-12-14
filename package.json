@@ -1,52 +1,40 @@
 {
   "name": "react-vscrollview",
+  "description": "Enhanced scroll-view component for ReactJS.",
   "version": "0.0.4",
-  "description": "ReactJS scroll-view.",
-  "main": "dist/ScrollView.js",
-  "typings": "dist/ScrollView.d.ts",
-  "scripts": {
-    "dev": "webpack-cli --config webpack.config.js --colors --progress --watch",
-    "dist": "babel src/index.jsx -u -o dist/index.js --stage 1 --presets react"
+  "main": "Dist/index.js",
+  "type": "module",
+  "typings": "Dist/index.d.ts",
+  "license": "MIT",
+  "author": {
+    "name": "Venryx",
+    "email": "venryx@gmail.com",
+    "url": "https://venryx.com"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Venryx/react-vscrollview.git"
   },
   "keywords": [
-    "react"
+    "react",
+    "scroll",
+    "scrollview",
+    "scroll-view"
   ],
-  "author": {
-    "name": "Venryx",
-    "email": "venryx@gmail.com",
-    "url": "http://venryx.com"
+  "scripts": {
+    "dev": "tsc --watch",
+    "dist": "tsc"
   },
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/Venryx/react-vscrollview/issues"
-  },
-  "homepage": "https://github.com/Venryx/react-vscrollview",
   "peerDependencies": {
     "react": "^15.3.0",
     "react-dom": "^15.3.0",
     "react-vextensions": "^0.0.1"
   },
   "devDependencies": {
-    "@babel/core": "^7.6.4",
-    "@babel/preset-env": "^7.6.3",
     "@types/react": "^16.9.11",
-    "babel-cli": "^6.4.5",
-    "babel-loader": "^8.0.6",
     "react": "^16.11.0",
     "react-dom": "^16.11.0",
     "react-vextensions": "0.0.7",
-    "style-loader": "^1.0.0",
-    "ts-loader": "^6.2.1",
-    "typescript": "^3.6.4",
-    "webpack": "^4.41.2",
-    "webpack-cli": "^3.3.10",
-    "webpack-dev-server": "^3.9.0"
-  },
-  "dependencies": {
-    "extract-text-webpack-plugin": "^3.0.2"
+    "typescript": "^3.6.4"
   }
 }
