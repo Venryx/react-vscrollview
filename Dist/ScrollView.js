@@ -11,7 +11,7 @@ var __rest = (this && this.__rest) || function (s, e) {
 };
 import React from "react";
 import { Component } from "react";
-import { E, GetDOM, BufferAction, GetHScrollBarHeight, GetVScrollBarWidth, OnVisible } from "./Utils";
+import { E, GetDOM, BufferAction, GetHScrollBarHeight, GetVScrollBarWidth, OnVisible } from "./Utils.js";
 import { RenderSource, BaseComponentPlus } from "react-vextensions";
 export var ScrollSource;
 (function (ScrollSource) {

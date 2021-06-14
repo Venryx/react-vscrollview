@@ -1,6 +1,6 @@
 import React, {WheelEventHandler, KeyboardEventHandler} from "react";
 import {Component} from "react";
-import {Vector2i, E, GetDOM, BufferAction, GetHScrollBarHeight, GetVScrollBarWidth, OnVisible} from "./Utils";
+import {Vector2i, E, GetDOM, BufferAction, GetHScrollBarHeight, GetVScrollBarWidth, OnVisible} from "./Utils.js";
 import {RenderSource, BaseComponentPlus} from "react-vextensions";
 
 export enum ScrollSource {

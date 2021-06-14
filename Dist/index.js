@@ -1,2 +1,2 @@
-export * from "./ScrollView";
+export * from "./ScrollView.js";
 //# sourceMappingURL=index.js.map

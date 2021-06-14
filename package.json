@@ -6,7 +6,7 @@
   "author": "Venryx (https://venryx.com)",
   "repository": "https://github.com/Venryx/react-vscrollview",
   "main": "Dist/index.js",
-  "#type": "module",
+  "type": "module",
   "typings": "Dist/index.d.ts",
   "keywords": [
     "react",

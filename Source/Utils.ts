@@ -1,6 +1,5 @@
 import ReactDOM from "react-dom";
 import {Component} from "react";
-import { BaseComponent } from "react-vextensions";
 
 //declare var $;
 //var $ = (window as any).$;

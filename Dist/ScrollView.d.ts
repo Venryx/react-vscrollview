@@ -1,6 +1,6 @@
 import React from "react";
 import { Component } from "react";
-import { Vector2i } from "./Utils";
+import { Vector2i } from "./Utils.js";
 import { RenderSource } from "react-vextensions";
 export declare enum ScrollSource {
     User_MouseWheel = 0,
