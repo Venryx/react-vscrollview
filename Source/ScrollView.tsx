@@ -1,7 +1,7 @@
 import React, {WheelEventHandler, KeyboardEventHandler} from "react";
 import {Component} from "react";
 import {Vector2i, E, GetDOM, BufferAction, GetHScrollBarHeight, GetVScrollBarWidth, OnVisible} from "./Utils";
-import {BaseComponent, RenderSource, BaseComponentPlus} from "react-vextensions";
+import {RenderSource, BaseComponentPlus} from "react-vextensions";
 
 export enum ScrollSource {
 	User_MouseWheel,

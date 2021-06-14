@@ -2,19 +2,12 @@
   "name": "react-vscrollview",
   "description": "Enhanced scroll-view component for ReactJS.",
   "version": "1.0.0",
-  "main": "Dist/index.js",
-  "type": "module",
-  "typings": "Dist/index.d.ts",
   "license": "MIT",
-  "author": {
-    "name": "Venryx",
-    "email": "venryx@gmail.com",
-    "url": "https://venryx.com"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Venryx/react-vscrollview.git"
-  },
+  "author": "Venryx (https://venryx.com)",
+  "repository": "https://github.com/Venryx/react-vscrollview",
+  "main": "Dist/index.js",
+  "#type": "module",
+  "typings": "Dist/index.d.ts",
   "keywords": [
     "react",
     "scroll",
