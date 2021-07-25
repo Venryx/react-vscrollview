@@ -33,7 +33,7 @@ class Div extends Component {
         return React.createElement("div", Object.assign({}, rest));
     }
 }
-let inFirefox = navigator.userAgent.includes("Firefox");
+const inFirefox = typeof navigator != "undefined" ? navigator.userAgent.includes("Firefox") : false;
 // main
 // ==========
 var styles = {

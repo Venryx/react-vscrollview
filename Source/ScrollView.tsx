@@ -24,7 +24,7 @@ class Div extends Component<{shouldUpdate} & React.HTMLProps<HTMLDivElement>, {}
 	}
 }
 
-let inFirefox = navigator.userAgent.includes("Firefox");
+const inFirefox = typeof navigator != "undefined" ? navigator.userAgent.includes("Firefox") : false;
 
 // main
 // ==========
