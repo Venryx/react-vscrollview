@@ -9,7 +9,6 @@ export declare function BufferAction(minInterval: number, func: Function): any;
 /** If time-since-last-run is above minInterval, run func right away.
  * Else, schedule next-run to occur as soon as the minInterval is passed. */
 export declare function BufferAction(key: string, minInterval: number, func: Function): any;
-export declare function OnVisible(elem: HTMLElement, callback: any, onlyRunOnce: any, triggerIfAlreadyVisible?: boolean): void;
 export interface Vector2i {
     x: number;
     y: number;

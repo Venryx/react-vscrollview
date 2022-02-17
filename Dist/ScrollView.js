@@ -11,7 +11,7 @@ var __rest = (this && this.__rest) || function (s, e) {
 };
 import React from "react";
 import { Component } from "react";
-import { E, GetDOM, BufferAction, GetHScrollBarHeight, GetVScrollBarWidth, OnVisible } from "./Utils.js";
+import { E, GetDOM, BufferAction, GetHScrollBarHeight, GetVScrollBarWidth, Assert } from "./Utils.js";
 import { RenderSource, BaseComponentPlus } from "react-vextensions";
 export var ScrollSource;
 (function (ScrollSource) {
@@ -41,16 +41,18 @@ var styles = {
     root_nonFlex: { height: "100%" },
     content: {
         flex: 1,
-        overflow: "auto", overflowScrolling: "touch",
+        overflow: "auto", overflowScrolling: "touch", // WebkitOverflowScrolling: "touch",
     },
     content_nonFlex: {
-        position: "absolute", left: 0, right: 0, top: 0, bottom: 0,
+        position: "absolute", left: 0, right: 0, top: 0, bottom: 0, // works in safari
     },
     //content_draggable: {cursor: "grab -webkit-grab -moz-grab"},
     //content_dragging: {cursor: "-webkit-grabbing"}, // implemented in <style> tag instead, due to <Div> not being re-rendered (intentionally)
     scrollBar: {
         backgroundColor: "rgba(255,255,255,.3)",
         borderRadius: 5,
+        //":hover": {backgroundColor: "rgba(255,255,255,.7)"},
+        //":focus": {}
     },
     scrollBar_h: { position: "absolute", boxSizing: "border-box", zIndex: 10, height: 8, bottom: 0 },
     scrollBar_v: { position: "absolute", boxSizing: "border-box", zIndex: 10, width: 8, right: 0 },
@@ -81,30 +83,28 @@ export class ScrollView extends BaseComponentPlus({ flex: true, onScroll_addTabI
         this.lastKeyEventTime = 0;
         this.propsJustChanged = false;
         this.sizeJustChanged = false;
-        this.UpdateSize = () => {
+        this.RespondToSizeChanges = () => {
             let container = GetDOM(this);
             let content = GetDOM(this.content);
             if (container == null || content == null)
                 return;
-            /*var containerWidth = container.offsetWidth;
-            var containerHeight = container.offsetHeight;*/
+            let { containerWidth, containerHeight, contentWidth, contentHeight, } = this.state;
+            /*/*var containerWidth = container.offsetWidth;
+            var containerHeight = container.offsetHeight;*#/
             var containerWidth = container.clientWidth;
             var containerHeight = container.clientHeight;
             /*var contentWidth = this.hScrollableDOM.scrollWidth;
-            var contentHeight = this.vScrollableDOM.scrollHeight;*/
+            var contentHeight = this.vScrollableDOM.scrollHeight;*#/
             var contentWidth = content.scrollWidth + parseInt(content.style.marginRight || "0"); // include margin
-            var contentHeight = content.scrollHeight + parseInt(content.style.marginBottom || "0"); // include margin
+            var contentHeight = content.scrollHeight + parseInt(content.style.marginBottom || "0"); // include margin*/
             //Log(`Width: ${contentWidth}/${containerWidth}, Height: ${contentHeight}/${containerHeight}`);
-            if (containerWidth != this.state.containerWidth || containerHeight != this.state.containerHeight
-                || contentWidth != this.state.contentWidth || contentHeight != this.state.contentHeight) {
-                this.sizeJustChanged = true;
-                this.SetState({
-                    containerWidth, containerHeight,
-                    contentWidth, contentHeight,
-                    scrollH_active: contentWidth > containerWidth,
-                    scrollV_active: contentHeight > containerHeight
-                });
-            }
+            /*if (containerWidth != this.state.containerWidth || containerHeight != this.state.containerHeight
+                    || contentWidth != this.state.contentWidth || contentHeight != this.state.contentHeight) {
+                this.sizeJustChanged = true;*/
+            this.SetState({
+                scrollH_active: contentWidth > containerWidth,
+                scrollV_active: contentHeight > containerHeight
+            });
         };
         this.HandleScroll = () => {
             // if not user-initiated event, ignore
@@ -192,7 +192,7 @@ export class ScrollView extends BaseComponentPlus({ flex: true, onScroll_addTabI
         //console.log(`Rendering... ${this.propsJustChanged} ${this.sizeJustChanged}`);
         let classes = ["ScrollView", backgroundDrag && "draggable", scrollOp_bar && "scrollActive", className && className];
         let addTabIndex = onScroll && onScroll_addTabIndex;
-        return (React.createElement("div", Object.assign({}, rest, { className: classes.filter(a => a).join(" "), style: E(styles.root, !flex && styles.root_nonFlex, style), onWheel: (!onKeyDown && !onScroll) ? null : e => {
+        return (React.createElement("div", Object.assign({}, rest, { ref: c => this.root = c, className: classes.filter(a => a).join(" "), style: E(styles.root, !flex && styles.root_nonFlex, style), onWheel: (!onKeyDown && !onScroll) ? null : e => {
                 this.lastMouseWheelTime = Date.now();
                 if (onWheel)
                     return onWheel(e);
@@ -234,16 +234,39 @@ export class ScrollView extends BaseComponentPlus({ flex: true, onScroll_addTabI
 				.ScrollView.draggable > .content { cursor: grab; cursor: -webkit-grab; cursor: -moz-grab; }
 				.ScrollView.draggable.scrollActive > .content { cursor: grabbing !important; cursor: -webkit-grabbing !important; cursor: -moz-grabbing !important; }
 				`),
-            React.createElement(Div, { ref: c => this.content = c, className: "content hideScrollbar", onScroll: this.HandleScroll, tabIndex: addTabIndex ? -1 : null, onMouseDown: this.OnContentMouseDown, onTouchEnd: this.OnTouchEnd, onClick: onClick, style: E(styles.content, /*backgroundDrag && styles.content_draggable,*/ /*scrollOp_bar && styles.content_dragging,*/ !flex && styles.content_nonFlex, inFirefox && scrollH_active && { /*paddingBottom: GetHScrollBarHeight(),*/ marginBottom: -GetHScrollBarHeight() }, inFirefox && scrollV_active && { /*paddingRight: GetVScrollBarWidth(),*/ marginRight: -GetVScrollBarWidth() }, contentStyle), shouldUpdate: () => this.PropsJustChanged || (inFirefox && this.SizeJustChanged) }, children)));
+            React.createElement(Div, { ref: c => this.content = c, className: "content hideScrollbar", onScroll: this.HandleScroll, tabIndex: addTabIndex ? -1 : null, onMouseDown: this.OnContentMouseDown, onTouchEnd: this.OnTouchEnd, onClick: onClick, style: E(styles.content, /*backgroundDrag && styles.content_draggable,*/ /*scrollOp_bar && styles.content_dragging,*/ !flex && styles.content_nonFlex, inFirefox && scrollH_active && { /*paddingBottom: GetHScrollBarHeight(),*/ marginBottom: -GetHScrollBarHeight() }, inFirefox && scrollV_active && { /*paddingRight: GetVScrollBarWidth(),*/ marginRight: -GetVScrollBarWidth() }, contentStyle), shouldUpdate: () => this.PropsJustChanged || (inFirefox && this.SizeJustChanged) },
+                React.createElement("div", { ref: c => this.contentSizeWatcher = c }, children))));
     }
     ComponentDidMount() {
-        window.addEventListener("resize", this.UpdateSize);
+        //window.addEventListener("resize", this.UpdateSize);
         document.addEventListener("mousemove", this.OnMouseMove);
         document.addEventListener("mouseup", this.OnMouseUp);
         //this.UpdateSize();
         this.LoadScroll();
-        this.hScrollableDOM = this.hScrollableDOM || GetDOM(this.content);
-        this.vScrollableDOM = this.vScrollableDOM || GetDOM(this.content);
+        const contentEl = GetDOM(this.content);
+        this.hScrollableDOM = this.hScrollableDOM || contentEl;
+        this.vScrollableDOM = this.vScrollableDOM || contentEl;
+        Assert(this.resizeObserver_container == null && this.resizeObserver_content == null, "Resize-observers from last mount not cleaned up properly!");
+        this.resizeObserver_container = new ResizeObserver(entries => {
+            const entry = entries[0];
+            this.SetState({
+                containerWidth: entry.contentRect.width,
+                containerHeight: entry.contentRect.height,
+            }, () => {
+                this.RespondToSizeChanges();
+            });
+        });
+        this.resizeObserver_container.observe(this.root);
+        this.resizeObserver_content = new ResizeObserver(entries => {
+            const entry = entries[0];
+            this.SetState({
+                contentWidth: entry.contentRect.width,
+                contentHeight: entry.contentRect.height,
+            }, () => {
+                this.RespondToSizeChanges();
+            });
+        });
+        this.resizeObserver_content.observe(this.contentSizeWatcher);
     }
     ComponentDidUpdate() {
         if (!this.propsJustChanged)
@@ -257,7 +280,7 @@ export class ScrollView extends BaseComponentPlus({ flex: true, onScroll_addTabI
         this.vScrollableDOM.scrollTop = this.state.scrollV_pos;
     }
     PostRender(source) {
-        OnVisible(GetDOM(this), this.UpdateSize, true);
+        //OnVisible(GetDOM(this), this.UpdateSize, true);
         // onTouchEndCapture doesn't work consistently, so use native event
         /*FindDOM(this.content).ontouchend = ()=>(console.log("end"), this.OnTouchEnd());
         FindDOM(this.content).ontouchcancel = ()=>(console.log("cancel"), this.OnTouchEnd());
@@ -272,9 +295,11 @@ export class ScrollView extends BaseComponentPlus({ flex: true, onScroll_addTabI
     }
     // for some reason, this gets called even if not really unmounting (or... I don't see why it'd be unmounting, anyway)
     ComponentWillUnmount() {
-        window.removeEventListener("resize", this.UpdateSize);
+        //window.removeEventListener("resize", this.UpdateSize);
         document.removeEventListener("mousemove", this.OnMouseMove);
         document.removeEventListener("mouseup", this.OnMouseUp);
+        this.resizeObserver_container.disconnect();
+        this.resizeObserver_content.disconnect();
     }
     get PropsJustChanged() {
         let result = this.propsJustChanged;
@@ -286,9 +311,6 @@ export class ScrollView extends BaseComponentPlus({ flex: true, onScroll_addTabI
             [nextProps.scrollH_pos != null ? "scrollH_pos" : "na"]: nextProps.scrollH_pos,
             [nextProps.scrollV_pos != null ? "scrollV_pos" : "na"]: nextProps.scrollV_pos
         });
-        // when updating children, we should remeasure the heights to decide whether to toggle scroll enabledness
-        // todo: in the future, have this run in PostRender() or something, as I think setTimeout is not guaranteed to run after the UI is updated 
-        setTimeout(this.UpdateSize);
         this.propsJustChanged = true;
     }
     get SizeJustChanged() {
@@ -303,7 +325,7 @@ export class ScrollView extends BaseComponentPlus({ flex: true, onScroll_addTabI
         if (scrollH_pos != this.state.scrollH_pos || scrollV_pos != this.state.scrollV_pos) {
             this.SetState({ scrollH_pos: scrollH_pos, scrollV_pos: scrollV_pos });
             //this.props.onScroll && this.props.onScroll({x: scrollH_pos, y: scrollV_pos});
-            this.UpdateSize(); // update size info (if changed)
+            //this.UpdateSize(); // update size info (if changed)
         }
     }
     StartScrolling(e) {

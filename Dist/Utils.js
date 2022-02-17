@@ -51,53 +51,6 @@ export function BufferAction(...args) {
         }
     }
 }
-export function OnVisible(elem, callback, onlyRunOnce, triggerIfAlreadyVisible = false) {
-    var options = {
-        keyframes: `
-@keyframes nodeInserted {from {clip: rect(1px, auto, auto, auto); } to {clip: rect(0px, auto, auto, auto); } }
-@-moz-keyframes nodeInserted {from {clip: rect(1px, auto, auto, auto); } to {clip: rect(0px, auto, auto, auto); } }
-@-webkit-keyframes nodeInserted {from {clip: rect(1px, auto, auto, auto); } to {clip: rect(0px, auto, auto, auto); } }
-@-ms-keyframes nodeInserted {from {clip: rect(1px, auto, auto, auto); } to {clip: rect(0px, auto, auto, auto); } }
-@-o-keyframes nodeInserted {from {clip: rect(1px, auto, auto, auto); } to {clip: rect(0px, auto, auto, auto); } }, `,
-    };
-    // if the keyframes aren't present, add them in a style element
-    if (document.querySelector("style.domnodeappear-keyframes") == null) {
-        let style = document.createElement("style");
-        style.className = "domnodeappear-keyframes";
-        style.innerHTML = options.keyframes;
-        document.head.appendChild(style);
-    }
-    // add animation to selected element
-    //$("head").append("<style class=\"" + options.stylesClass + "-animation\">" + options.styles + "</style>")
-    let elIsVisible = !!(elem.offsetWidth || elem.offsetHeight || elem.getClientRects().length); // from jquery source
-    if (triggerIfAlreadyVisible && elIsVisible) {
-        callback();
-        if (onlyRunOnce) // if we were only supposed to run once anyway, we're done already
-            return;
-    }
-    Object.assign(elem.style, { animationName: "nodeInserted", animationDuration: "0.001s" });
-    // on animation start, execute the callback
-    var handler = function (e) {
-        var target = e.target;
-        //if (e.originalEvent.animationName == "nodeInserted" && target.is(options.selector))
-        //Log(e.target);
-        if (e.animationName == "nodeInserted" && e.target == elem) {
-            callback.call(target);
-            if (onlyRunOnce) {
-                Object.assign(elem.style, { animationName: "", animationDuration: "" });
-                document.removeEventListener("animationstart", handler);
-                document.removeEventListener("webkitAnimationStart", handler);
-                document.removeEventListener("oanimationstart", handler);
-                document.removeEventListener("MSAnimationStart", handler);
-            }
-        }
-    };
-    document.addEventListener("animationstart", handler);
-    document.addEventListener("webkitAnimationStart", handler);
-    document.addEventListener("oanimationstart", handler);
-    document.addEventListener("MSAnimationStart", handler);
-}
-;
 let _scrollBarSizes;
 export function GetScrollBarSizes() {
     if (!_scrollBarSizes) {

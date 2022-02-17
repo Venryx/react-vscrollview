@@ -28,6 +28,7 @@
     "react": "^16.11.0",
     "react-dom": "^16.11.0",
     "react-vextensions": "0.0.7",
-    "typescript": "^3.6.4"
-  }
+    "typescript": "^4.5.5"
+  },
+  "dependencies": {}
 }

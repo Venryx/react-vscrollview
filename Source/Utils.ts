@@ -59,7 +59,8 @@ export function BufferAction(...args) {
 	}
 }
 
-export function OnVisible(elem: HTMLElement, callback, onlyRunOnce, triggerIfAlreadyVisible = false) {
+// warning: this function can be really expensive in some cases! (eg. it took 200ms in production map-ui case, I think from the "elIsVisible = ..." line)
+/*export function OnVisible(elem: HTMLElement, callback, onlyRunOnce, triggerIfAlreadyVisible = false) {
 	var options = {
 		keyframes: `
 @keyframes nodeInserted {from {clip: rect(1px, auto, auto, auto); } to {clip: rect(0px, auto, auto, auto); } }
@@ -111,9 +112,6 @@ export function OnVisible(elem: HTMLElement, callback, onlyRunOnce, triggerIfAlr
 	document.addEventListener("webkitAnimationStart", handler);
 	document.addEventListener("oanimationstart", handler);
 	document.addEventListener("MSAnimationStart", handler);
-};
-/*$.fn.OnVisible_WithDelay = function(delay, callback, onlyRunOnce, triggerIfAlreadyVisible) {
-	return this.OnVisible(function() { setTimeout(callback, delay); }, onlyRunOnce, triggerIfAlreadyVisible);
 };*/
 
 export interface Vector2i { x: number; y: number; }
