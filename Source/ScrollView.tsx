@@ -57,7 +57,7 @@ var styles = {
 
 export type ScrollViewProps = {
 	backgroundDrag?: boolean, backgroundDragMatchFunc?: (element: HTMLElement)=>boolean, bufferScrollEventsBy?: number, scrollH_pos?: number, scrollV_pos?: number,
-	className?: string, style?, contentStyle?, scrollHBarStyle?, scrollVBarStyle?, flex?: boolean,
+	className?: string, style?, contentStyle?, contentScaling?: number, contentSizeWatcherStyle?, scrollHBarStyle?, scrollVBarStyle?, flex?: boolean,
 	onMouseDown?, onClick?,
 	onWheel?: WheelEventHandler<HTMLDivElement>, onKeyDown?: KeyboardEventHandler<HTMLDivElement>,
 	onScroll?: (event: React.UIEvent<HTMLDivElement>, source: ScrollSource, pos: Vector2i)=>void,
@@ -69,14 +69,14 @@ export class ScrollView extends BaseComponentPlus(
 	{flex: true, onScroll_addTabIndex: true} as ScrollViewProps,
 	{
 		containerWidth: 0,
-		contentWidth: 0,
+		contentWidth_unscaled: 0,
 		scrollH_active: false,
 		//scrollH_pos: this.props.scrollH_pos,
 		scrollH_pos: null as number,
 		scrollHBar_hovered: false,
 
 		containerHeight: 0,
-		contentHeight: 0,
+		contentHeight_unscaled: 0,
 		scrollV_active: false,
 		//scrollV_pos: this.props.scrollV_pos
 		scrollV_pos: null as number,
@@ -95,13 +95,20 @@ export class ScrollView extends BaseComponentPlus(
 	lastMouseWheelTime = 0;
 	lastKeyEventTime = 0;
 
+	get ContentWidth() {
+		return this.state.contentWidth_unscaled * (this.props.contentScaling ?? 1);
+	}
+	get ContentHeight() {
+		return this.state.contentHeight_unscaled * (this.props.contentScaling ?? 1);
+	}
+
 	render() {
 		var {backgroundDrag,  backgroundDragMatchFunc, bufferScrollEventsBy, scrollH_pos, scrollV_pos,
-			className, style, contentStyle, scrollHBarStyle, scrollVBarStyle, flex,
+			className, style, contentStyle, contentScaling, contentSizeWatcherStyle, scrollHBarStyle, scrollVBarStyle, flex,
 			onMouseDown, onClick,
 			onWheel, onKeyDown, onScroll, onScroll_addTabIndex, onScrollEnd, children, ...rest} = this.props;
 		children = children instanceof Array ? children : [children];
-		var {containerWidth, containerHeight, contentWidth, contentHeight,
+		var {containerWidth, containerHeight, contentWidth_unscaled, contentHeight_unscaled,
 			 scrollH_active, scrollH_pos, scrollV_active, scrollV_pos, scrollOp_bar} = this.state;
 
 		//let scrollbarVisibilityChanged = scrollH_active != this._lastState.scrollH_active || scrollV_active != this._lastState.scrollV_active;
@@ -150,7 +157,7 @@ export class ScrollView extends BaseComponentPlus(
 						style={E(
 							styles.scrollBar, styles.scrollBar_h,
 							(this.state.scrollHBar_hovered || (scrollOp_bar && scrollOp_bar == this.scrollHBar)) && styles.scrollBar_active,
-							{width: `${containerWidth/contentWidth * 100}%`, left: ((scrollH_pos / contentWidth) * 100) + "%", pointerEvents: "all"},
+							{width: `${(containerWidth / this.ContentWidth) * 100}%`, left: ((scrollH_pos / this.ContentWidth) * 100) + "%", pointerEvents: "all"},
 							scrollHBarStyle,
 						)}/>
 				</div>}
@@ -161,7 +168,7 @@ export class ScrollView extends BaseComponentPlus(
 						style={E(
 							styles.scrollBar, styles.scrollBar_v,
 							(this.state.scrollVBar_hovered || (scrollOp_bar && scrollOp_bar == this.scrollVBar)) && styles.scrollBar_active,
-							{height: `${containerHeight/contentHeight * 100}%`, top: ((scrollV_pos / contentHeight) * 100) + "%", pointerEvents: "all"},
+							{height: `${(containerHeight / this.ContentHeight) * 100}%`, top: ((scrollV_pos / this.ContentHeight) * 100) + "%", pointerEvents: "all"},
 							scrollVBarStyle,
 						)}/>
 				</div>}
@@ -182,7 +189,10 @@ export class ScrollView extends BaseComponentPlus(
 					)}
 					shouldUpdate={()=>this.PropsJustChanged || (inFirefox && this.SizeJustChanged)}
 				>
-					<div ref={c=>this.contentSizeWatcher = c}>
+					<div ref={c=>this.contentSizeWatcher = c} style={E(
+						{position: "relative", width: "fit-content", height: "fit-content"},
+						contentSizeWatcherStyle,
+					)}>
 						{children}
 					</div>
 				</Div>
@@ -218,8 +228,8 @@ export class ScrollView extends BaseComponentPlus(
 		this.resizeObserver_content = new ResizeObserver(entries=>{
 			const entry = entries[0];
 			this.SetState({
-				contentWidth: entry.contentRect.width,
-				contentHeight: entry.contentRect.height,
+				contentWidth_unscaled: entry.contentRect.width,
+				contentHeight_unscaled: entry.contentRect.height,
 			}, ()=>{
 				this.RespondToSizeChanges();
 			});
@@ -228,6 +238,7 @@ export class ScrollView extends BaseComponentPlus(
 	}
 	ComponentDidUpdate() {
 		if (!this.propsJustChanged) return; // if was just a scroll-update, ignore
+		this.RespondToSizeChanges(); // contentScaling may have changed, so just always call this (it's cheap)
 		this.LoadScroll();
 	}
 	LoadScroll() {
@@ -290,7 +301,7 @@ export class ScrollView extends BaseComponentPlus(
 		
 		let {
 			containerWidth, containerHeight,
-			contentWidth, contentHeight,
+			contentWidth_unscaled, contentHeight_unscaled,
 		} = this.state;
 
 		/*/*var containerWidth = container.offsetWidth;
@@ -308,8 +319,8 @@ export class ScrollView extends BaseComponentPlus(
 				|| contentWidth != this.state.contentWidth || contentHeight != this.state.contentHeight) {
 			this.sizeJustChanged = true;*/
 		this.SetState({
-			scrollH_active: contentWidth > containerWidth,
-			scrollV_active: contentHeight > containerHeight
+			scrollH_active: this.ContentWidth > containerWidth,
+			scrollV_active: this.ContentHeight > containerHeight
 		});
 	};
 	
@@ -370,17 +381,17 @@ export class ScrollView extends BaseComponentPlus(
 	hScrollableDOM: Element;
 	vScrollableDOM: Element;
 	private OnMouseMove = (e)=> {
-		let {scrollOp_bar, containerWidth, containerHeight, contentWidth, contentHeight} = this.state;
+		let {scrollOp_bar, containerWidth, containerHeight} = this.state;
 		if (!scrollOp_bar) return;
 
 		requestAnimationFrame(()=> {
 			var scroll_mousePosDif = {x: e.pageX - this.scroll_startMousePos.x, y: e.pageY - this.scroll_startMousePos.y};
 		
 			if (scrollOp_bar.classList && scrollOp_bar.classList.contains("horizontal")) {
-				let scrollPixelsPerScrollbarPixels = contentWidth / containerWidth;
+				let scrollPixelsPerScrollbarPixels = this.ContentWidth / containerWidth;
 				this.hScrollableDOM.scrollLeft = this.scroll_startScrollPos.x + (scroll_mousePosDif.x * scrollPixelsPerScrollbarPixels);
 			} else if (scrollOp_bar.classList && scrollOp_bar.classList.contains("vertical")) {
-				let scrollPixelsPerScrollbarPixels = contentHeight / containerHeight;
+				let scrollPixelsPerScrollbarPixels = this.ContentHeight / containerHeight;
 				this.vScrollableDOM.scrollTop = this.scroll_startScrollPos.y + (scroll_mousePosDif.y * scrollPixelsPerScrollbarPixels);
 			} else { // if left-click dragging on background
 				let scrollPixelsPerScrollbarPixels = 1;
