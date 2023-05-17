@@ -23,7 +23,6 @@ export declare type ScrollViewProps = {
     className?: string;
     style?: any;
     contentStyle?: any;
-    contentScaling?: number;
     contentSizeWatcherStyle?: any;
     scrollHBarStyle?: any;
     scrollVBarStyle?: any;
@@ -38,12 +37,12 @@ export declare type ScrollViewProps = {
 } & Omit<React.HTMLProps<HTMLDivElement>, "onScroll">;
 declare const ScrollView_base: (new (..._: any[]) => import("react-vextensions").BaseComponent<ScrollViewProps, {
     containerWidth: number;
-    contentWidth_unscaled: number;
+    contentWidth: number;
     scrollH_active: boolean;
     scrollH_pos: number;
     scrollHBar_hovered: boolean;
     containerHeight: number;
-    contentHeight_unscaled: number;
+    contentHeight: number;
     scrollV_active: boolean;
     scrollV_pos: number;
     scrollVBar_hovered: boolean;
@@ -60,8 +59,6 @@ export declare class ScrollView extends ScrollView_base {
     scrollVBar: HTMLDivElement;
     lastMouseWheelTime: number;
     lastKeyEventTime: number;
-    get ContentWidth(): number;
-    get ContentHeight(): number;
     render(): JSX.Element;
     resizeObserver_container: ResizeObserver;
     resizeObserver_content: ResizeObserver;

@@ -63,13 +63,13 @@ var styles = {
 };
 export class ScrollView extends BaseComponentPlus({ flex: true, onScroll_addTabIndex: true }, {
     containerWidth: 0,
-    contentWidth_unscaled: 0,
+    contentWidth: 0,
     scrollH_active: false,
     //scrollH_pos: this.props.scrollH_pos,
     scrollH_pos: null,
     scrollHBar_hovered: false,
     containerHeight: 0,
-    contentHeight_unscaled: 0,
+    contentHeight: 0,
     scrollV_active: false,
     //scrollV_pos: this.props.scrollV_pos
     scrollV_pos: null,
@@ -88,7 +88,7 @@ export class ScrollView extends BaseComponentPlus({ flex: true, onScroll_addTabI
             let content = GetDOM(this.content);
             if (container == null || content == null)
                 return;
-            let { containerWidth, containerHeight, contentWidth_unscaled, contentHeight_unscaled, } = this.state;
+            let { containerWidth, containerHeight, contentWidth, contentHeight, } = this.state;
             /*/*var containerWidth = container.offsetWidth;
             var containerHeight = container.offsetHeight;*#/
             var containerWidth = container.clientWidth;
@@ -102,8 +102,8 @@ export class ScrollView extends BaseComponentPlus({ flex: true, onScroll_addTabI
                     || contentWidth != this.state.contentWidth || contentHeight != this.state.contentHeight) {
                 this.sizeJustChanged = true;*/
             this.SetState({
-                scrollH_active: this.ContentWidth > containerWidth,
-                scrollV_active: this.ContentHeight > containerHeight
+                scrollH_active: contentWidth > containerWidth,
+                scrollV_active: contentHeight > containerHeight
             });
         };
         this.HandleScroll = () => {
@@ -143,17 +143,17 @@ export class ScrollView extends BaseComponentPlus({ flex: true, onScroll_addTabI
             this.StartScrolling(e);
         };
         this.OnMouseMove = (e) => {
-            let { scrollOp_bar, containerWidth, containerHeight } = this.state;
+            let { scrollOp_bar, containerWidth, containerHeight, contentWidth, contentHeight } = this.state;
             if (!scrollOp_bar)
                 return;
             requestAnimationFrame(() => {
                 var scroll_mousePosDif = { x: e.pageX - this.scroll_startMousePos.x, y: e.pageY - this.scroll_startMousePos.y };
                 if (scrollOp_bar.classList && scrollOp_bar.classList.contains("horizontal")) {
-                    let scrollPixelsPerScrollbarPixels = this.ContentWidth / containerWidth;
+                    let scrollPixelsPerScrollbarPixels = contentWidth / containerWidth;
                     this.hScrollableDOM.scrollLeft = this.scroll_startScrollPos.x + (scroll_mousePosDif.x * scrollPixelsPerScrollbarPixels);
                 }
                 else if (scrollOp_bar.classList && scrollOp_bar.classList.contains("vertical")) {
-                    let scrollPixelsPerScrollbarPixels = this.ContentHeight / containerHeight;
+                    let scrollPixelsPerScrollbarPixels = contentHeight / containerHeight;
                     this.vScrollableDOM.scrollTop = this.scroll_startScrollPos.y + (scroll_mousePosDif.y * scrollPixelsPerScrollbarPixels);
                 }
                 else { // if left-click dragging on background
@@ -181,18 +181,10 @@ export class ScrollView extends BaseComponentPlus({ flex: true, onScroll_addTabI
             }
         };
     }
-    get ContentWidth() {
-        var _a;
-        return this.state.contentWidth_unscaled * ((_a = this.props.contentScaling) !== null && _a !== void 0 ? _a : 1);
-    }
-    get ContentHeight() {
-        var _a;
-        return this.state.contentHeight_unscaled * ((_a = this.props.contentScaling) !== null && _a !== void 0 ? _a : 1);
-    }
     render() {
-        var _a = this.props, { backgroundDrag, backgroundDragMatchFunc, bufferScrollEventsBy, scrollH_pos, scrollV_pos, className, style, contentStyle, contentScaling, contentSizeWatcherStyle, scrollHBarStyle, scrollVBarStyle, flex, onMouseDown, onClick, onWheel, onKeyDown, onScroll, onScroll_addTabIndex, onScrollEnd, children } = _a, rest = __rest(_a, ["backgroundDrag", "backgroundDragMatchFunc", "bufferScrollEventsBy", "scrollH_pos", "scrollV_pos", "className", "style", "contentStyle", "contentScaling", "contentSizeWatcherStyle", "scrollHBarStyle", "scrollVBarStyle", "flex", "onMouseDown", "onClick", "onWheel", "onKeyDown", "onScroll", "onScroll_addTabIndex", "onScrollEnd", "children"]);
+        var _a = this.props, { backgroundDrag, backgroundDragMatchFunc, bufferScrollEventsBy, scrollH_pos, scrollV_pos, className, style, contentStyle, contentSizeWatcherStyle, scrollHBarStyle, scrollVBarStyle, flex, onMouseDown, onClick, onWheel, onKeyDown, onScroll, onScroll_addTabIndex, onScrollEnd, children } = _a, rest = __rest(_a, ["backgroundDrag", "backgroundDragMatchFunc", "bufferScrollEventsBy", "scrollH_pos", "scrollV_pos", "className", "style", "contentStyle", "contentSizeWatcherStyle", "scrollHBarStyle", "scrollVBarStyle", "flex", "onMouseDown", "onClick", "onWheel", "onKeyDown", "onScroll", "onScroll_addTabIndex", "onScrollEnd", "children"]);
         children = children instanceof Array ? children : [children];
-        var { containerWidth, containerHeight, contentWidth_unscaled, contentHeight_unscaled, scrollH_active, scrollH_pos, scrollV_active, scrollV_pos, scrollOp_bar } = this.state;
+        var { containerWidth, containerHeight, contentWidth, contentHeight, scrollH_active, scrollH_pos, scrollV_active, scrollV_pos, scrollOp_bar } = this.state;
         //let scrollbarVisibilityChanged = scrollH_active != this._lastState.scrollH_active || scrollV_active != this._lastState.scrollV_active;
         /*let scrollbarVisibilityChanged = containerWidth != this._lastState.containerWidth || containerHeight != this._lastState.containerHeight
             || contentWidth != this._lastState.contentWidth || contentHeight != this._lastState.contentHeight;
@@ -233,10 +225,10 @@ export class ScrollView extends BaseComponentPlus({ flex: true, onScroll_addTabI
             } }),
             scrollH_active &&
                 React.createElement("div", { className: "scrollTrack horizontal", style: E(styles.scrollTrack, styles.scrollTrack_h) },
-                    React.createElement("div", { ref: c => this.scrollHBar = c, className: "scrollBar horizontal", onMouseDown: this.OnScrollbarMouseDown, onMouseOver: () => this.SetState({ scrollHBar_hovered: true }), onMouseOut: () => this.SetState({ scrollHBar_hovered: false }), style: E(styles.scrollBar, styles.scrollBar_h, (this.state.scrollHBar_hovered || (scrollOp_bar && scrollOp_bar == this.scrollHBar)) && styles.scrollBar_active, { width: `${(containerWidth / this.ContentWidth) * 100}%`, left: ((scrollH_pos / this.ContentWidth) * 100) + "%", pointerEvents: "all" }, scrollHBarStyle) })),
+                    React.createElement("div", { ref: c => this.scrollHBar = c, className: "scrollBar horizontal", onMouseDown: this.OnScrollbarMouseDown, onMouseOver: () => this.SetState({ scrollHBar_hovered: true }), onMouseOut: () => this.SetState({ scrollHBar_hovered: false }), style: E(styles.scrollBar, styles.scrollBar_h, (this.state.scrollHBar_hovered || (scrollOp_bar && scrollOp_bar == this.scrollHBar)) && styles.scrollBar_active, { width: `${(containerWidth / contentWidth) * 100}%`, left: ((scrollH_pos / contentWidth) * 100) + "%", pointerEvents: "all" }, scrollHBarStyle) })),
             scrollV_active &&
                 React.createElement("div", { className: "scrollTrack vertical", style: E(styles.scrollTrack, styles.scrollTrack_v) },
-                    React.createElement("div", { ref: c => this.scrollVBar = c, className: "scrollBar vertical", onMouseDown: this.OnScrollbarMouseDown, onMouseOver: () => this.SetState({ scrollVBar_hovered: true }), onMouseOut: () => this.SetState({ scrollVBar_hovered: false }), style: E(styles.scrollBar, styles.scrollBar_v, (this.state.scrollVBar_hovered || (scrollOp_bar && scrollOp_bar == this.scrollVBar)) && styles.scrollBar_active, { height: `${(containerHeight / this.ContentHeight) * 100}%`, top: ((scrollV_pos / this.ContentHeight) * 100) + "%", pointerEvents: "all" }, scrollVBarStyle) })),
+                    React.createElement("div", { ref: c => this.scrollVBar = c, className: "scrollBar vertical", onMouseDown: this.OnScrollbarMouseDown, onMouseOver: () => this.SetState({ scrollVBar_hovered: true }), onMouseOut: () => this.SetState({ scrollVBar_hovered: false }), style: E(styles.scrollBar, styles.scrollBar_v, (this.state.scrollVBar_hovered || (scrollOp_bar && scrollOp_bar == this.scrollVBar)) && styles.scrollBar_active, { height: `${(containerHeight / contentHeight) * 100}%`, top: ((scrollV_pos / contentHeight) * 100) + "%", pointerEvents: "all" }, scrollVBarStyle) })),
             React.createElement("style", null, `
 				.hideScrollbar::-webkit-scrollbar { width: 0px; height: 0px; background: transparent; }
 				.ScrollView.draggable > .content { cursor: grab; cursor: -webkit-grab; cursor: -moz-grab; }
@@ -268,8 +260,8 @@ export class ScrollView extends BaseComponentPlus({ flex: true, onScroll_addTabI
         this.resizeObserver_content = new ResizeObserver(entries => {
             const entry = entries[0];
             this.SetState({
-                contentWidth_unscaled: entry.contentRect.width,
-                contentHeight_unscaled: entry.contentRect.height,
+                contentWidth: entry.contentRect.width,
+                contentHeight: entry.contentRect.height,
             }, () => {
                 this.RespondToSizeChanges();
             });
