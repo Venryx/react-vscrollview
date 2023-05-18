@@ -235,7 +235,7 @@ export class ScrollView extends BaseComponentPlus({ flex: true, onScroll_addTabI
 				.ScrollView.draggable.scrollActive > .content { cursor: grabbing !important; cursor: -webkit-grabbing !important; cursor: -moz-grabbing !important; }
 				`),
             React.createElement(Div, { ref: c => this.content = c, className: "content hideScrollbar", onScroll: this.HandleScroll, tabIndex: addTabIndex ? -1 : null, onMouseDown: this.OnContentMouseDown, onTouchEnd: this.OnTouchEnd, onClick: onClick, style: E(styles.content, /*backgroundDrag && styles.content_draggable,*/ /*scrollOp_bar && styles.content_dragging,*/ !flex && styles.content_nonFlex, inFirefox && scrollH_active && { /*paddingBottom: GetHScrollBarHeight(),*/ marginBottom: -GetHScrollBarHeight() }, inFirefox && scrollV_active && { /*paddingRight: GetVScrollBarWidth(),*/ marginRight: -GetVScrollBarWidth() }, contentStyle), shouldUpdate: () => this.PropsJustChanged || (inFirefox && this.SizeJustChanged) },
-                React.createElement("div", { ref: c => this.contentSizeWatcher = c, style: E({ position: "relative", width: "fit-content", height: "fit-content" }, contentSizeWatcherStyle) }, children))));
+                React.createElement("div", { ref: c => this.contentSizeWatcher = c, style: E({ position: "relative", minWidth: "fit-content", minHeight: "fit-content" }, contentSizeWatcherStyle) }, children))));
     }
     ComponentDidMount() {
         //window.addEventListener("resize", this.UpdateSize);

@@ -183,7 +183,7 @@ export class ScrollView extends BaseComponentPlus(
 					shouldUpdate={()=>this.PropsJustChanged || (inFirefox && this.SizeJustChanged)}
 				>
 					<div ref={c=>this.contentSizeWatcher = c} style={E(
-						{position: "relative", width: "fit-content", height: "fit-content"},
+						{position: "relative", minWidth: "fit-content", minHeight: "fit-content"},
 						contentSizeWatcherStyle,
 					)}>
 						{children}
