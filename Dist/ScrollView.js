@@ -12,7 +12,7 @@ var __rest = (this && this.__rest) || function (s, e) {
 import React from "react";
 import { Component } from "react";
 import { E, GetDOM, BufferAction, GetHScrollBarHeight, GetVScrollBarWidth, Assert } from "./Utils.js";
-import { RenderSource, BaseComponentPlus } from "react-vextensions";
+import { RenderSource, BaseComponent } from "react-vextensions";
 export var ScrollSource;
 (function (ScrollSource) {
     ScrollSource[ScrollSource["User_MouseWheel"] = 0] = "User_MouseWheel";
@@ -61,21 +61,7 @@ var styles = {
     scrollTrack_h: { left: 0, right: 0, bottom: 0, height: 8 },
     scrollTrack_v: { right: 0, top: 0, bottom: 0, width: 8 },
 };
-export class ScrollView extends BaseComponentPlus({ flex: true, onScroll_addTabIndex: true }, {
-    containerWidth: 0,
-    contentWidth: 0,
-    scrollH_active: false,
-    //scrollH_pos: this.props.scrollH_pos,
-    scrollH_pos: null,
-    scrollHBar_hovered: false,
-    containerHeight: 0,
-    contentHeight: 0,
-    scrollV_active: false,
-    //scrollV_pos: this.props.scrollV_pos
-    scrollV_pos: null,
-    scrollVBar_hovered: false,
-    scrollOp_bar: null,
-}) {
+export class ScrollView extends BaseComponent {
     constructor() {
         super(...arguments);
         //_lastState = {} as any; // to fix edge case, for when using "marginRight: -17" to hide scroll-bar

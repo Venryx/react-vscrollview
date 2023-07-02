@@ -1,7 +1,7 @@
 import React, { WheelEventHandler, KeyboardEventHandler } from "react";
 import { Component } from "react";
 import { Vector2i } from "./Utils.js";
-import { RenderSource } from "react-vextensions";
+import { RenderSource, BaseComponent } from "react-vextensions";
 export declare enum ScrollSource {
     User_MouseWheel = 0,
     User_MouseDrag = 1,
@@ -12,7 +12,7 @@ declare class Div extends Component<{
     shouldUpdate: any;
 } & React.HTMLProps<HTMLDivElement>, {}> {
     shouldComponentUpdate(nextProps: any, nextState: any): any;
-    render(): React.JSX.Element;
+    render(): JSX.Element;
 }
 export declare type ScrollViewProps = {
     backgroundDrag?: boolean;
@@ -35,7 +35,7 @@ export declare type ScrollViewProps = {
     onScroll_addTabIndex?: boolean;
     onScrollEnd?: (pos: Vector2i) => void;
 } & Omit<React.HTMLProps<HTMLDivElement>, "onScroll">;
-declare const ScrollView_base: (new (..._: any[]) => import("react-vextensions").BaseComponent<ScrollViewProps, {
+export declare class ScrollView extends BaseComponent<ScrollViewProps, {
     containerWidth: number;
     contentWidth: number;
     scrollH_active: boolean;
@@ -47,11 +47,7 @@ declare const ScrollView_base: (new (..._: any[]) => import("react-vextensions")
     scrollV_pos: number;
     scrollVBar_hovered: boolean;
     scrollOp_bar: HTMLElement;
-}, object>) & {
-    renderCount: number;
-    lastRenderTime: number;
-};
-export declare class ScrollView extends ScrollView_base {
+}> {
     root: HTMLDivElement;
     content: Div;
     contentSizeWatcher: HTMLDivElement;
@@ -59,7 +55,7 @@ export declare class ScrollView extends ScrollView_base {
     scrollVBar: HTMLDivElement;
     lastMouseWheelTime: number;
     lastKeyEventTime: number;
-    render(): React.JSX.Element;
+    render(): JSX.Element;
     resizeObserver_container: ResizeObserver;
     resizeObserver_content: ResizeObserver;
     ComponentDidMount(): void;

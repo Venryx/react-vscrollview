@@ -1,7 +1,7 @@
 import React, {WheelEventHandler, KeyboardEventHandler} from "react";
 import {Component} from "react";
 import {Vector2i, E, GetDOM, BufferAction, GetHScrollBarHeight, GetVScrollBarWidth, Assert} from "./Utils.js";
-import {RenderSource, BaseComponentPlus} from "react-vextensions";
+import {RenderSource, BaseComponentPlus, BaseComponent} from "react-vextensions";
 
 export enum ScrollSource {
 	User_MouseWheel,
@@ -65,26 +65,26 @@ export type ScrollViewProps = {
 	onScrollEnd?: (pos: Vector2i)=>void,
 } & Omit<React.HTMLProps<HTMLDivElement>, "onScroll">;
 
-export class ScrollView extends BaseComponentPlus(
-	{flex: true, onScroll_addTabIndex: true} as ScrollViewProps,
+export class ScrollView extends BaseComponent<
+	ScrollViewProps,
 	{
-		containerWidth: 0,
-		contentWidth: 0,
-		scrollH_active: false,
+		containerWidth: number,
+		contentWidth: number,
+		scrollH_active: boolean,
 		//scrollH_pos: this.props.scrollH_pos,
-		scrollH_pos: null as number,
-		scrollHBar_hovered: false,
+		scrollH_pos: number,
+		scrollHBar_hovered: boolean,
 
-		containerHeight: 0,
-		contentHeight: 0,
-		scrollV_active: false,
+		containerHeight: number,
+		contentHeight: number,
+		scrollV_active: boolean,
 		//scrollV_pos: this.props.scrollV_pos
-		scrollV_pos: null as number,
-		scrollVBar_hovered: false,
+		scrollV_pos: number,
+		scrollVBar_hovered: boolean,
 
-		scrollOp_bar: null as HTMLElement,
-	},
-) {
+		scrollOp_bar: HTMLElement,
+	}
+> {
 	root: HTMLDivElement;
 	content: Div;
 	contentSizeWatcher: HTMLDivElement;
