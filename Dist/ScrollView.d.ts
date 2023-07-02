@@ -12,7 +12,7 @@ declare class Div extends Component<{
     shouldUpdate: any;
 } & React.HTMLProps<HTMLDivElement>, {}> {
     shouldComponentUpdate(nextProps: any, nextState: any): any;
-    render(): JSX.Element;
+    render(): React.JSX.Element;
 }
 export declare type ScrollViewProps = {
     backgroundDrag?: boolean;
@@ -47,7 +47,7 @@ declare const ScrollView_base: (new (..._: any[]) => import("react-vextensions")
     scrollV_pos: number;
     scrollVBar_hovered: boolean;
     scrollOp_bar: HTMLElement;
-}, unknown>) & {
+}, object>) & {
     renderCount: number;
     lastRenderTime: number;
 };
@@ -59,7 +59,7 @@ export declare class ScrollView extends ScrollView_base {
     scrollVBar: HTMLDivElement;
     lastMouseWheelTime: number;
     lastKeyEventTime: number;
-    render(): JSX.Element;
+    render(): React.JSX.Element;
     resizeObserver_container: ResizeObserver;
     resizeObserver_content: ResizeObserver;
     ComponentDidMount(): void;
