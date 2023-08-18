@@ -22,8 +22,8 @@ export declare type ScrollViewProps = {
     scrollV_pos?: number;
     className?: string;
     style?: any;
+    contentOuterStyle?: any;
     contentStyle?: any;
-    contentSizeWatcherStyle?: any;
     scrollHBarStyle?: any;
     scrollVBarStyle?: any;
     flex?: boolean;
@@ -53,8 +53,8 @@ declare const ScrollView_base: (new (..._: any[]) => import("react-vextensions")
 };
 export declare class ScrollView extends ScrollView_base {
     root: HTMLDivElement;
-    content: Div;
-    contentSizeWatcher: HTMLDivElement;
+    contentOuter: Div;
+    content: HTMLDivElement;
     scrollHBar: HTMLDivElement;
     scrollVBar: HTMLDivElement;
     lastMouseWheelTime: number;

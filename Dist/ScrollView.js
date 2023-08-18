@@ -85,7 +85,7 @@ export class ScrollView extends BaseComponentPlus({ flex: true, onScroll_addTabI
         this.sizeJustChanged = false;
         this.RespondToSizeChanges = () => {
             let container = GetDOM(this);
-            let content = GetDOM(this.content);
+            let content = GetDOM(this.contentOuter);
             if (container == null || content == null)
                 return;
             let { containerWidth, containerHeight, contentWidth, contentHeight, } = this.state;
@@ -129,7 +129,7 @@ export class ScrollView extends BaseComponentPlus({ flex: true, onScroll_addTabI
                 var firstScrollViewParent = nodePlusParents.find(b => b.className.split(" ").indexOf("ScrollView") != -1);
                 if (firstScrollViewParent == null || firstScrollViewParent[0] != GetDOM(this))
                     return false;
-                return a.className.split(" ").indexOf("content") != -1 || (GetDOM(this.content) && a == GetDOM(this.content)); // || a == this.state.svgRoot;
+                return a.className.split(" ").indexOf("content") != -1 || (GetDOM(this.contentOuter) && a == GetDOM(this.contentOuter)); // || a == this.state.svgRoot;
             });
             if (!backgroundDragMatchFunc(e.target))
                 return;
@@ -182,7 +182,7 @@ export class ScrollView extends BaseComponentPlus({ flex: true, onScroll_addTabI
         };
     }
     render() {
-        var _a = this.props, { backgroundDrag, backgroundDragMatchFunc, bufferScrollEventsBy, scrollH_pos, scrollV_pos, className, style, contentStyle, contentSizeWatcherStyle, scrollHBarStyle, scrollVBarStyle, flex, onMouseDown, onClick, onWheel, onKeyDown, onScroll, onScroll_addTabIndex, onScrollEnd, children } = _a, rest = __rest(_a, ["backgroundDrag", "backgroundDragMatchFunc", "bufferScrollEventsBy", "scrollH_pos", "scrollV_pos", "className", "style", "contentStyle", "contentSizeWatcherStyle", "scrollHBarStyle", "scrollVBarStyle", "flex", "onMouseDown", "onClick", "onWheel", "onKeyDown", "onScroll", "onScroll_addTabIndex", "onScrollEnd", "children"]);
+        var _a = this.props, { backgroundDrag, backgroundDragMatchFunc, bufferScrollEventsBy, scrollH_pos, scrollV_pos, className, style, contentOuterStyle, contentStyle, scrollHBarStyle, scrollVBarStyle, flex, onMouseDown, onClick, onWheel, onKeyDown, onScroll, onScroll_addTabIndex, onScrollEnd, children } = _a, rest = __rest(_a, ["backgroundDrag", "backgroundDragMatchFunc", "bufferScrollEventsBy", "scrollH_pos", "scrollV_pos", "className", "style", "contentOuterStyle", "contentStyle", "scrollHBarStyle", "scrollVBarStyle", "flex", "onMouseDown", "onClick", "onWheel", "onKeyDown", "onScroll", "onScroll_addTabIndex", "onScrollEnd", "children"]);
         children = children instanceof Array ? children : [children];
         var { containerWidth, containerHeight, contentWidth, contentHeight, scrollH_active, scrollH_pos, scrollV_active, scrollV_pos, scrollOp_bar } = this.state;
         //let scrollbarVisibilityChanged = scrollH_active != this._lastState.scrollH_active || scrollV_active != this._lastState.scrollV_active;
@@ -234,8 +234,8 @@ export class ScrollView extends BaseComponentPlus({ flex: true, onScroll_addTabI
 				.ScrollView.draggable > .content { cursor: grab; cursor: -webkit-grab; cursor: -moz-grab; }
 				.ScrollView.draggable.scrollActive > .content { cursor: grabbing !important; cursor: -webkit-grabbing !important; cursor: -moz-grabbing !important; }
 				`),
-            React.createElement(Div, { ref: c => this.content = c, className: "content hideScrollbar", onScroll: this.HandleScroll, tabIndex: addTabIndex ? -1 : null, onMouseDown: this.OnContentMouseDown, onTouchEnd: this.OnTouchEnd, onClick: onClick, style: E(styles.content, /*backgroundDrag && styles.content_draggable,*/ /*scrollOp_bar && styles.content_dragging,*/ !flex && styles.content_nonFlex, inFirefox && scrollH_active && { /*paddingBottom: GetHScrollBarHeight(),*/ marginBottom: -GetHScrollBarHeight() }, inFirefox && scrollV_active && { /*paddingRight: GetVScrollBarWidth(),*/ marginRight: -GetVScrollBarWidth() }, contentStyle), shouldUpdate: () => this.PropsJustChanged || (inFirefox && this.SizeJustChanged) },
-                React.createElement("div", { ref: c => this.contentSizeWatcher = c, style: E({ position: "relative", minWidth: "fit-content", minHeight: "fit-content" }, contentSizeWatcherStyle) }, children))));
+            React.createElement(Div, { ref: c => this.contentOuter = c, className: "contentOuter hideScrollbar", onScroll: this.HandleScroll, tabIndex: addTabIndex ? -1 : null, onMouseDown: this.OnContentMouseDown, onTouchEnd: this.OnTouchEnd, onClick: onClick, style: E(styles.content, /*backgroundDrag && styles.content_draggable,*/ /*scrollOp_bar && styles.content_dragging,*/ !flex && styles.content_nonFlex, inFirefox && scrollH_active && { /*paddingBottom: GetHScrollBarHeight(),*/ marginBottom: -GetHScrollBarHeight() }, inFirefox && scrollV_active && { /*paddingRight: GetVScrollBarWidth(),*/ marginRight: -GetVScrollBarWidth() }, contentOuterStyle), shouldUpdate: () => this.PropsJustChanged || (inFirefox && this.SizeJustChanged) },
+                React.createElement("div", { ref: c => this.content = c, className: "content", style: E({ position: "relative", minWidth: "fit-content", minHeight: "fit-content" }, contentStyle) }, children))));
     }
     ComponentDidMount() {
         //window.addEventListener("resize", this.UpdateSize);
@@ -243,7 +243,7 @@ export class ScrollView extends BaseComponentPlus({ flex: true, onScroll_addTabI
         document.addEventListener("mouseup", this.OnMouseUp);
         //this.UpdateSize();
         this.LoadScroll();
-        const contentEl = GetDOM(this.content);
+        const contentEl = GetDOM(this.contentOuter);
         this.hScrollableDOM = this.hScrollableDOM || contentEl;
         this.vScrollableDOM = this.vScrollableDOM || contentEl;
         Assert(this.resizeObserver_container == null && this.resizeObserver_content == null, "Resize-observers from last mount not cleaned up properly!");
@@ -266,7 +266,7 @@ export class ScrollView extends BaseComponentPlus({ flex: true, onScroll_addTabI
                 this.RespondToSizeChanges();
             });
         });
-        this.resizeObserver_content.observe(this.contentSizeWatcher);
+        this.resizeObserver_content.observe(this.content);
     }
     ComponentDidUpdate() {
         if (!this.propsJustChanged)

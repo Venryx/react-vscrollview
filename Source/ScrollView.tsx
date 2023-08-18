@@ -57,7 +57,7 @@ var styles = {
 
 export type ScrollViewProps = {
 	backgroundDrag?: boolean, backgroundDragMatchFunc?: (element: HTMLElement)=>boolean, bufferScrollEventsBy?: number, scrollH_pos?: number, scrollV_pos?: number,
-	className?: string, style?, contentStyle?, contentSizeWatcherStyle?, scrollHBarStyle?, scrollVBarStyle?, flex?: boolean,
+	className?: string, style?, contentOuterStyle?, contentStyle?, scrollHBarStyle?, scrollVBarStyle?, flex?: boolean,
 	onMouseDown?, onClick?,
 	onWheel?: WheelEventHandler<HTMLDivElement>, onKeyDown?: KeyboardEventHandler<HTMLDivElement>,
 	onScroll?: (event: React.UIEvent<HTMLDivElement>, source: ScrollSource, pos: Vector2i)=>void,
@@ -86,8 +86,8 @@ export class ScrollView extends BaseComponentPlus(
 	},
 ) {
 	root: HTMLDivElement;
-	content: Div;
-	contentSizeWatcher: HTMLDivElement;
+	contentOuter: Div;
+	content: HTMLDivElement;
 	scrollHBar: HTMLDivElement;
 	scrollVBar: HTMLDivElement;
 	//_lastState = {} as any; // to fix edge case, for when using "marginRight: -17" to hide scroll-bar
@@ -97,7 +97,7 @@ export class ScrollView extends BaseComponentPlus(
 
 	render() {
 		var {backgroundDrag,  backgroundDragMatchFunc, bufferScrollEventsBy, scrollH_pos, scrollV_pos,
-			className, style, contentStyle, contentSizeWatcherStyle, scrollHBarStyle, scrollVBarStyle, flex,
+			className, style, contentOuterStyle, contentStyle, scrollHBarStyle, scrollVBarStyle, flex,
 			onMouseDown, onClick,
 			onWheel, onKeyDown, onScroll, onScroll_addTabIndex, onScrollEnd, children, ...rest} = this.props;
 		children = children instanceof Array ? children : [children];
@@ -170,7 +170,7 @@ export class ScrollView extends BaseComponentPlus(
 				.ScrollView.draggable > .content { cursor: grab; cursor: -webkit-grab; cursor: -moz-grab; }
 				.ScrollView.draggable.scrollActive > .content { cursor: grabbing !important; cursor: -webkit-grabbing !important; cursor: -moz-grabbing !important; }
 				`}</style>
-				<Div ref={c=>this.content = c} className="content hideScrollbar" onScroll={this.HandleScroll}
+				<Div ref={c=>this.contentOuter = c} className="contentOuter hideScrollbar" onScroll={this.HandleScroll}
 					tabIndex={addTabIndex ? -1 : null} // tabIndex must be here instead of root div, since otherwise breaks keyboard-based scrolling fsr
 					onMouseDown={this.OnContentMouseDown} onTouchEnd={this.OnTouchEnd} onClick={onClick}
 					style={E(
@@ -178,13 +178,13 @@ export class ScrollView extends BaseComponentPlus(
 						!flex && styles.content_nonFlex, 
 						inFirefox && scrollH_active && {/*paddingBottom: GetHScrollBarHeight(),*/ marginBottom: -GetHScrollBarHeight()},
 						inFirefox && scrollV_active && {/*paddingRight: GetVScrollBarWidth(),*/ marginRight: -GetVScrollBarWidth()},
-						contentStyle,
+						contentOuterStyle,
 					)}
 					shouldUpdate={()=>this.PropsJustChanged || (inFirefox && this.SizeJustChanged)}
 				>
-					<div ref={c=>this.contentSizeWatcher = c} style={E(
+					<div ref={c=>this.content = c} className="content" style={E(
 						{position: "relative", minWidth: "fit-content", minHeight: "fit-content"},
-						contentSizeWatcherStyle,
+						contentStyle,
 					)}>
 						{children}
 					</div>
@@ -202,7 +202,7 @@ export class ScrollView extends BaseComponentPlus(
 		//this.UpdateSize();
 		this.LoadScroll();
 
-		const contentEl = GetDOM(this.content);
+		const contentEl = GetDOM(this.contentOuter);
 		this.hScrollableDOM = this.hScrollableDOM || contentEl;
 		this.vScrollableDOM = this.vScrollableDOM || contentEl;
 
@@ -227,7 +227,7 @@ export class ScrollView extends BaseComponentPlus(
 				this.RespondToSizeChanges();
 			});
 		});
-		this.resizeObserver_content.observe(this.contentSizeWatcher);
+		this.resizeObserver_content.observe(this.content);
 	}
 	ComponentDidUpdate() {
 		if (!this.propsJustChanged) return; // if was just a scroll-update, ignore
@@ -289,7 +289,7 @@ export class ScrollView extends BaseComponentPlus(
 
 	RespondToSizeChanges = ()=> {
 		let container = GetDOM(this);
-		let content = GetDOM(this.content);
+		let content = GetDOM(this.contentOuter);
 		if (container == null || content == null) return;
 		
 		let {
@@ -350,7 +350,7 @@ export class ScrollView extends BaseComponentPlus(
 				nodePlusParents.push(nodePlusParents[nodePlusParents.length - 1].parentNode as Element);
 			var firstScrollViewParent = nodePlusParents.find(b=>b.className.split(" ").indexOf("ScrollView") != -1);
 			if (firstScrollViewParent == null || firstScrollViewParent[0] != GetDOM(this)) return false;
-			return a.className.split(" ").indexOf("content") != -1 || (GetDOM(this.content) && a == GetDOM(this.content)); // || a == this.state.svgRoot;
+			return a.className.split(" ").indexOf("content") != -1 || (GetDOM(this.contentOuter) && a == GetDOM(this.contentOuter)); // || a == this.state.svgRoot;
 		});
 		if (!backgroundDragMatchFunc(e.target)) return;
 		if (e.button != 0) return;
