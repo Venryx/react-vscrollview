@@ -11,7 +11,7 @@ var __rest = (this && this.__rest) || function (s, e) {
 };
 import React from "react";
 import { Component } from "react";
-import { E, GetDOM, BufferAction, GetHScrollBarHeight, GetVScrollBarWidth, Assert } from "./Utils.js";
+import { E, GetDOM, BufferAction, Assert } from "./Utils.js";
 import { RenderSource, BaseComponentPlus } from "react-vextensions";
 export var ScrollSource;
 (function (ScrollSource) {
@@ -33,7 +33,7 @@ class Div extends Component {
         return React.createElement("div", Object.assign({}, rest));
     }
 }
-const inFirefox = typeof navigator != "undefined" ? navigator.userAgent.includes("Firefox") : false;
+//const inFirefox = typeof navigator != "undefined" ? navigator.userAgent.includes("Firefox") : false;
 // main
 // ==========
 var styles = {
@@ -230,11 +230,17 @@ export class ScrollView extends BaseComponentPlus({ flex: true, onScroll_addTabI
                 React.createElement("div", { className: "scrollTrack vertical", style: E(styles.scrollTrack, styles.scrollTrack_v) },
                     React.createElement("div", { ref: c => this.scrollVBar = c, className: "scrollBar vertical", onMouseDown: this.OnScrollbarMouseDown, onMouseOver: () => this.SetState({ scrollVBar_hovered: true }), onMouseOut: () => this.SetState({ scrollVBar_hovered: false }), style: E(styles.scrollBar, styles.scrollBar_v, (this.state.scrollVBar_hovered || (scrollOp_bar && scrollOp_bar == this.scrollVBar)) && styles.scrollBar_active, { height: `${(containerHeight / contentHeight) * 100}%`, top: ((scrollV_pos / contentHeight) * 100) + "%", pointerEvents: "all" }, scrollVBarStyle) })),
             React.createElement("style", null, `
-				.hideScrollbar::-webkit-scrollbar { width: 0px; height: 0px; background: transparent; }
+				.hideScrollbar { scrollbar-width: none; } /* hide scrollbar in firefox */
+				.hideScrollbar::-webkit-scrollbar { width: 0px; height: 0px; background: transparent; } /* hide scrollbar in chrome */
 				.ScrollView.draggable > .content { cursor: grab; cursor: -webkit-grab; cursor: -moz-grab; }
 				.ScrollView.draggable.scrollActive > .content { cursor: grabbing !important; cursor: -webkit-grabbing !important; cursor: -moz-grabbing !important; }
 				`),
-            React.createElement(Div, { ref: c => this.contentOuter = c, className: "contentOuter hideScrollbar", onScroll: this.HandleScroll, tabIndex: addTabIndex ? -1 : null, onMouseDown: this.OnContentMouseDown, onTouchEnd: this.OnTouchEnd, onClick: onClick, style: E(styles.content, /*backgroundDrag && styles.content_draggable,*/ /*scrollOp_bar && styles.content_dragging,*/ !flex && styles.content_nonFlex, inFirefox && scrollH_active && { /*paddingBottom: GetHScrollBarHeight(),*/ marginBottom: -GetHScrollBarHeight() }, inFirefox && scrollV_active && { /*paddingRight: GetVScrollBarWidth(),*/ marginRight: -GetVScrollBarWidth() }, contentOuterStyle), shouldUpdate: () => this.PropsJustChanged || (inFirefox && this.SizeJustChanged) },
+            React.createElement(Div, { ref: c => this.contentOuter = c, className: "contentOuter hideScrollbar", onScroll: this.HandleScroll, tabIndex: addTabIndex ? -1 : null, onMouseDown: this.OnContentMouseDown, onTouchEnd: this.OnTouchEnd, onClick: onClick, style: E(styles.content, /*backgroundDrag && styles.content_draggable,*/ /*scrollOp_bar && styles.content_dragging,*/ !flex && styles.content_nonFlex, 
+                //inFirefox && scrollH_active && {/*paddingBottom: GetHScrollBarHeight(),*/ marginBottom: -GetHScrollBarHeight()},
+                //inFirefox && scrollV_active && {/*paddingRight: GetVScrollBarWidth(),*/ marginRight: -GetVScrollBarWidth()},
+                contentOuterStyle), 
+                //shouldUpdate={()=>this.PropsJustChanged || (inFirefox && this.SizeJustChanged)}
+                shouldUpdate: () => this.PropsJustChanged },
                 React.createElement("div", { ref: c => this.content = c, className: "content", style: E({ position: "relative", minWidth: "fit-content", minHeight: "fit-content" }, contentStyle) }, children))));
     }
     ComponentDidMount() {

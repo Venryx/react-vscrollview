@@ -24,7 +24,7 @@ class Div extends Component<{shouldUpdate} & React.HTMLProps<HTMLDivElement>, {}
 	}
 }
 
-const inFirefox = typeof navigator != "undefined" ? navigator.userAgent.includes("Firefox") : false;
+//const inFirefox = typeof navigator != "undefined" ? navigator.userAgent.includes("Firefox") : false;
 
 // main
 // ==========
@@ -166,7 +166,8 @@ export class ScrollView extends BaseComponentPlus(
 						)}/>
 				</div>}
 				<style>{`
-				.hideScrollbar::-webkit-scrollbar { width: 0px; height: 0px; background: transparent; }
+				.hideScrollbar { scrollbar-width: none; } /* hide scrollbar in firefox */
+				.hideScrollbar::-webkit-scrollbar { width: 0px; height: 0px; background: transparent; } /* hide scrollbar in chrome */
 				.ScrollView.draggable > .content { cursor: grab; cursor: -webkit-grab; cursor: -moz-grab; }
 				.ScrollView.draggable.scrollActive > .content { cursor: grabbing !important; cursor: -webkit-grabbing !important; cursor: -moz-grabbing !important; }
 				`}</style>
@@ -176,11 +177,12 @@ export class ScrollView extends BaseComponentPlus(
 					style={E(
 						styles.content, /*backgroundDrag && styles.content_draggable,*/ /*scrollOp_bar && styles.content_dragging,*/
 						!flex && styles.content_nonFlex, 
-						inFirefox && scrollH_active && {/*paddingBottom: GetHScrollBarHeight(),*/ marginBottom: -GetHScrollBarHeight()},
-						inFirefox && scrollV_active && {/*paddingRight: GetVScrollBarWidth(),*/ marginRight: -GetVScrollBarWidth()},
+						//inFirefox && scrollH_active && {/*paddingBottom: GetHScrollBarHeight(),*/ marginBottom: -GetHScrollBarHeight()},
+						//inFirefox && scrollV_active && {/*paddingRight: GetVScrollBarWidth(),*/ marginRight: -GetVScrollBarWidth()},
 						contentOuterStyle,
 					)}
-					shouldUpdate={()=>this.PropsJustChanged || (inFirefox && this.SizeJustChanged)}
+					//shouldUpdate={()=>this.PropsJustChanged || (inFirefox && this.SizeJustChanged)}
+					shouldUpdate={()=>this.PropsJustChanged}
 				>
 					<div ref={c=>this.content = c} className="content" style={E(
 						{position: "relative", minWidth: "fit-content", minHeight: "fit-content"},
