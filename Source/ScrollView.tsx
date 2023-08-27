@@ -168,8 +168,8 @@ export class ScrollView extends BaseComponentPlus(
 				<style>{`
 				.hideScrollbar { scrollbar-width: none; } /* hide scrollbar in firefox */
 				.hideScrollbar::-webkit-scrollbar { width: 0px; height: 0px; background: transparent; } /* hide scrollbar in chrome */
-				.ScrollView.draggable > .content { cursor: grab; cursor: -webkit-grab; cursor: -moz-grab; }
-				.ScrollView.draggable.scrollActive > .content { cursor: grabbing !important; cursor: -webkit-grabbing !important; cursor: -moz-grabbing !important; }
+				.ScrollView.draggable > .contentOuter { cursor: grab; cursor: -webkit-grab; cursor: -moz-grab; }
+				.ScrollView.draggable.scrollActive > .contentOuter { cursor: grabbing !important; cursor: -webkit-grabbing !important; cursor: -moz-grabbing !important; }
 				`}</style>
 				<Div ref={c=>this.contentOuter = c} className="contentOuter hideScrollbar" onScroll={this.HandleScroll}
 					tabIndex={addTabIndex ? -1 : null} // tabIndex must be here instead of root div, since otherwise breaks keyboard-based scrolling fsr

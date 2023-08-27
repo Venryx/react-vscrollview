@@ -232,8 +232,8 @@ export class ScrollView extends BaseComponentPlus({ flex: true, onScroll_addTabI
             React.createElement("style", null, `
 				.hideScrollbar { scrollbar-width: none; } /* hide scrollbar in firefox */
 				.hideScrollbar::-webkit-scrollbar { width: 0px; height: 0px; background: transparent; } /* hide scrollbar in chrome */
-				.ScrollView.draggable > .content { cursor: grab; cursor: -webkit-grab; cursor: -moz-grab; }
-				.ScrollView.draggable.scrollActive > .content { cursor: grabbing !important; cursor: -webkit-grabbing !important; cursor: -moz-grabbing !important; }
+				.ScrollView.draggable > .contentOuter { cursor: grab; cursor: -webkit-grab; cursor: -moz-grab; }
+				.ScrollView.draggable.scrollActive > .contentOuter { cursor: grabbing !important; cursor: -webkit-grabbing !important; cursor: -moz-grabbing !important; }
 				`),
             React.createElement(Div, { ref: c => this.contentOuter = c, className: "contentOuter hideScrollbar", onScroll: this.HandleScroll, tabIndex: addTabIndex ? -1 : null, onMouseDown: this.OnContentMouseDown, onTouchEnd: this.OnTouchEnd, onClick: onClick, style: E(styles.content, /*backgroundDrag && styles.content_draggable,*/ /*scrollOp_bar && styles.content_dragging,*/ !flex && styles.content_nonFlex, 
                 //inFirefox && scrollH_active && {/*paddingBottom: GetHScrollBarHeight(),*/ marginBottom: -GetHScrollBarHeight()},
