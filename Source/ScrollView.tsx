@@ -58,7 +58,7 @@ var styles = {
 export type ScrollViewProps = {
 	backgroundDrag?: boolean, backgroundDragMatchFunc?: (element: HTMLElement)=>boolean, bufferScrollEventsBy?: number, scrollH_pos?: number, scrollV_pos?: number,
 	className?: string, style?, contentOuterStyle?, contentStyle?, scrollHBarStyle?, scrollVBarStyle?, flex?: boolean,
-	onMouseDown?, onClick?,
+	contentOuter_onMouseDown?, contentOuter_onClick?, content_onClick?,
 	onWheel?: WheelEventHandler<HTMLDivElement>, onKeyDown?: KeyboardEventHandler<HTMLDivElement>,
 	onScroll?: (event: React.UIEvent<HTMLDivElement>, source: ScrollSource, pos: Vector2i)=>void,
 	onScroll_addTabIndex?: boolean,
@@ -98,7 +98,7 @@ export class ScrollView extends BaseComponentPlus(
 	render() {
 		var {backgroundDrag,  backgroundDragMatchFunc, bufferScrollEventsBy, scrollH_pos, scrollV_pos,
 			className, style, contentOuterStyle, contentStyle, scrollHBarStyle, scrollVBarStyle, flex,
-			onMouseDown, onClick,
+			contentOuter_onMouseDown, contentOuter_onClick, content_onClick,
 			onWheel, onKeyDown, onScroll, onScroll_addTabIndex, onScrollEnd, children, ...rest} = this.props;
 		children = children instanceof Array ? children : [children];
 		var {containerWidth, containerHeight, contentWidth, contentHeight,
@@ -173,7 +173,7 @@ export class ScrollView extends BaseComponentPlus(
 				`}</style>
 				<Div ref={c=>this.contentOuter = c} className="contentOuter hideScrollbar" onScroll={this.HandleScroll}
 					tabIndex={addTabIndex ? -1 : null} // tabIndex must be here instead of root div, since otherwise breaks keyboard-based scrolling fsr
-					onMouseDown={this.OnContentMouseDown} onTouchEnd={this.OnTouchEnd} onClick={onClick}
+					onMouseDown={this.OnContentMouseDown} onTouchEnd={this.OnTouchEnd} onClick={contentOuter_onClick}
 					style={E(
 						styles.content, /*backgroundDrag && styles.content_draggable,*/ /*scrollOp_bar && styles.content_dragging,*/
 						!flex && styles.content_nonFlex, 
@@ -184,7 +184,7 @@ export class ScrollView extends BaseComponentPlus(
 					//shouldUpdate={()=>this.PropsJustChanged || (inFirefox && this.SizeJustChanged)}
 					shouldUpdate={()=>this.PropsJustChanged}
 				>
-					<div ref={c=>this.content = c} className="content" style={E(
+					<div ref={c=>this.content = c} className="content" onClick={content_onClick} style={E(
 						{position: "relative", minWidth: "fit-content", minHeight: "fit-content"},
 						contentStyle,
 					)}>
@@ -358,7 +358,7 @@ export class ScrollView extends BaseComponentPlus(
 		if (e.button != 0) return;
 
 		this.StartScrolling(e);
-		this.props.onMouseDown && this.props.onMouseDown(e);
+		this.props.contentOuter_onMouseDown && this.props.contentOuter_onMouseDown(e);
 	}
 	private OnScrollbarMouseDown = (e)=> {
 		e.preventDefault();
