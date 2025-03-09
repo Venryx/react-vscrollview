@@ -32,11 +32,11 @@ class Div extends Component<{shouldUpdate} & React.HTMLProps<HTMLDivElement>, {}
 var styles = {
 	root: {position: "relative", display: "flex", /*flexDirection: "column",*/ overflow: "hidden"},
 	root_nonFlex: {height: "100%"},
-	content: {
+	contentOuter: {
 		flex: 1,
 		overflow: "auto", overflowScrolling: "touch", // WebkitOverflowScrolling: "touch",
 	},
-	content_nonFlex: {
+	contentOuter_nonFlex: {
 		position: "absolute", left: 0, right: 0, top: 0, bottom: 0, // works in safari
 	},
 	//content_draggable: {cursor: "grab -webkit-grab -moz-grab"},
@@ -114,7 +114,7 @@ export class ScrollView extends BaseComponentPlus(
 		let classes = ["ScrollView", backgroundDrag && "draggable", scrollOp_bar && "scrollActive", className && className];
 		let addTabIndex = onScroll && onScroll_addTabIndex;
 		return (
-			<div {...rest} ref={c=>this.root = c}
+			<div {...rest} ref={c=>void(this.root = c)}
 				className={classes.filter(a=>a).join(" ")} style={E(styles.root, !flex && styles.root_nonFlex, style)}
 				onWheel={(!onKeyDown && !onScroll) ? null : e=> {
 					this.lastMouseWheelTime = Date.now();
@@ -145,7 +145,7 @@ export class ScrollView extends BaseComponentPlus(
 			>
 				{scrollH_active &&
 				<div className="scrollTrack horizontal" style={E(styles.scrollTrack, styles.scrollTrack_h)}>
-					<div ref={c=>this.scrollHBar = c} className="scrollBar horizontal" onMouseDown={this.OnScrollbarMouseDown}
+					<div ref={c=>void(this.scrollHBar = c)} className="scrollBar horizontal" onMouseDown={this.OnScrollbarMouseDown}
 						onMouseOver={()=>this.SetState({scrollHBar_hovered: true})} onMouseOut={()=>this.SetState({scrollHBar_hovered: false})}
 						style={E(
 							styles.scrollBar, styles.scrollBar_h,
@@ -156,7 +156,7 @@ export class ScrollView extends BaseComponentPlus(
 				</div>}
 				{scrollV_active &&
 				<div className="scrollTrack vertical" style={E(styles.scrollTrack, styles.scrollTrack_v)}>
-					<div ref={c=>this.scrollVBar = c} className="scrollBar vertical" onMouseDown={this.OnScrollbarMouseDown}
+					<div ref={c=>void(this.scrollVBar = c)} className="scrollBar vertical" onMouseDown={this.OnScrollbarMouseDown}
 						onMouseOver={()=>this.SetState({scrollVBar_hovered: true})} onMouseOut={()=>this.SetState({scrollVBar_hovered: false})}
 						style={E(
 							styles.scrollBar, styles.scrollBar_v,
@@ -175,8 +175,8 @@ export class ScrollView extends BaseComponentPlus(
 					tabIndex={addTabIndex ? -1 : null} // tabIndex must be here instead of root div, since otherwise breaks keyboard-based scrolling fsr
 					onMouseDown={this.OnContentMouseDown} onTouchEnd={this.OnTouchEnd} onClick={contentOuter_onClick}
 					style={E(
-						styles.content, /*backgroundDrag && styles.content_draggable,*/ /*scrollOp_bar && styles.content_dragging,*/
-						!flex && styles.content_nonFlex, 
+						styles.contentOuter, /*backgroundDrag && styles.content_draggable,*/ /*scrollOp_bar && styles.content_dragging,*/
+						!flex && styles.contentOuter_nonFlex, 
 						//inFirefox && scrollH_active && {/*paddingBottom: GetHScrollBarHeight(),*/ marginBottom: -GetHScrollBarHeight()},
 						//inFirefox && scrollV_active && {/*paddingRight: GetVScrollBarWidth(),*/ marginRight: -GetVScrollBarWidth()},
 						contentOuterStyle,
@@ -184,7 +184,7 @@ export class ScrollView extends BaseComponentPlus(
 					//shouldUpdate={()=>this.PropsJustChanged || (inFirefox && this.SizeJustChanged)}
 					shouldUpdate={()=>this.PropsJustChanged}
 				>
-					<div ref={c=>this.content = c} className="content" onClick={content_onClick} style={E(
+					<div ref={c=>void(this.content = c)} className="content" onClick={content_onClick} style={E(
 						{position: "relative", minWidth: "fit-content", minHeight: "fit-content"},
 						contentStyle,
 					)}>

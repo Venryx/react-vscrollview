@@ -39,11 +39,11 @@ class Div extends Component {
 var styles = {
     root: { position: "relative", display: "flex", /*flexDirection: "column",*/ overflow: "hidden" },
     root_nonFlex: { height: "100%" },
-    content: {
+    contentOuter: {
         flex: 1,
         overflow: "auto", overflowScrolling: "touch", // WebkitOverflowScrolling: "touch",
     },
-    content_nonFlex: {
+    contentOuter_nonFlex: {
         position: "absolute", left: 0, right: 0, top: 0, bottom: 0, // works in safari
     },
     //content_draggable: {cursor: "grab -webkit-grab -moz-grab"},
@@ -136,7 +136,7 @@ export class ScrollView extends BaseComponentPlus({ flex: true, onScroll_addTabI
             if (e.button != 0)
                 return;
             this.StartScrolling(e);
-            this.props.onMouseDown && this.props.onMouseDown(e);
+            this.props.contentOuter_onMouseDown && this.props.contentOuter_onMouseDown(e);
         };
         this.OnScrollbarMouseDown = (e) => {
             e.preventDefault();
@@ -182,7 +182,7 @@ export class ScrollView extends BaseComponentPlus({ flex: true, onScroll_addTabI
         };
     }
     render() {
-        var _a = this.props, { backgroundDrag, backgroundDragMatchFunc, bufferScrollEventsBy, scrollH_pos, scrollV_pos, className, style, contentOuterStyle, contentStyle, scrollHBarStyle, scrollVBarStyle, flex, onMouseDown, onClick, onWheel, onKeyDown, onScroll, onScroll_addTabIndex, onScrollEnd, children } = _a, rest = __rest(_a, ["backgroundDrag", "backgroundDragMatchFunc", "bufferScrollEventsBy", "scrollH_pos", "scrollV_pos", "className", "style", "contentOuterStyle", "contentStyle", "scrollHBarStyle", "scrollVBarStyle", "flex", "onMouseDown", "onClick", "onWheel", "onKeyDown", "onScroll", "onScroll_addTabIndex", "onScrollEnd", "children"]);
+        var _a = this.props, { backgroundDrag, backgroundDragMatchFunc, bufferScrollEventsBy, scrollH_pos, scrollV_pos, className, style, contentOuterStyle, contentStyle, scrollHBarStyle, scrollVBarStyle, flex, contentOuter_onMouseDown, contentOuter_onClick, content_onClick, onWheel, onKeyDown, onScroll, onScroll_addTabIndex, onScrollEnd, children } = _a, rest = __rest(_a, ["backgroundDrag", "backgroundDragMatchFunc", "bufferScrollEventsBy", "scrollH_pos", "scrollV_pos", "className", "style", "contentOuterStyle", "contentStyle", "scrollHBarStyle", "scrollVBarStyle", "flex", "contentOuter_onMouseDown", "contentOuter_onClick", "content_onClick", "onWheel", "onKeyDown", "onScroll", "onScroll_addTabIndex", "onScrollEnd", "children"]);
         children = children instanceof Array ? children : [children];
         var { containerWidth, containerHeight, contentWidth, contentHeight, scrollH_active, scrollH_pos, scrollV_active, scrollV_pos, scrollOp_bar } = this.state;
         //let scrollbarVisibilityChanged = scrollH_active != this._lastState.scrollH_active || scrollV_active != this._lastState.scrollV_active;
@@ -192,7 +192,7 @@ export class ScrollView extends BaseComponentPlus({ flex: true, onScroll_addTabI
         //console.log(`Rendering... ${this.propsJustChanged} ${this.sizeJustChanged}`);
         let classes = ["ScrollView", backgroundDrag && "draggable", scrollOp_bar && "scrollActive", className && className];
         let addTabIndex = onScroll && onScroll_addTabIndex;
-        return (React.createElement("div", Object.assign({}, rest, { ref: c => this.root = c, className: classes.filter(a => a).join(" "), style: E(styles.root, !flex && styles.root_nonFlex, style), onWheel: (!onKeyDown && !onScroll) ? null : e => {
+        return (React.createElement("div", Object.assign({}, rest, { ref: c => void (this.root = c), className: classes.filter(a => a).join(" "), style: E(styles.root, !flex && styles.root_nonFlex, style), onWheel: (!onKeyDown && !onScroll) ? null : e => {
                 this.lastMouseWheelTime = Date.now();
                 if (onWheel)
                     return onWheel(e);
@@ -225,23 +225,23 @@ export class ScrollView extends BaseComponentPlus({ flex: true, onScroll_addTabI
             } }),
             scrollH_active &&
                 React.createElement("div", { className: "scrollTrack horizontal", style: E(styles.scrollTrack, styles.scrollTrack_h) },
-                    React.createElement("div", { ref: c => this.scrollHBar = c, className: "scrollBar horizontal", onMouseDown: this.OnScrollbarMouseDown, onMouseOver: () => this.SetState({ scrollHBar_hovered: true }), onMouseOut: () => this.SetState({ scrollHBar_hovered: false }), style: E(styles.scrollBar, styles.scrollBar_h, (this.state.scrollHBar_hovered || (scrollOp_bar && scrollOp_bar == this.scrollHBar)) && styles.scrollBar_active, { width: `${(containerWidth / contentWidth) * 100}%`, left: ((scrollH_pos / contentWidth) * 100) + "%", pointerEvents: "all" }, scrollHBarStyle) })),
+                    React.createElement("div", { ref: c => void (this.scrollHBar = c), className: "scrollBar horizontal", onMouseDown: this.OnScrollbarMouseDown, onMouseOver: () => this.SetState({ scrollHBar_hovered: true }), onMouseOut: () => this.SetState({ scrollHBar_hovered: false }), style: E(styles.scrollBar, styles.scrollBar_h, (this.state.scrollHBar_hovered || (scrollOp_bar && scrollOp_bar == this.scrollHBar)) && styles.scrollBar_active, { width: `${(containerWidth / contentWidth) * 100}%`, left: ((scrollH_pos / contentWidth) * 100) + "%", pointerEvents: "all" }, scrollHBarStyle) })),
             scrollV_active &&
                 React.createElement("div", { className: "scrollTrack vertical", style: E(styles.scrollTrack, styles.scrollTrack_v) },
-                    React.createElement("div", { ref: c => this.scrollVBar = c, className: "scrollBar vertical", onMouseDown: this.OnScrollbarMouseDown, onMouseOver: () => this.SetState({ scrollVBar_hovered: true }), onMouseOut: () => this.SetState({ scrollVBar_hovered: false }), style: E(styles.scrollBar, styles.scrollBar_v, (this.state.scrollVBar_hovered || (scrollOp_bar && scrollOp_bar == this.scrollVBar)) && styles.scrollBar_active, { height: `${(containerHeight / contentHeight) * 100}%`, top: ((scrollV_pos / contentHeight) * 100) + "%", pointerEvents: "all" }, scrollVBarStyle) })),
+                    React.createElement("div", { ref: c => void (this.scrollVBar = c), className: "scrollBar vertical", onMouseDown: this.OnScrollbarMouseDown, onMouseOver: () => this.SetState({ scrollVBar_hovered: true }), onMouseOut: () => this.SetState({ scrollVBar_hovered: false }), style: E(styles.scrollBar, styles.scrollBar_v, (this.state.scrollVBar_hovered || (scrollOp_bar && scrollOp_bar == this.scrollVBar)) && styles.scrollBar_active, { height: `${(containerHeight / contentHeight) * 100}%`, top: ((scrollV_pos / contentHeight) * 100) + "%", pointerEvents: "all" }, scrollVBarStyle) })),
             React.createElement("style", null, `
 				.hideScrollbar { scrollbar-width: none; } /* hide scrollbar in firefox */
 				.hideScrollbar::-webkit-scrollbar { width: 0px; height: 0px; background: transparent; } /* hide scrollbar in chrome */
 				.ScrollView.draggable > .contentOuter { cursor: grab; cursor: -webkit-grab; cursor: -moz-grab; }
 				.ScrollView.draggable.scrollActive > .contentOuter { cursor: grabbing !important; cursor: -webkit-grabbing !important; cursor: -moz-grabbing !important; }
 				`),
-            React.createElement(Div, { ref: c => this.contentOuter = c, className: "contentOuter hideScrollbar", onScroll: this.HandleScroll, tabIndex: addTabIndex ? -1 : null, onMouseDown: this.OnContentMouseDown, onTouchEnd: this.OnTouchEnd, onClick: onClick, style: E(styles.content, /*backgroundDrag && styles.content_draggable,*/ /*scrollOp_bar && styles.content_dragging,*/ !flex && styles.content_nonFlex, 
+            React.createElement(Div, { ref: c => this.contentOuter = c, className: "contentOuter hideScrollbar", onScroll: this.HandleScroll, tabIndex: addTabIndex ? -1 : null, onMouseDown: this.OnContentMouseDown, onTouchEnd: this.OnTouchEnd, onClick: contentOuter_onClick, style: E(styles.contentOuter, /*backgroundDrag && styles.content_draggable,*/ /*scrollOp_bar && styles.content_dragging,*/ !flex && styles.contentOuter_nonFlex, 
                 //inFirefox && scrollH_active && {/*paddingBottom: GetHScrollBarHeight(),*/ marginBottom: -GetHScrollBarHeight()},
                 //inFirefox && scrollV_active && {/*paddingRight: GetVScrollBarWidth(),*/ marginRight: -GetVScrollBarWidth()},
                 contentOuterStyle), 
                 //shouldUpdate={()=>this.PropsJustChanged || (inFirefox && this.SizeJustChanged)}
                 shouldUpdate: () => this.PropsJustChanged },
-                React.createElement("div", { ref: c => this.content = c, className: "content", style: E({ position: "relative", minWidth: "fit-content", minHeight: "fit-content" }, contentStyle) }, children))));
+                React.createElement("div", { ref: c => void (this.content = c), className: "content", onClick: content_onClick, style: E({ position: "relative", minWidth: "fit-content", minHeight: "fit-content" }, contentStyle) }, children))));
     }
     ComponentDidMount() {
         //window.addEventListener("resize", this.UpdateSize);
